@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+html,
+body {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+#messageLog {
+    height: 250px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    font-family: monospace;
+    background-color: #f9f9f9;
+    border-radius: 0.375rem;
+}
+
+.log-entry {
+    padding: 2px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.radio-group label {
+    margin-right: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 0.25rem;
+}
+
+select {
+    appearance: auto;
+}
+
+.key-display {
+    transition: all 0.3s ease-in-out;
+}
+
