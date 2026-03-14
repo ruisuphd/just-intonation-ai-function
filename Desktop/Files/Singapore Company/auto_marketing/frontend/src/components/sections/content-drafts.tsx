@@ -165,7 +165,7 @@ export default function ContentDraftsSection({
       setDrafts(sortDrafts(data.drafts || []));
       setNextCursor(data.next_cursor || null);
     } catch (e: any) {
-      setError(e.message);
+      setError(e.message === "Failed to fetch" ? "Unable to reach the server. Please try refreshing the page." : e.message);
     } finally {
       setLoading(false);
     }

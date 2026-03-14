@@ -5,19 +5,9 @@ from __future__ import annotations
 import os
 import time
 
+import traceback
+
 from fastapi import FastAPI, Request
-
-_sentry_dsn = os.getenv("SENTRY_DSN")
-if _sentry_dsn:
-    import sentry_sdk
-    from sentry_sdk.integrations.fastapi import FastApiIntegration
-
-    sentry_sdk.init(
-        dsn=_sentry_dsn,
-        integrations=[FastApiIntegration()],
-        traces_sample_rate=0.1,
-        environment=os.getenv("SENTRY_ENVIRONMENT", "production"),
-    )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse, Response
 
@@ -39,6 +29,25 @@ from api.routes import (
 )
 from shared.logger import get_logger
 from shared.redis_client import rate_limit_check
+
+
+def _init_sentry() -> None:
+    sentry_dsn = os.getenv("SENTRY_DSN")
+    if not sentry_dsn:
+        return
+
+    import sentry_sdk
+    from sentry_sdk.integrations.fastapi import FastApiIntegration
+
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        integrations=[FastApiIntegration()],
+        traces_sample_rate=0.1,
+        environment=os.getenv("SENTRY_ENVIRONMENT", "production"),
+    )
+
+
+_init_sentry()
 
 app = FastAPI(title="AutoMark API", version="1.0.0")
 logger = get_logger("api.app")
@@ -143,6 +152,24 @@ async def favicon():
 @app.get("/robots.txt")
 async def robots():
     return PlainTextResponse("User-agent: *\nDisallow: /\n")
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """Catch-all handler so unhandled errors still return a JSON body with CORS headers."""
+    logger.error(
+        "api.unhandled_exception",
+        extra={
+            "path": request.url.path,
+            "method": request.method,
+            "error": str(exc),
+            "traceback": traceback.format_exc(),
+        },
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+    )
 
 
 app.include_router(health.router)

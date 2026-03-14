@@ -541,8 +541,12 @@ export default function SettingsPage() {
                   ) : null}
                   <button
                     onClick={async () => {
-                      const { redirect_url } = await apiFetch<{ redirect_url: string }>("/api/oauth/linkedin/authorize");
-                      window.location.href = redirect_url;
+                      try {
+                        const { redirect_url } = await apiFetch<{ redirect_url: string }>("/api/oauth/linkedin/authorize");
+                        window.location.href = redirect_url;
+                      } catch (err: any) {
+                        setPageError(err.message || "Unable to start LinkedIn connection. Please check that OAuth credentials are configured.");
+                      }
                     }}
                     className="rounded-apple-sm bg-apple-blue px-3 py-1.5 text-sm font-medium text-white hover:bg-apple-blue-hover"
                   >
@@ -556,8 +560,12 @@ export default function SettingsPage() {
                   ) : null}
                   <button
                     onClick={async () => {
-                      const { redirect_url } = await apiFetch<{ redirect_url: string }>("/api/oauth/x/authorize");
-                      window.location.href = redirect_url;
+                      try {
+                        const { redirect_url } = await apiFetch<{ redirect_url: string }>("/api/oauth/x/authorize");
+                        window.location.href = redirect_url;
+                      } catch (err: any) {
+                        setPageError(err.message || "Unable to start X connection. Please check that OAuth credentials are configured.");
+                      }
                     }}
                     className="rounded-apple-sm bg-apple-blue px-3 py-1.5 text-sm font-medium text-white hover:bg-apple-blue-hover"
                   >
