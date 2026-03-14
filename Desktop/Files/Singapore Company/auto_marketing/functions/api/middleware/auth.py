@@ -101,9 +101,7 @@ async def get_current_user(
     tenant: dict[str, Any] | None = cache_get(cache_key)
 
     if tenant is None:
-        tenant_docs = query_docs(
-            "tenants", filters=[("owner_uid", "==", uid)], limit=1
-        )
+        tenant_docs = query_docs("tenants", filters=[("owner_uid", "==", uid)], limit=1)
         tenant = tenant_docs[0] if tenant_docs else None
 
         if not tenant:

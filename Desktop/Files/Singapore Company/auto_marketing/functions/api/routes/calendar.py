@@ -37,7 +37,11 @@ async def list_calendar_events(
             if date_str not in campaigns_by_date:
                 campaigns_by_date[date_str] = []
             campaigns_by_date[date_str].append(
-                {"id": c.get("id"), "type": "newsletter", "subject": c.get("subject", "")}
+                {
+                    "id": c.get("id"),
+                    "type": "newsletter",
+                    "subject": c.get("subject", ""),
+                }
             )
     return {
         "drafts": drafts,

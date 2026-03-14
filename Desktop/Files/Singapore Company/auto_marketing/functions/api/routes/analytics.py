@@ -89,15 +89,9 @@ async def get_analytics(
         tenant_id=tenant.tenant_id,
         limit=500,
     )
-    signals = query_docs(
-        "prospect_signals", tenant_id=tenant.tenant_id, limit=500
-    )
-    leads = query_docs(
-        "qualified_leads", tenant_id=tenant.tenant_id, limit=500
-    )
-    outreach = query_docs(
-        "outreach_drafts", tenant_id=tenant.tenant_id, limit=500
-    )
+    signals = query_docs("prospect_signals", tenant_id=tenant.tenant_id, limit=500)
+    leads = query_docs("qualified_leads", tenant_id=tenant.tenant_id, limit=500)
+    outreach = query_docs("outreach_drafts", tenant_id=tenant.tenant_id, limit=500)
 
     reply_statuses = {"meeting_booked", "negotiation", "closed_won", "closed_lost"}
     reply_count = sum(1 for lead in leads if lead.get("status") in reply_statuses)

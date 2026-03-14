@@ -5,6 +5,11 @@
       "rootDir": "frontend",
       "ignore": [
         "node_modules",
+        "frontend/.next",
+        "frontend/playwright-report",
+        "frontend/test-results",
+        "frontend/tsconfig.tsbuildinfo",
+        "frontend/.DS_Store",
         ".git",
         ".gitignore",
         "firebase-debug.log",

@@ -157,9 +157,7 @@ def rate_limit_check(user_key: str, path: str, max_requests: int, window: int) -
 _rate_buckets: dict[str, list[float]] = {}
 
 
-def _in_memory_rate_check(
-    key: str, max_requests: int, window: int, now: float
-) -> bool:
+def _in_memory_rate_check(key: str, max_requests: int, window: int, now: float) -> bool:
     cutoff = now - window
     bucket = _rate_buckets.get(key, [])
     bucket = [t for t in bucket if t > cutoff]

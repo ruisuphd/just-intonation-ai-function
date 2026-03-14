@@ -79,9 +79,7 @@ def _store_oauth_state(
     code_verifier: str | None = None,
 ) -> None:
     """Store OAuth state with owner identity and TTL for verification on callback."""
-    expires_at = datetime.now(timezone.utc) + timedelta(
-        minutes=OAUTH_STATE_TTL_MINUTES
-    )
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=OAUTH_STATE_TTL_MINUTES)
     doc = {
         "state": state,
         "owner_uid": owner_uid,
@@ -103,8 +101,10 @@ def _get_oauth_state(state: str) -> dict | None:
     expires_at = doc.get("expires_at")
     if expires_at:
         if isinstance(expires_at, datetime):
-            exp = expires_at if expires_at.tzinfo else expires_at.replace(
-                tzinfo=timezone.utc
+            exp = (
+                expires_at
+                if expires_at.tzinfo
+                else expires_at.replace(tzinfo=timezone.utc)
             )
         else:
             exp = datetime.now(timezone.utc)  # If unparseable, treat as expired

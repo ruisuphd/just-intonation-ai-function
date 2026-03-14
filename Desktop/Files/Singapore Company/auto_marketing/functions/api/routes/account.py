@@ -76,7 +76,10 @@ async def export_account_data(
                         out.append(rec)
                     zf.writestr(f"{coll}.json", json.dumps(out, indent=2))
             except Exception as exc:
-                logger.warning("account.export.collection_failed", extra={"collection": coll, "error": str(exc)})
+                logger.warning(
+                    "account.export.collection_failed",
+                    extra={"collection": coll, "error": str(exc)},
+                )
 
     buf.seek(0)
     filename = f"automark-export-{tenant_id}-{datetime.now(timezone.utc).strftime('%Y%m%d')}.zip"
@@ -117,7 +120,7 @@ async def delete_account(
     if confirm != "DELETE":
         raise HTTPException(
             status_code=400,
-            detail='Account deletion requires confirm=DELETE. This action is irreversible.',
+            detail="Account deletion requires confirm=DELETE. This action is irreversible.",
         )
 
     tenant_id = tenant.tenant_id
@@ -132,10 +135,15 @@ async def delete_account(
             if n > 0:
                 deleted_counts[coll] = n
         except Exception as exc:
-            logger.error("account.delete.collection_failed", extra={"collection": coll, "error": str(exc)})
+            logger.error(
+                "account.delete.collection_failed",
+                extra={"collection": coll, "error": str(exc)},
+            )
             raise HTTPException(status_code=500, detail=f"Failed to delete {coll}")
 
     tenant_ref.delete()
-    logger.info("account.deleted", extra={"tenant_id": tenant_id, "deleted": deleted_counts})
+    logger.info(
+        "account.deleted", extra={"tenant_id": tenant_id, "deleted": deleted_counts}
+    )
 
     return {"ok": True, "deleted": deleted_counts}

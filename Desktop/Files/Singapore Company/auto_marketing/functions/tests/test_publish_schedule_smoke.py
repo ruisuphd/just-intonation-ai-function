@@ -24,6 +24,9 @@ class FirestoreSmokeStore:
             return None
         return self._tenant_bucket(tenant_id).get(collection, {}).get(doc_id)
 
+    def get_tenant(self, tenant_id: str):
+        return self.tenants.get(tenant_id)
+
     def set_doc(
         self, collection: str, doc_id: str, data: dict, tenant_id: str | None = None
     ):
@@ -67,6 +70,48 @@ class FirestoreSmokeStore:
                 if op == "==" and current != target:
                     return False
                 if op == "array_contains" and target not in (current or []):
+                    return False
+                if op == ">=" and (current is None or current < target):
+                    return False
+            return True
+
+        filtered = [doc for doc in docs if matches(doc)]
+        if order_by:
+            reverse = order_by.startswith("-")
+            key_name = order_by.lstrip("-")
+            filtered.sort(
+                key=lambda item: coerce(item.get(key_name))
+                or datetime.min.replace(tzinfo=timezone.utc),
+                reverse=reverse,
+            )
+        if limit is not None:
+            filtered = filtered[:limit]
+        return filtered
+
+    def query_collection_group(
+        self,
+        collection: str,
+        filters: list[tuple[str, str, object]] | None = None,
+        order_by: str | None = None,
+        limit: int | None = None,
+    ):
+        docs = []
+        for tenant_id, tenant_collections in self.collections.items():
+            for doc in tenant_collections.get(collection, {}).values():
+                docs.append({**doc, "tenant_id": tenant_id})
+
+        def coerce(value):
+            if hasattr(value, "to_datetime"):
+                return value.to_datetime()
+            return value
+
+        def matches(doc: dict) -> bool:
+            for field, op, value in filters or []:
+                current = coerce(doc.get(field))
+                target = coerce(value)
+                if op == "==" and current != target:
+                    return False
+                if op == "<=" and (current is None or current > target):
                     return False
                 if op == ">=" and (current is None or current < target):
                     return False
@@ -177,6 +222,10 @@ def test_publish_schedule_pipeline_smoke(monkeypatch):
 
     for module in (drafts, publisher, analytics_gatherer, analytics_routes):
         monkeypatch.setattr(module, "query_docs", store.query_docs)
+    monkeypatch.setattr(
+        publisher, "query_collection_group", store.query_collection_group
+    )
+    monkeypatch.setattr(publisher, "get_tenant", store.get_tenant)
     monkeypatch.setattr(drafts, "get_doc", store.get_doc)
     monkeypatch.setattr(drafts, "set_doc", store.set_doc)
     monkeypatch.setattr(drafts, "update_doc", store.update_doc)

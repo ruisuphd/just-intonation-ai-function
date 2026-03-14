@@ -10,7 +10,15 @@ from pydantic import BaseModel, field_validator, model_validator
 from api.middleware.auth import require_access
 from shared.datetime_utils import coerce_datetime
 from shared.draft_utils import best_effort_post_topic, build_draft_payload
-from shared.firestore_client import add_doc, delete_doc, get_doc, query_docs, query_docs_paginated, set_doc, update_doc
+from shared.firestore_client import (
+    add_doc,
+    delete_doc,
+    get_doc,
+    query_docs,
+    query_docs_paginated,
+    set_doc,
+    update_doc,
+)
 from shared.logger import get_logger
 from shared.models import CalendarEvent, PublishingRecord, TenantProfile
 from shared.platforms import PLATFORM_MAP, normalize_platforms
@@ -207,22 +215,31 @@ async def update_draft_status(
     return {"ok": True, "draft": updated_doc}
 
 
-def _cleanup_scheduled_draft(
-    *, tenant_id: str, draft_id: str, draft_doc: dict
-) -> None:
+def _cleanup_scheduled_draft(*, tenant_id: str, draft_id: str, draft_doc: dict) -> None:
     """Remove calendar_events and publishing_records for a scheduled draft."""
     platforms = _draft_platforms(draft_doc)
     ops: list[dict] = [
-        {"action": "delete", "collection": "calendar_events", "doc_id": f"social_post_{draft_id}", "tenant_id": tenant_id},
+        {
+            "action": "delete",
+            "collection": "calendar_events",
+            "doc_id": f"social_post_{draft_id}",
+            "tenant_id": tenant_id,
+        },
     ]
     for platform in platforms:
         record_id = f"{draft_id}:{platform}"
         rec = get_doc("publishing_records", record_id, tenant_id=tenant_id) or {}
         if rec.get("status") != "published":
             ops.append(
-                {"action": "delete", "collection": "publishing_records", "doc_id": record_id, "tenant_id": tenant_id},
+                {
+                    "action": "delete",
+                    "collection": "publishing_records",
+                    "doc_id": record_id,
+                    "tenant_id": tenant_id,
+                },
             )
     from shared.firestore_client import batch_write
+
     batch_write(ops)
 
 
@@ -274,7 +291,11 @@ async def update_draft_content(
     if body.text is not None:
         updates["text"] = (body.text or "").strip()
     if body.content_by_platform is not None:
-        valid = {k: (v or "").strip() for k, v in body.content_by_platform.items() if k in PLATFORM_MAP}
+        valid = {
+            k: (v or "").strip()
+            for k, v in body.content_by_platform.items()
+            if k in PLATFORM_MAP
+        }
         merged = dict(existing_doc.get("content_by_platform") or {})
         merged.update(valid)
         updates["content_by_platform"] = merged

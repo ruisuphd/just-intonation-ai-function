@@ -10,7 +10,13 @@ from pydantic import BaseModel
 
 from api.middleware.auth import require_subscription
 from engines.linkedin_enrichment import enrich_lead
-from shared.firestore_client import delete_doc, get_doc, query_docs, query_docs_paginated, update_doc
+from shared.firestore_client import (
+    delete_doc,
+    get_doc,
+    query_docs,
+    query_docs_paginated,
+    update_doc,
+)
 from shared.logger import get_logger
 from shared.models import TenantProfile
 from shared.storage_client import delete_blob

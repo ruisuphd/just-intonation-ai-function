@@ -117,9 +117,7 @@ async def run_publisher() -> dict:
             tenant_doc = get_tenant(tenant_id)
             if tenant_doc:
                 try:
-                    tenant_cache[tenant_id] = TenantProfile.model_validate(
-                        tenant_doc
-                    )
+                    tenant_cache[tenant_id] = TenantProfile.model_validate(tenant_doc)
                 except Exception as exc:
                     logger.warning(
                         "publisher.invalid_tenant",
