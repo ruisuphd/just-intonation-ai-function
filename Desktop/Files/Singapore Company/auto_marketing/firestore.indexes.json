@@ -1,0 +1,208 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "intelligence_items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batch_date", "order": "ASCENDING" },
+        { "fieldPath": "relevance_score", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "intelligence_items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "gathered_at", "order": "ASCENDING" },
+        { "fieldPath": "relevance_score", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "intelligence_items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "source_url", "order": "ASCENDING" },
+        { "fieldPath": "dedup_window_expires", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "brand_chunks",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "document_id", "order": "ASCENDING" },
+        { "fieldPath": "chunk_index", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "brand_documents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "uploaded_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batch_date", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "batch_date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batch_date", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "platforms_generated", "arrayConfig": "CONTAINS" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batch_date", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batch_date", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "platforms_generated", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "publishing_records",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "scheduled_for", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "content_packages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "package_type", "order": "ASCENDING" },
+        { "fieldPath": "batch_date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "content_packages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "url_expires_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "content_packages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "content_packages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "has_warnings", "order": "ASCENDING" },
+        { "fieldPath": "batch_date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "prospect_signals",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batch_date", "order": "ASCENDING" },
+        { "fieldPath": "strength_score", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "prospect_signals",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "detected_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "prospect_signals",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "company_name", "order": "ASCENDING" },
+        { "fieldPath": "detected_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "qualified_leads",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "icp_fit_score", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "qualified_leads",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "is_pinned", "order": "ASCENDING" },
+        { "fieldPath": "expires_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "outreach_drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lead_id", "order": "ASCENDING" },
+        { "fieldPath": "draft_type", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "outreach_drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "generated_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "suppress_list",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "type", "order": "ASCENDING" },
+        { "fieldPath": "value", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

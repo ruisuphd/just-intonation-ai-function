@@ -1,0 +1,19 @@
+project_id         = "intonation-labs-marketing"
+region             = "asia-southeast1"
+claude_region      = "us-east5"
+environment        = "prod"
+notification_email = "founder@intonationlabs.com"
+scheduler_timezone = "Asia/Singapore"
+publisher_schedule = "*/15 * * * *"
+analytics_sync_schedule = "15 8 * * *"
+
+# Populate after deploying Cloud Functions (gen2).
+# Keys must match function names; values are the deployed HTTPS URLs.
+function_urls = {
+  "fn-daily-pipeline"      = "https://fn-daily-pipeline-HASH.asia-southeast1.run.app"
+  "fn-tenant-pipelines"    = "https://fn-tenant-pipelines-HASH.asia-southeast1.run.app"
+  "fn-scheduled-publisher" = "https://fn-scheduled-publisher-HASH.asia-southeast1.run.app"
+  "fn-analytics-sync"      = "https://fn-analytics-sync-HASH.asia-southeast1.run.app"
+  "fn-platform-generate"   = ""
+  "fn-package-builder"     = ""
+}

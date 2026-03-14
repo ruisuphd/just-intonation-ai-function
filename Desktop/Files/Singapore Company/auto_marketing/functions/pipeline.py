@@ -1,9 +1,9 @@
-"""Daily marketing pipeline — single Cloud Function entry point.
+"""Daily marketing pipeline -- single Cloud Function entry point.
 
-Runs sequentially each morning:
+Runs sequentially each morning per tenant:
   1. Fetch & score news (company mentions, competitors, market signals)
   2. Generate concise English-first social post + optional image
-  3. Detect buying signals → qualify leads → draft outreach messages
+  3. Detect buying signals -> qualify leads -> draft outreach messages
   4. Send HTML email with all outputs to founder
 
 Triggered daily by Cloud Scheduler at 07:00 SGT.
@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import time
 import traceback
+import urllib.parse
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -22,27 +23,25 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 import functions_framework
 from flask import Request, jsonify
 
-from shared.firestore_client import create_doc_if_absent, get_doc, update_doc
+from shared.draft_utils import best_effort_post_topic, build_draft_payload
+from shared.firestore_client import (
+    add_doc,
+    create_doc_if_absent,
+    get_doc,
+    get_tenant,
+    update_doc,
+)
 from shared.logger import clear_trace_id, get_logger, set_trace_id
-from shared.models import GenerationConfig
+from shared.models import GenerationConfig, TenantProfile
 
 logger = get_logger("pipeline")
 
 _DEFAULT_DIGEST_TIMEZONE = "Asia/Singapore"
 _DEFAULT_TOP_K_INTELLIGENCE = 5
 _DAILY_DIGEST_COLLECTION = "daily_digest_sends"
+_MAX_DYNAMIC_SOURCES = 12
 
-# ── Source Configuration ───────────────────────────────────────────────────────
-#
-# Inline config — no Firestore lookup needed for sources.
-# Edit this list to add/remove/toggle RSS feeds.
-#
-# Categories:
-#   "industry_news" → intelligence engine (marketing content)
-#   "competitor"    → intelligence engine + signals engine
-#   "funding"       → signals engine (lead detection)
-#   "community"     → signals engine (pain points, discussion)
-#
+# ── Legacy source config (used when tenant_id is None for backward compat) ────
 SOURCES_CONFIG: list[dict] = [
     {
         "id": "self_intonation_labs",
@@ -183,6 +182,76 @@ SOURCES_CONFIG: list[dict] = [
 ]
 
 
+def _build_sources_config(tenant: TenantProfile) -> list[dict]:
+    """Dynamically generate RSS source config from a tenant's profile."""
+    sources: list[dict] = []
+
+    company_name = tenant.company_name.strip()
+    if company_name:
+        company_q = urllib.parse.quote_plus(f'"{company_name}"')
+        sources.append(
+            {
+                "id": "self_mentions",
+                "name": f"{company_name} Mentions",
+                "type": "google_news_rss",
+                "url": f"https://news.google.com/rss/search?q={company_q}&hl=en-US&gl=US&ceid=US:en",
+                "enabled": True,
+                "category": "industry_news",
+            }
+        )
+
+    keyword_terms = [kw.strip() for kw in tenant.industry_keywords if kw.strip()]
+    industry = tenant.industry.strip()
+    if not keyword_terms and industry and industry.lower() != "other":
+        keyword_terms.extend(
+            [
+                f"{industry} trends",
+                f"{industry} strategy",
+            ]
+        )
+    if not keyword_terms:
+        keyword_terms.extend(
+            [
+                "enterprise AI consulting",
+                "AI transformation",
+            ]
+        )
+
+    for kw in keyword_terms:
+        if len(sources) >= _MAX_DYNAMIC_SOURCES:
+            break
+        kw_q = urllib.parse.quote_plus(kw)
+        slug = kw.lower().replace(" ", "_")[:30]
+        sources.append(
+            {
+                "id": f"keyword_{slug}",
+                "name": f"{kw} News",
+                "type": "google_news_rss",
+                "url": f"https://news.google.com/rss/search?q={kw_q}&hl=en-US&gl=US&ceid=US:en",
+                "enabled": True,
+                "category": "industry_news",
+            }
+        )
+
+    for comp in tenant.competitor_names:
+        if len(sources) >= _MAX_DYNAMIC_SOURCES:
+            break
+        comp_q = urllib.parse.quote_plus(comp)
+        slug = comp.lower().replace(" ", "_")[:30]
+        sources.append(
+            {
+                "id": f"competitor_{slug}",
+                "name": f"{comp} News",
+                "type": "google_news_rss",
+                "url": f"https://news.google.com/rss/search?q={comp_q}&hl=en-US&gl=US&ceid=US:en",
+                "enabled": True,
+                "category": "competitor",
+            }
+        )
+
+    return sources[:_MAX_DYNAMIC_SOURCES]
+
+
 @dataclass(frozen=True)
 class DigestConfig:
     enabled: bool
@@ -200,7 +269,9 @@ def _as_bool(value: object) -> bool:
 
 
 def _resolve_timezone(timezone_name: str | None) -> ZoneInfo:
-    candidate = (timezone_name or _DEFAULT_DIGEST_TIMEZONE).strip() or _DEFAULT_DIGEST_TIMEZONE
+    candidate = (
+        timezone_name or _DEFAULT_DIGEST_TIMEZONE
+    ).strip() or _DEFAULT_DIGEST_TIMEZONE
     try:
         return ZoneInfo(candidate)
     except ZoneInfoNotFoundError:
@@ -211,11 +282,23 @@ def _resolve_timezone(timezone_name: str | None) -> ZoneInfo:
         return ZoneInfo(_DEFAULT_DIGEST_TIMEZONE)
 
 
-def _load_digest_config() -> DigestConfig:
+def _load_digest_config(tenant_id: str | None = None) -> DigestConfig:
+    if tenant_id:
+        tenant_doc = get_tenant(tenant_id)
+        if tenant_doc:
+            return DigestConfig(
+                enabled=tenant_doc.get("daily_digest_enabled", True),
+                recipient_email=tenant_doc.get("daily_digest_email") or None,
+                timezone_name=tenant_doc.get("timezone", _DEFAULT_DIGEST_TIMEZONE),
+                top_k_intelligence=_DEFAULT_TOP_K_INTELLIGENCE,
+            )
+
     raw_config = get_doc("system_config", "generation_config") or {}
     validated = GenerationConfig.model_validate(raw_config)
 
-    digest_enabled = validated.daily_digest_enabled if "daily_digest_enabled" in raw_config else True
+    digest_enabled = (
+        validated.daily_digest_enabled if "daily_digest_enabled" in raw_config else True
+    )
     recipient_email = (raw_config.get("daily_digest_email") or "").strip() or None
     top_k_intelligence = (
         validated.top_k_intelligence
@@ -242,9 +325,12 @@ def _request_force_send(request: Request) -> bool:
     return _as_bool(force_value)
 
 
-def _daily_digest_doc_id(day_key: str, timezone_name: str) -> str:
+def _daily_digest_doc_id(
+    day_key: str, timezone_name: str, tenant_id: str | None = None
+) -> str:
     safe_tz = timezone_name.replace("/", "_").replace(" ", "_")
-    return f"{day_key}__{safe_tz}"
+    prefix = f"{tenant_id}_" if tenant_id else ""
+    return f"{prefix}{day_key}__{safe_tz}"
 
 
 def _claim_daily_digest_send(
@@ -253,10 +339,11 @@ def _claim_daily_digest_send(
     timezone_name: str,
     recipient_email: str | None,
     trace_id: str,
+    tenant_id: str | None = None,
 ) -> bool:
     return create_doc_if_absent(
         _DAILY_DIGEST_COLLECTION,
-        _daily_digest_doc_id(day_key, timezone_name),
+        _daily_digest_doc_id(day_key, timezone_name, tenant_id),
         {
             "day_key": day_key,
             "timezone": timezone_name,
@@ -264,7 +351,9 @@ def _claim_daily_digest_send(
             "status": "claimed",
             "claimed_at": datetime.now(timezone.utc),
             "trace_id": trace_id,
+            "tenant_id": tenant_id or "",
         },
+        tenant_id=tenant_id,
     )
 
 
@@ -275,6 +364,7 @@ def _update_daily_digest_send(
     trace_id: str,
     status: str,
     error: str | None = None,
+    tenant_id: str | None = None,
 ) -> None:
     payload: dict[str, object] = {
         "status": status,
@@ -288,8 +378,9 @@ def _update_daily_digest_send(
     try:
         update_doc(
             _DAILY_DIGEST_COLLECTION,
-            _daily_digest_doc_id(day_key, timezone_name),
+            _daily_digest_doc_id(day_key, timezone_name, tenant_id),
             payload,
+            tenant_id=tenant_id,
         )
     except Exception as exc:
         logger.warning(
@@ -358,17 +449,25 @@ def _build_best_effort_item(
 
 # ── Cloud Function entry point ────────────────────────────────────────────────
 
+
 @functions_framework.http
 def run_daily_pipeline(request: Request):
     """HTTP-triggered Cloud Function. Runs the full daily marketing pipeline."""
+    body = request.get_json(silent=True) or {}
+    tenant_id = body.get("tenant_id") if isinstance(body, dict) else None
     trace_id = f"pipeline-{uuid.uuid4().hex[:12]}"
     force_send = _request_force_send(request)
     set_trace_id(trace_id)
     t0 = time.monotonic()
-    logger.info("pipeline.start", extra={"force_send": force_send})
+    logger.info(
+        "pipeline.start",
+        extra={"force_send": force_send, "tenant_id": tenant_id or "legacy"},
+    )
 
     try:
-        result = asyncio.run(_run_pipeline(force_send=force_send, trace_id=trace_id))
+        result = asyncio.run(
+            _run_pipeline(force_send=force_send, trace_id=trace_id, tenant_id=tenant_id)
+        )
         elapsed_ms = round((time.monotonic() - t0) * 1000)
         logger.info("pipeline.done", extra={"elapsed_ms": elapsed_ms, **result})
         return jsonify({"ok": True, **result}), 200
@@ -380,6 +479,7 @@ def run_daily_pipeline(request: Request):
                 "elapsed_ms": elapsed_ms,
                 "error": str(exc),
                 "traceback": traceback.format_exc(),
+                "tenant_id": tenant_id or "legacy",
             },
         )
         return jsonify({"ok": False, "error": str(exc)}), 500
@@ -389,7 +489,13 @@ def run_daily_pipeline(request: Request):
 
 # ── Pipeline orchestration ────────────────────────────────────────────────────
 
-async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict:
+
+async def _run_pipeline(
+    *,
+    force_send: bool = False,
+    trace_id: str = "",
+    tenant_id: str | None = None,
+) -> dict:
     from engines import image_generate
     from engines import email_builder
     from engines.intelligence import run_and_return_items
@@ -399,20 +505,37 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
     from engines.signals import run_and_classify
     from shared.retriever import Retriever
 
-    digest_config = _load_digest_config()
+    # Resolve sources: tenant-specific or legacy hardcoded
+    tenant: TenantProfile | None = None
+    if tenant_id:
+        tenant_doc = get_tenant(tenant_id)
+        if not tenant_doc:
+            raise ValueError(f"Tenant {tenant_id} not found")
+        tenant = TenantProfile.model_validate(tenant_doc)
+        sources = _build_sources_config(tenant)
+    else:
+        sources = SOURCES_CONFIG
+
+    digest_config = (
+        _load_digest_config(tenant_id) if tenant_id else _load_digest_config()
+    )
     digest_tz = _resolve_timezone(digest_config.timezone_name)
     local_today = datetime.now(digest_tz).strftime("%Y-%m-%d")
 
     # ── Step 1: Fetch & score news ────────────────────────────────────────────
-    logger.info("pipeline.step1.intelligence_start")
+    logger.info(
+        "pipeline.step1.intelligence_start", extra={"tenant_id": tenant_id or "legacy"}
+    )
     intel_items: list[dict] = []
     try:
-        intel_items = await run_and_return_items(sources=SOURCES_CONFIG)
-        logger.info("pipeline.step1.intelligence_done", extra={"items": len(intel_items)})
+        intel_items = await run_and_return_items(sources=sources, tenant_id=tenant_id)
+        logger.info(
+            "pipeline.step1.intelligence_done", extra={"items": len(intel_items)}
+        )
     except Exception as exc:
         logger.error("pipeline.step1.intelligence_failed", extra={"error": str(exc)})
 
-    top_intel = intel_items[:digest_config.top_k_intelligence]
+    top_intel = intel_items[: digest_config.top_k_intelligence]
     content_intel = _select_content_items(intel_items)
 
     # ── Step 2: Generate daily post + image ───────────────────────────────────
@@ -420,27 +543,56 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
     post_draft = None
     image_bytes = None
     post_status = "no_candidates"
+    content_summaries: list[str] = []
+    content_query = ""
 
     if content_intel:
+        content_summaries = [
+            item.get("summary") or item.get("title", "") for item in content_intel
+        ]
+        content_query = " ".join(
+            item.get("title") or item.get("summary", "") for item in content_intel
+        )
+    elif tenant is not None:
+        fallback_topic = best_effort_post_topic(tenant)
+        content_summaries = [fallback_topic]
+        content_query = fallback_topic
+
+    if content_summaries:
         post_status = "failed"
         try:
-            intelligence_summaries = [
-                item.get("summary") or item.get("title", "") for item in content_intel
-            ]
-            query = " ".join(item.get("title", "") for item in content_intel)
-            retriever = Retriever(top_k=6)
-            chunks, _ = retriever.retrieve(query, language="en")
+            retriever = Retriever(top_k=6, tenant_id=tenant_id)
+            chunks, _ = retriever.retrieve(
+                content_query or content_summaries[0], language="en"
+            )
             brand_context = [
                 {"text": c.get("text", ""), "doc_type": c.get("doc_type", "other")}
                 for c in chunks
             ]
             post_draft = await generate_daily_post(
-                intelligence_summaries=intelligence_summaries,
-                intelligence_items=content_intel,
+                intelligence_summaries=content_summaries,
+                intelligence_items=content_intel or None,
                 brand_context=brand_context or None,
+                tenant_id=tenant_id,
             )
-            post_status = "ready"
-            logger.info("pipeline.step2.post_generated")
+            post_status = "ready" if content_intel else "best_effort"
+
+            if tenant is not None:
+                draft_payload = build_draft_payload(
+                    post_draft,
+                    tenant=tenant,
+                    origin="pipeline",
+                    topic=content_summaries[0],
+                    batch_date=local_today,
+                    platforms_enabled=tenant.platforms_enabled,
+                )
+                add_doc(
+                    "drafts",
+                    draft_payload,
+                    doc_id=f"{local_today}__pipeline_post",
+                    tenant_id=tenant_id,
+                )
+            logger.info("pipeline.step2.post_generated", extra={"status": post_status})
         except Exception as exc:
             logger.error("pipeline.step2.post_failed", extra={"error": str(exc)})
     else:
@@ -449,7 +601,38 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
     if post_draft and post_draft.image_prompt:
         try:
             image_bytes = await image_generate.generate(post_draft.image_prompt)
-            logger.info("pipeline.step2.image_generated", extra={"bytes": len(image_bytes)})
+            logger.info(
+                "pipeline.step2.image_generated", extra={"bytes": len(image_bytes)}
+            )
+            if tenant_id and image_bytes:
+                import os
+
+                from shared.firestore_client import update_doc
+                from shared.storage_client import upload_bytes, generate_signed_url
+
+                bucket = os.getenv("BRAND_DOCS_BUCKET", "")
+                if bucket:
+                    draft_id = f"{local_today}__pipeline_post"
+                    blob_path = f"drafts/{draft_id}/image.png"
+                    upload_bytes(
+                        bucket,
+                        blob_path,
+                        image_bytes,
+                        content_type="image/png",
+                        tenant_id=tenant_id,
+                    )
+                    image_url = generate_signed_url(
+                        bucket,
+                        blob_path,
+                        expiry_hours=168,
+                        tenant_id=tenant_id,
+                    )
+                    update_doc(
+                        "drafts",
+                        draft_id,
+                        {"image_url": image_url},
+                        tenant_id=tenant_id,
+                    )
         except Exception as exc:
             logger.warning("pipeline.step2.image_failed", extra={"error": str(exc)})
 
@@ -459,44 +642,66 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
     prospect_items: list[dict] = []
 
     try:
-        classified_signals = await run_and_classify(sources=SOURCES_CONFIG, max_signals=8)
-        logger.info("pipeline.step3.signals_detected", extra={"count": len(classified_signals)})
+        classified_signals = await run_and_classify(
+            sources=sources,
+            max_signals=8,
+            tenant_id=tenant_id,
+        )
+        logger.info(
+            "pipeline.step3.signals_detected", extra={"count": len(classified_signals)}
+        )
 
         for signal in classified_signals:
             if len(lead_items) >= 3 and len(prospect_items) >= 3:
                 break
             try:
-                lead_data = await qualify_inline(signal)
+                lead_data = await qualify_inline(signal, tenant_id=tenant_id)
                 is_qualified = lead_data.get("icp_fit") in ("high", "medium")
                 outreach: dict = {}
 
                 try:
                     if is_qualified or len(prospect_items) < 3:
-                        outreach = await generate_outreach_inline(lead_data, signal)
+                        outreach = await generate_outreach_inline(
+                            lead_data,
+                            signal,
+                            tenant_id=tenant_id,
+                        )
                 except Exception as exc:
                     logger.warning(
                         "pipeline.step3.outreach_generation_failed",
-                        extra={"company": signal.get("company_name"), "error": str(exc)},
+                        extra={
+                            "company": signal.get("company_name"),
+                            "error": str(exc),
+                        },
                     )
 
                 if is_qualified:
                     if len(lead_items) < 3:
-                        lead_items.append({
-                            "company_name": signal.get("company_name", "Unknown"),
-                            "signal_summary": signal.get("summary") or signal.get("title", ""),
-                            "icp_fit": lead_data.get("icp_fit"),
-                            "icp_fit_score": lead_data.get("icp_fit_score", 0.0),
-                            "approach_suggestion": lead_data.get("suggested_outreach_angle", ""),
-                            "recommended_channel": outreach.get("recommended_channel", ""),
-                            "channel_reason": outreach.get("channel_reason", ""),
-                            "linkedin_dm": outreach.get("linkedin_dm", ""),
-                            "cold_email": outreach.get("cold_email", {}),
-                        })
+                        lead_items.append(
+                            {
+                                "company_name": signal.get("company_name", "Unknown"),
+                                "signal_summary": signal.get("summary")
+                                or signal.get("title", ""),
+                                "icp_fit": lead_data.get("icp_fit"),
+                                "icp_fit_score": lead_data.get("icp_fit_score", 0.0),
+                                "approach_suggestion": lead_data.get(
+                                    "suggested_outreach_angle", ""
+                                ),
+                                "recommended_channel": outreach.get(
+                                    "recommended_channel", ""
+                                ),
+                                "channel_reason": outreach.get("channel_reason", ""),
+                                "linkedin_dm": outreach.get("linkedin_dm", ""),
+                                "cold_email": outreach.get("cold_email", {}),
+                            }
+                        )
                     continue
 
                 if len(prospect_items) < 3:
                     prospect_items.append(
-                        _build_best_effort_item(signal, lead_data=lead_data, outreach=outreach)
+                        _build_best_effort_item(
+                            signal, lead_data=lead_data, outreach=outreach
+                        )
                     )
             except Exception as exc:
                 if len(prospect_items) < 3:
@@ -508,6 +713,7 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
                                 "suggested_outreach_angle": "",
                             },
                             signal,
+                            tenant_id=tenant_id,
                         )
                     except Exception as outreach_exc:
                         logger.warning(
@@ -542,6 +748,7 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
         timezone_name=digest_config.timezone_name,
         recipient_email=digest_config.recipient_email,
         trace_id=trace_id,
+        tenant_id=tenant_id,
     ):
         email_status = "skipped_duplicate"
         logger.info(
@@ -561,6 +768,7 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
                 generated_at=datetime.now(digest_tz),
                 timezone_name=digest_config.timezone_name,
                 recipient_email=digest_config.recipient_email,
+                company_name=tenant.company_name if tenant else "",
             )
             if not force_send:
                 _update_daily_digest_send(
@@ -568,6 +776,7 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
                     timezone_name=digest_config.timezone_name,
                     trace_id=trace_id,
                     status="sent",
+                    tenant_id=tenant_id,
                 )
             email_status = "sent"
             logger.info("pipeline.step4.email_sent", extra={"force_send": force_send})
@@ -579,11 +788,13 @@ async def _run_pipeline(*, force_send: bool = False, trace_id: str = "") -> dict
                     trace_id=trace_id,
                     status="failed",
                     error=str(exc),
+                    tenant_id=tenant_id,
                 )
             logger.error("pipeline.step4.email_failed", extra={"error": str(exc)})
             raise
 
     return {
+        "tenant_id": tenant_id or "legacy",
         "date": local_today,
         "timezone": digest_config.timezone_name,
         "intel_items": len(top_intel),
