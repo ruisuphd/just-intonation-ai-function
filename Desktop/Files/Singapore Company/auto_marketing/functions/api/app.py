@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import time
 
 import traceback
@@ -56,7 +57,7 @@ logger = get_logger("api.app")
 
 allowed_origins = [
     origin.strip()
-    for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+    for origin in re.split(r"[,\s]+", os.getenv("ALLOWED_ORIGINS", "http://localhost:3000"))
     if origin.strip()
 ]
 

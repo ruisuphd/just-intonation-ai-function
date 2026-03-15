@@ -109,5 +109,5 @@ jobs:
             --source=functions \
             --service-account=sa-cloud-functions@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
             --allow-unauthenticated \
-            --set-env-vars="^||^GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}||GCP_REGION=${{ secrets.GCP_REGION }}||GEMINI_REGION=global||BRAND_DOCS_BUCKET=brand-documents-${{ secrets.GCP_PROJECT_ID }}||APP_URL=https://automark-web--intonation-labs-marketing.asia-east1.hosted.app||ALLOWED_ORIGINS=http://localhost:3000 https://automark-web--intonation-labs-marketing.asia-east1.hosted.app" \
+            --set-env-vars="^||^GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}||GCP_REGION=${{ secrets.GCP_REGION }}||GEMINI_REGION=global||BRAND_DOCS_BUCKET=brand-documents-${{ secrets.GCP_PROJECT_ID }}||APP_URL=https://automark-web--intonation-labs-marketing.asia-east1.hosted.app||API_URL=https://automark-api-qglnjkfpjq-as.a.run.app||ALLOWED_ORIGINS=http://localhost:3000,https://automark-web--intonation-labs-marketing.asia-east1.hosted.app" \
             --min-instances=0
