@@ -16,6 +16,18 @@ from shared.models import DailyPostResult
 
 logger = get_logger("engine.email_builder")
 
+# Hard-coded SMTP fallback — platform-level sender credentials
+# Firestore system_config/smtp_config or env vars take precedence if set
+_SMTP_DEFAULTS = {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_user": "rui@intonationlabs.com",
+    "smtp_password": "ooggezaijanarmjk",
+    "smtp_from_email": "noreply@intonationlabs.com",
+    "smtp_use_tls": True,
+    "smtp_use_ssl": False,
+}
+
 
 def _as_bool(value: str | None, *, default: bool) -> bool:
     if value is None:
@@ -36,7 +48,7 @@ class SMTPConfig:
 
     @classmethod
     def from_env(cls, recipient_email: str | None = None) -> "SMTPConfig":
-        # Try Firestore system_config first, then fall back to env vars
+        # Priority: Firestore system_config → env vars → hardcoded defaults
         fs_config: dict = {}
         try:
             from shared.firestore_client import get_doc
@@ -45,37 +57,36 @@ class SMTPConfig:
         except Exception:
             pass
 
-        host = (fs_config.get("smtp_host") or os.getenv("SMTP_HOST", "")).strip()
-        if not host:
-            raise ValueError(
-                "SMTP not configured. Go to Settings \u2192 Notifications to add SMTP credentials."
-            )
+        def _get(key: str, env_var: str, default: str = "") -> str:
+            return (fs_config.get(key) or os.getenv(env_var, "") or _SMTP_DEFAULTS.get(key, default) or "").strip()
 
-        port = int(fs_config.get("smtp_port") or os.getenv("SMTP_PORT", "587"))
-        username = (fs_config.get("smtp_user") or os.getenv("SMTP_USER", "")).strip() or None
-        password = (fs_config.get("smtp_password") or os.getenv("SMTP_PASSWORD", "")).strip() or None
-        from_email = (
-            fs_config.get("smtp_from_email")
-            or os.getenv("SMTP_FROM_EMAIL", "").strip()
-            or (username or "")
-        ).strip()
+        host = _get("smtp_host", "SMTP_HOST")
+        if not host:
+            raise ValueError("SMTP not configured — no host available.")
+
+        port_raw = fs_config.get("smtp_port") or os.getenv("SMTP_PORT") or _SMTP_DEFAULTS["smtp_port"]
+        port = int(port_raw)
+        username = _get("smtp_user", "SMTP_USER") or None
+        password = _get("smtp_password", "SMTP_PASSWORD") or None
+        from_email = _get("smtp_from_email", "SMTP_FROM_EMAIL") or (username or "")
         if not from_email:
-            raise ValueError("SMTP_FROM_EMAIL or SMTP_USER is required")
+            raise ValueError("No SMTP from-email available")
 
         to_email = (recipient_email or os.getenv("SMTP_TO_EMAIL", "")).strip()
         if not to_email:
             raise ValueError("SMTP_TO_EMAIL is required")
 
+        # ssl/tls flags: Firestore → env → hardcoded defaults
         fs_use_ssl = fs_config.get("smtp_use_ssl")
         fs_use_tls = fs_config.get("smtp_use_tls")
         if fs_use_ssl is not None:
             use_ssl = bool(fs_use_ssl)
         else:
-            use_ssl = _as_bool(os.getenv("SMTP_USE_SSL"), default=False)
+            use_ssl = _as_bool(os.getenv("SMTP_USE_SSL"), default=bool(_SMTP_DEFAULTS["smtp_use_ssl"]))
         if fs_use_tls is not None:
             use_tls = bool(fs_use_tls)
         else:
-            use_tls = _as_bool(os.getenv("SMTP_USE_TLS"), default=not use_ssl)
+            use_tls = _as_bool(os.getenv("SMTP_USE_TLS"), default=bool(_SMTP_DEFAULTS["smtp_use_tls"]))
 
         return cls(
             host=host,
