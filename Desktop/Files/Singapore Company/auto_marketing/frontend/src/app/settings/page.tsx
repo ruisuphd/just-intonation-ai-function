@@ -16,8 +16,40 @@ const TABS = [
   { id: "brand_voice", label: "Brand Voice" },
   { id: "platforms", label: "Platforms" },
   { id: "notifications", label: "Notifications" },
+  { id: "integrations", label: "Integrations" },
   { id: "billing", label: "Billing" },
   { id: "account", label: "Account & data" },
+];
+
+const COMMON_TIMEZONES = [
+  "Pacific/Auckland",
+  "Australia/Sydney",
+  "Australia/Adelaide",
+  "Australia/Perth",
+  "Asia/Tokyo",
+  "Asia/Seoul",
+  "Asia/Shanghai",
+  "Asia/Hong_Kong",
+  "Asia/Taipei",
+  "Asia/Singapore",
+  "Asia/Bangkok",
+  "Asia/Kolkata",
+  "Asia/Dubai",
+  "Europe/Moscow",
+  "Europe/Istanbul",
+  "Europe/Athens",
+  "Europe/Helsinki",
+  "Europe/Berlin",
+  "Europe/Paris",
+  "Europe/London",
+  "Atlantic/Reykjavik",
+  "America/Sao_Paulo",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Anchorage",
+  "Pacific/Honolulu",
 ];
 
 const PLAN_FEATURES: Record<string, string[]> = {
@@ -74,11 +106,28 @@ export default function SettingsPage() {
   const [digestEnabled, setDigestEnabled] = useState(true);
   const [digestEmail, setDigestEmail] = useState("");
   const [notificationTime, setNotificationTime] = useState("07:00");
+  const [digestTimezone, setDigestTimezone] = useState("Asia/Singapore");
   const [toneFormalCasual, setToneFormalCasual] = useState(50);
   const [toneTechnicalAccessible, setToneTechnicalAccessible] = useState(50);
   const [brandGuidelinesFile, setBrandGuidelinesFile] = useState<File | null>(null);
   const [brandVoiceMessage, setBrandVoiceMessage] = useState("");
   const [oauthStatus, setOauthStatus] = useState<{ linkedin: boolean; x_twitter: boolean } | null>(null);
+
+  // Integrations state
+  const [integrationsLoading, setIntegrationsLoading] = useState(false);
+  const [integrationsSaved, setIntegrationsSaved] = useState(false);
+  const [linkedinClientId, setLinkedinClientId] = useState("");
+  const [linkedinClientSecret, setLinkedinClientSecret] = useState("");
+  const [xClientId, setXClientId] = useState("");
+  const [xClientSecret, setXClientSecret] = useState("");
+  const [oauthConfigured, setOauthConfigured] = useState({ linkedin: false, x: false });
+  const [smtpHost, setSmtpHost] = useState("");
+  const [smtpPort, setSmtpPort] = useState(587);
+  const [smtpUser, setSmtpUser] = useState("");
+  const [smtpPassword, setSmtpPassword] = useState("");
+  const [smtpFromEmail, setSmtpFromEmail] = useState("");
+  const [smtpUseTls, setSmtpUseTls] = useState(true);
+  const [smtpConfigured, setSmtpConfigured] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) router.replace("/");
@@ -113,6 +162,7 @@ export default function SettingsPage() {
       setDigestEnabled(data.daily_digest_enabled ?? true);
       setDigestEmail(data.daily_digest_email || "");
       setNotificationTime(data.notification_time || "07:00");
+      setDigestTimezone(data.timezone || "Asia/Singapore");
       setToneFormalCasual((data as any).tone_formal_casual ?? 50);
       setToneTechnicalAccessible((data as any).tone_technical_accessible ?? 50);
     } catch (err: any) {
@@ -635,15 +685,158 @@ export default function SettingsPage() {
                 <label className="mb-1 block text-sm font-medium">Notification time</label>
                 <input type="time" value={notificationTime} onChange={(e) => setNotificationTime(e.target.value)} className="w-48" />
               </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Timezone</label>
+                <select
+                  value={digestTimezone}
+                  onChange={(e) => setDigestTimezone(e.target.value)}
+                  className="w-full rounded-apple-sm border border-apple-border bg-white px-3 py-2 text-sm"
+                >
+                  {COMMON_TIMEZONES.map((tz) => (
+                    <option key={tz} value={tz}>
+                      {tz.replace(/_/g, " ")}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-apple-secondary">
+                  Your daily digest email will be sent at the notification time in this timezone.
+                </p>
+              </div>
             </div>
             <button
-              onClick={() => handleSave({ daily_digest_enabled: digestEnabled, daily_digest_email: digestEmail, notification_time: notificationTime })}
+              onClick={() =>
+                handleSave({
+                  daily_digest_enabled: digestEnabled,
+                  daily_digest_email: digestEmail,
+                  notification_time: notificationTime,
+                  timezone: digestTimezone,
+                })
+              }
               disabled={saving}
               className="mt-6 rounded-apple-sm bg-apple-blue px-6 py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50"
             >
               {saved ? "Saved" : "Save notifications"}
             </button>
           </div>
+        )}
+
+        {/* Integrations Tab */}
+        {tab === "integrations" && (
+          <IntegrationsTab
+            loading={integrationsLoading}
+            saved={integrationsSaved}
+            linkedinClientId={linkedinClientId}
+            setLinkedinClientId={setLinkedinClientId}
+            linkedinClientSecret={linkedinClientSecret}
+            setLinkedinClientSecret={setLinkedinClientSecret}
+            xClientId={xClientId}
+            setXClientId={setXClientId}
+            xClientSecret={xClientSecret}
+            setXClientSecret={setXClientSecret}
+            oauthConfigured={oauthConfigured}
+            smtpHost={smtpHost}
+            setSmtpHost={setSmtpHost}
+            smtpPort={smtpPort}
+            setSmtpPort={setSmtpPort}
+            smtpUser={smtpUser}
+            setSmtpUser={setSmtpUser}
+            smtpPassword={smtpPassword}
+            setSmtpPassword={setSmtpPassword}
+            smtpFromEmail={smtpFromEmail}
+            setSmtpFromEmail={setSmtpFromEmail}
+            smtpUseTls={smtpUseTls}
+            setSmtpUseTls={setSmtpUseTls}
+            smtpConfigured={smtpConfigured}
+            onLoadConfig={async () => {
+              setIntegrationsLoading(true);
+              try {
+                const [oauthData, smtpData] = await Promise.all([
+                  apiFetch<any>("/api/admin/oauth-credentials"),
+                  apiFetch<any>("/api/admin/smtp-config"),
+                ]);
+                setLinkedinClientId(oauthData.linkedin_client_id || "");
+                setLinkedinClientSecret(oauthData.linkedin_client_secret || "");
+                setXClientId(oauthData.x_client_id || "");
+                setXClientSecret(oauthData.x_client_secret || "");
+                setOauthConfigured({
+                  linkedin: oauthData.linkedin_configured || false,
+                  x: oauthData.x_configured || false,
+                });
+                setSmtpHost(smtpData.smtp_host || "");
+                setSmtpPort(smtpData.smtp_port || 587);
+                setSmtpUser(smtpData.smtp_user || "");
+                setSmtpPassword(smtpData.smtp_password || "");
+                setSmtpFromEmail(smtpData.smtp_from_email || "");
+                setSmtpUseTls(smtpData.smtp_use_tls ?? true);
+                setSmtpConfigured(smtpData.configured || false);
+              } catch (err: any) {
+                setPageError(err.message || "Failed to load integration settings.");
+              } finally {
+                setIntegrationsLoading(false);
+              }
+            }}
+            onSaveOAuth={async () => {
+              setIntegrationsSaved(false);
+              setPageError("");
+              try {
+                const updates: Record<string, string> = {};
+                if (linkedinClientId && !linkedinClientId.includes("*"))
+                  updates.linkedin_client_id = linkedinClientId;
+                if (linkedinClientSecret && !linkedinClientSecret.includes("*"))
+                  updates.linkedin_client_secret = linkedinClientSecret;
+                if (xClientId && !xClientId.includes("*"))
+                  updates.x_client_id = xClientId;
+                if (xClientSecret && !xClientSecret.includes("*"))
+                  updates.x_client_secret = xClientSecret;
+                if (Object.keys(updates).length === 0) {
+                  setPageError("Enter at least one credential to save.");
+                  return;
+                }
+                await apiFetch("/api/admin/oauth-credentials", {
+                  method: "PUT",
+                  body: JSON.stringify(updates),
+                });
+                setIntegrationsSaved(true);
+                setTimeout(() => setIntegrationsSaved(false), 2000);
+                // Refresh status
+                const oauthData = await apiFetch<any>("/api/admin/oauth-credentials");
+                setOauthConfigured({
+                  linkedin: oauthData.linkedin_configured || false,
+                  x: oauthData.x_configured || false,
+                });
+              } catch (err: any) {
+                setPageError(err.message || "Failed to save OAuth credentials.");
+              }
+            }}
+            onSaveSMTP={async () => {
+              setIntegrationsSaved(false);
+              setPageError("");
+              try {
+                const updates: Record<string, any> = {};
+                if (smtpHost) updates.smtp_host = smtpHost;
+                if (smtpPort) updates.smtp_port = smtpPort;
+                if (smtpUser) updates.smtp_user = smtpUser;
+                if (smtpPassword && !smtpPassword.includes("*"))
+                  updates.smtp_password = smtpPassword;
+                if (smtpFromEmail) updates.smtp_from_email = smtpFromEmail;
+                updates.smtp_use_tls = smtpUseTls;
+                updates.smtp_use_ssl = !smtpUseTls;
+                if (Object.keys(updates).length === 0) {
+                  setPageError("Enter at least one SMTP field to save.");
+                  return;
+                }
+                await apiFetch("/api/admin/smtp-config", {
+                  method: "PUT",
+                  body: JSON.stringify(updates),
+                });
+                setIntegrationsSaved(true);
+                setSmtpConfigured(true);
+                setTimeout(() => setIntegrationsSaved(false), 2000);
+              } catch (err: any) {
+                setPageError(err.message || "Failed to save SMTP configuration.");
+              }
+            }}
+          />
         )}
 
         {/* Billing Tab */}
@@ -784,6 +977,275 @@ export default function SettingsPage() {
           </div>
         )}
       </main>
+    </div>
+  );
+}
+
+
+/* ── Integrations Tab Component ──────────────────────────────────────────────── */
+
+function IntegrationsTab({
+  loading,
+  saved,
+  linkedinClientId,
+  setLinkedinClientId,
+  linkedinClientSecret,
+  setLinkedinClientSecret,
+  xClientId,
+  setXClientId,
+  xClientSecret,
+  setXClientSecret,
+  oauthConfigured,
+  smtpHost,
+  setSmtpHost,
+  smtpPort,
+  setSmtpPort,
+  smtpUser,
+  setSmtpUser,
+  smtpPassword,
+  setSmtpPassword,
+  smtpFromEmail,
+  setSmtpFromEmail,
+  smtpUseTls,
+  setSmtpUseTls,
+  smtpConfigured,
+  onLoadConfig,
+  onSaveOAuth,
+  onSaveSMTP,
+}: {
+  loading: boolean;
+  saved: boolean;
+  linkedinClientId: string;
+  setLinkedinClientId: (v: string) => void;
+  linkedinClientSecret: string;
+  setLinkedinClientSecret: (v: string) => void;
+  xClientId: string;
+  setXClientId: (v: string) => void;
+  xClientSecret: string;
+  setXClientSecret: (v: string) => void;
+  oauthConfigured: { linkedin: boolean; x: boolean };
+  smtpHost: string;
+  setSmtpHost: (v: string) => void;
+  smtpPort: number;
+  setSmtpPort: (v: number) => void;
+  smtpUser: string;
+  setSmtpUser: (v: string) => void;
+  smtpPassword: string;
+  setSmtpPassword: (v: string) => void;
+  smtpFromEmail: string;
+  setSmtpFromEmail: (v: string) => void;
+  smtpUseTls: boolean;
+  setSmtpUseTls: (v: boolean) => void;
+  smtpConfigured: boolean;
+  onLoadConfig: () => void;
+  onSaveOAuth: () => void;
+  onSaveSMTP: () => void;
+}) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!loaded) {
+      setLoaded(true);
+      onLoadConfig();
+    }
+  }, [loaded, onLoadConfig]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-apple-text border-t-transparent" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* OAuth Credentials */}
+      <div className="rounded-apple bg-apple-card p-5 shadow-apple sm:p-6">
+        <h2 className="mb-1 text-lg font-semibold">Social Platform OAuth</h2>
+        <p className="mb-4 text-sm text-apple-secondary">
+          Enter your OAuth app credentials to enable the Connect buttons for LinkedIn and X.
+          Create a LinkedIn app at{" "}
+          <a
+            href="https://www.linkedin.com/developers/apps"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-apple-blue underline"
+          >
+            LinkedIn Developers
+          </a>{" "}
+          and an X app at{" "}
+          <a
+            href="https://developer.x.com/en/portal/dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-apple-blue underline"
+          >
+            X Developer Portal
+          </a>
+          .
+        </p>
+
+        <div className="space-y-4">
+          <div className="rounded-apple-sm border border-apple-border p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-semibold">LinkedIn</h3>
+              {oauthConfigured.linkedin && (
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                  Configured
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={linkedinClientId}
+                onChange={(e) => setLinkedinClientId(e.target.value)}
+                placeholder="Client ID"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+              <input
+                type="password"
+                value={linkedinClientSecret}
+                onChange={(e) => setLinkedinClientSecret(e.target.value)}
+                placeholder="Client Secret"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-apple-sm border border-apple-border p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-semibold">X (Twitter)</h3>
+              {oauthConfigured.x && (
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                  Configured
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={xClientId}
+                onChange={(e) => setXClientId(e.target.value)}
+                placeholder="Client ID"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+              <input
+                type="password"
+                value={xClientSecret}
+                onChange={(e) => setXClientSecret(e.target.value)}
+                placeholder="Client Secret"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={onSaveOAuth}
+          className="mt-4 rounded-apple-sm bg-apple-blue px-6 py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50"
+        >
+          {saved ? "Saved" : "Save OAuth credentials"}
+        </button>
+      </div>
+
+      {/* SMTP Configuration */}
+      <div className="rounded-apple bg-apple-card p-5 shadow-apple sm:p-6">
+        <div className="mb-1 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Email (SMTP)</h2>
+          {smtpConfigured && (
+            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+              Configured
+            </span>
+          )}
+        </div>
+        <p className="mb-4 text-sm text-apple-secondary">
+          Configure SMTP to enable daily digest emails. Works with any provider (Gmail, SendGrid,
+          Mailgun, Amazon SES, etc.).
+        </p>
+
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-apple-secondary">
+                SMTP Host
+              </label>
+              <input
+                type="text"
+                value={smtpHost}
+                onChange={(e) => setSmtpHost(e.target.value)}
+                placeholder="smtp.gmail.com"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-apple-secondary">Port</label>
+              <input
+                type="number"
+                value={smtpPort}
+                onChange={(e) => setSmtpPort(Number(e.target.value))}
+                placeholder="587"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-apple-secondary">
+                Username
+              </label>
+              <input
+                type="text"
+                value={smtpUser}
+                onChange={(e) => setSmtpUser(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-apple-secondary">
+                Password
+              </label>
+              <input
+                type="password"
+                value={smtpPassword}
+                onChange={(e) => setSmtpPassword(e.target.value)}
+                placeholder="App password or API key"
+                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-apple-secondary">
+              From Email
+            </label>
+            <input
+              type="email"
+              value={smtpFromEmail}
+              onChange={(e) => setSmtpFromEmail(e.target.value)}
+              placeholder="noreply@yourcompany.com"
+              className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
+            />
+          </div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={smtpUseTls}
+              onChange={(e) => setSmtpUseTls(e.target.checked)}
+              className="h-4 w-4 rounded border-apple-border accent-apple-blue"
+            />
+            <span className="text-sm">Use TLS (recommended for port 587)</span>
+          </label>
+        </div>
+
+        <button
+          onClick={onSaveSMTP}
+          className="mt-4 rounded-apple-sm bg-apple-blue px-6 py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50"
+        >
+          {saved ? "Saved" : "Save SMTP configuration"}
+        </button>
+      </div>
     </div>
   );
 }

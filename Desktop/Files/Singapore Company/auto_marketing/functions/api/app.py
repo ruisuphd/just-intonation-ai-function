@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse, PlainTextResponse, Response
 
 from api.routes import (
     account,
+    admin_config,
     analytics,
     billing,
     calendar as calendar_routes,
@@ -174,6 +175,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 app.include_router(health.router)
 app.include_router(account.router)
+app.include_router(admin_config.router)
 app.include_router(oauth.router)
 app.include_router(onboarding.router)
 app.include_router(billing.router)

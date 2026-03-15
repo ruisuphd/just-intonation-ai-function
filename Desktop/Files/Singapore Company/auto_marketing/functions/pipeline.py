@@ -790,8 +790,11 @@ async def _run_pipeline(
                     error=str(exc),
                     tenant_id=tenant_id,
                 )
-            logger.error("pipeline.step4.email_failed", extra={"error": str(exc)})
-            raise
+            email_status = "failed"
+            logger.error(
+                "pipeline.step4.email_failed",
+                extra={"error": str(exc), "traceback": traceback.format_exc()},
+            )
 
     return {
         "tenant_id": tenant_id or "legacy",

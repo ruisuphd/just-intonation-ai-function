@@ -29,6 +29,18 @@ from shared.secrets import get_secret_or_env
 
 logger = get_logger("api.oauth")
 
+
+def _get_oauth_credential(field: str, secret_id: str, env_var: str) -> str | None:
+    """Read an OAuth credential from Firestore first, then Secret Manager/env."""
+    try:
+        doc = get_doc("system_config", "oauth_credentials", tenant_id=None) or {}
+        value = doc.get(field, "").strip()
+        if value:
+            return value
+    except Exception:
+        pass
+    return get_secret_or_env(secret_id=secret_id, env_var=env_var)
+
 router = APIRouter(prefix="/api/oauth", tags=["oauth"])
 
 LINKEDIN_AUTH = "https://www.linkedin.com/oauth/v2/authorization"
@@ -128,12 +140,14 @@ async def linkedin_authorize(
     request: Request,
     tenant: TenantProfile = Depends(require_tenant),
 ):
-    client_id = get_secret_or_env(
-        secret_id="linkedin-client-id",
-        env_var="LINKEDIN_CLIENT_ID",
+    client_id = _get_oauth_credential(
+        "linkedin_client_id", "linkedin-client-id", "LINKEDIN_CLIENT_ID"
     )
     if not client_id:
-        raise HTTPException(status_code=500, detail="LinkedIn OAuth not configured")
+        raise HTTPException(
+            status_code=501,
+            detail="LinkedIn OAuth not configured. Go to Settings \u2192 Integrations to add your LinkedIn app credentials.",
+        )
 
     api_url = os.getenv("API_URL") or os.getenv("APP_URL", "http://localhost:8080")
     redirect_uri = f"{api_url.rstrip('/')}/api/oauth/linkedin/callback"
@@ -195,14 +209,14 @@ async def linkedin_callback(
         )
         raise HTTPException(status_code=403, detail="OAuth flow ownership mismatch")
 
-    client_id = get_secret_or_env(
-        secret_id="linkedin-client-id", env_var="LINKEDIN_CLIENT_ID"
+    client_id = _get_oauth_credential(
+        "linkedin_client_id", "linkedin-client-id", "LINKEDIN_CLIENT_ID"
     )
-    client_secret = get_secret_or_env(
-        secret_id="linkedin-client-secret", env_var="LINKEDIN_CLIENT_SECRET"
+    client_secret = _get_oauth_credential(
+        "linkedin_client_secret", "linkedin-client-secret", "LINKEDIN_CLIENT_SECRET"
     )
     if not client_id or not client_secret:
-        raise HTTPException(status_code=500, detail="LinkedIn OAuth not configured")
+        raise HTTPException(status_code=501, detail="LinkedIn OAuth not configured")
 
     api_url = os.getenv("API_URL") or os.getenv("APP_URL", "http://localhost:8080")
     redirect_uri = f"{api_url.rstrip('/')}/api/oauth/linkedin/callback"
@@ -265,9 +279,14 @@ async def x_authorize(
     request: Request,
     tenant: TenantProfile = Depends(require_tenant),
 ):
-    client_id = get_secret_or_env(secret_id="x-client-id", env_var="X_CLIENT_ID")
+    client_id = _get_oauth_credential(
+        "x_client_id", "x-client-id", "X_CLIENT_ID"
+    )
     if not client_id:
-        raise HTTPException(status_code=500, detail="X OAuth not configured")
+        raise HTTPException(
+            status_code=501,
+            detail="X OAuth not configured. Go to Settings \u2192 Integrations to add your X app credentials.",
+        )
 
     api_url = os.getenv("API_URL") or os.getenv("APP_URL", "http://localhost:8080")
     redirect_uri = f"{api_url.rstrip('/')}/api/oauth/x/callback"
@@ -341,12 +360,14 @@ async def x_callback(
         )
         raise HTTPException(status_code=403, detail="OAuth flow ownership mismatch")
 
-    client_id = get_secret_or_env(secret_id="x-client-id", env_var="X_CLIENT_ID")
-    client_secret = get_secret_or_env(
-        secret_id="x-client-secret", env_var="X_CLIENT_SECRET"
+    client_id = _get_oauth_credential(
+        "x_client_id", "x-client-id", "X_CLIENT_ID"
+    )
+    client_secret = _get_oauth_credential(
+        "x_client_secret", "x-client-secret", "X_CLIENT_SECRET"
     )
     if not client_id or not client_secret:
-        raise HTTPException(status_code=500, detail="X OAuth not configured")
+        raise HTTPException(status_code=501, detail="X OAuth not configured")
 
     api_url = os.getenv("API_URL") or os.getenv("APP_URL", "http://localhost:8080")
     redirect_uri = f"{api_url.rstrip('/')}/api/oauth/x/callback"
