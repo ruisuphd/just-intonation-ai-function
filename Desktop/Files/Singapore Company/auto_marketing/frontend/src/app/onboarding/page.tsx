@@ -116,6 +116,12 @@ export default function Onboarding() {
     void handleSubmit();
   };
 
+  const handleSkip = () => {
+    if (step < STEP_COUNT) {
+      setStep((current) => current + 1);
+    }
+  };
+
   const handleBack = () => {
     if (step > 1) setStep((current) => current - 1);
   };
@@ -205,21 +211,18 @@ export default function Onboarding() {
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-apple-secondary">
-                  Competitors
+                <label className="mb-1 block text-sm font-medium text-apple-secondary">
+                  Main Competitor <span className="text-apple-secondary/60 font-normal">(optional)</span>
                 </label>
-                <div className="space-y-2">
-                  {formData.competitors.map((value, index) => (
-                    <input
-                      key={`competitor-${index}`}
-                      type="text"
-                      className="w-full"
-                      placeholder={`Competitor ${index + 1}`}
-                      value={value}
-                      onChange={(e) => updateArrayField("competitors", index, e.target.value)}
-                    />
-                  ))}
-                </div>
+                <input
+                  key="competitor-0"
+                  type="text"
+                  className="w-full"
+                  placeholder="Competitor name"
+                  value={formData.competitors[0]}
+                  onChange={(e) => updateArrayField("competitors", 0, e.target.value)}
+                />
+                <p className="mt-1 text-xs text-apple-secondary/60">We&apos;ll set up competitor tracking later in Settings.</p>
               </div>
             </div>
           </div>
@@ -227,7 +230,10 @@ export default function Onboarding() {
 
         {step === 2 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-medium text-apple-text">Brand Voice</h2>
+            <div className="flex items-start justify-between">
+              <h2 className="text-xl font-medium text-apple-text">Brand Voice <span className="text-sm font-normal text-apple-secondary">(optional)</span></h2>
+              <button type="button" onClick={handleSkip} className="text-sm text-apple-blue hover:underline">Skip for now</button>
+            </div>
             <div className="space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-apple-secondary">
@@ -239,6 +245,7 @@ export default function Onboarding() {
                   value={formData.brandVoice}
                   onChange={(e) => setFormData({ ...formData, brandVoice: e.target.value })}
                 />
+                <p className="mt-1 text-xs text-apple-secondary/60">We&apos;ll set this up later if you prefer.</p>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-apple-secondary">
@@ -287,7 +294,10 @@ export default function Onboarding() {
 
         {step === 3 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-medium text-apple-text">Target Audience</h2>
+            <div className="flex items-start justify-between">
+              <h2 className="text-xl font-medium text-apple-text">Target Audience <span className="text-sm font-normal text-apple-secondary">(optional)</span></h2>
+              <button type="button" onClick={handleSkip} className="text-sm text-apple-blue hover:underline">Skip for now</button>
+            </div>
             <div className="space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-apple-secondary">
@@ -299,10 +309,11 @@ export default function Onboarding() {
                   value={formData.targetAudience}
                   onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
                 />
+                <p className="mt-1 text-xs text-apple-secondary/60">We&apos;ll set this up later if you prefer.</p>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-apple-secondary">
-                  Keywords
+                  Keywords <span className="font-normal text-apple-secondary/60">(optional)</span>
                 </label>
                 <div className="space-y-2">
                   {formData.keywords.map((value, index) => (
@@ -323,7 +334,10 @@ export default function Onboarding() {
 
         {step === 4 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-medium text-apple-text">Digest Settings</h2>
+            <div className="flex items-start justify-between">
+              <h2 className="text-xl font-medium text-apple-text">Digest Settings <span className="text-sm font-normal text-apple-secondary">(optional)</span></h2>
+              <button type="button" onClick={handleSkip} className="text-sm text-apple-blue hover:underline">Skip for now</button>
+            </div>
             <div className="space-y-4">
               <label className="flex items-center gap-3">
                 <input

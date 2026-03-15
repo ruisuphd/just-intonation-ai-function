@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { apiFetch } from "@/lib/api";
 import LockedState from "@/components/ui/locked-state";
+import CopyButton from "@/components/ui/copy-button";
 import { hasTierAccess } from "@/lib/billing";
 import {
   ALL_PLATFORMS,
@@ -376,9 +377,12 @@ export default function ContentDraftsSection({
                     {draft.headline && (
                       <p className="mb-2 text-sm font-semibold">{draft.headline}</p>
                     )}
-                    <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-apple-text">
-                      {text}
-                    </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-apple-text flex-1">
+                        {text}
+                      </p>
+                      <CopyButton text={text} label="post" className="flex-shrink-0 mt-0.5" />
+                    </div>
                     <div className="mt-3 flex items-center gap-4 text-xs text-apple-secondary">
                       <span>{text.length} chars</span>
                       {draft.hashtags?.length > 0 && <span>{draft.hashtags.join(" ")}</span>}
