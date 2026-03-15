@@ -1,0 +1,3 @@
+[lint.per-file-ignores]
+"main.py" = ["E402"]
+"prompts/*.py" = ["E402"]

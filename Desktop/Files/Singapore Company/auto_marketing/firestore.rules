@@ -1,0 +1,71 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Staged authorization rollout:
+    // - If system_config/authz is missing, preserve legacy behavior.
+    // - If present and enforce == true, only allow listed UIDs/emails.
+    function authzConfigured() {
+      return exists(/databases/$(database)/documents/system_config/authz);
+    }
+
+    function authzData() {
+      return get(/databases/$(database)/documents/system_config/authz).data;
+    }
+
+    function isAuthorizedUser() {
+      return request.auth != null
+        && (
+          !authzConfigured()
+          || authzData().enforce != true
+          || (
+            authzData().allowed_uids != null
+            && request.auth.uid in authzData().allowed_uids
+          )
+          || (
+            authzData().allowed_emails != null
+            && request.auth.token.email in authzData().allowed_emails
+          )
+        );
+    }
+
+    // Per-tenant data isolation: only the tenant owner can access their data
+    function isTenantOwner(tenantId) {
+      return isAuthorizedUser()
+        && exists(/databases/$(database)/documents/tenants/$(tenantId))
+        && get(/databases/$(database)/documents/tenants/$(tenantId)).data.owner_uid == request.auth.uid;
+    }
+
+    // Tenant documents: only readable/writable by the owner
+    match /tenants/{tenantId} {
+      allow read: if isAuthorizedUser()
+        && resource.data.owner_uid == request.auth.uid;
+      allow create: if isAuthorizedUser()
+        && request.resource.data.owner_uid == request.auth.uid;
+      allow update: if isAuthorizedUser()
+        && resource.data.owner_uid == request.auth.uid;
+      allow delete: if false;
+
+      // All tenant subcollections scoped to the owner
+      match /{subcollection}/{document=**} {
+        allow read, write: if isTenantOwner(tenantId);
+      }
+    }
+
+    // System config is readable by authorized users, writable by none (admin SDK only)
+    match /system_config/{doc} {
+      allow read: if isAuthorizedUser();
+      allow write: if false;
+    }
+
+    // OAuth PKCE state — ephemeral, only via Admin SDK (server-side)
+    match /oauth_pkce/{doc} {
+      allow read, write: if false;
+    }
+
+    // Default deny for everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

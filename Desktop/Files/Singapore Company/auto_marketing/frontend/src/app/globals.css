@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+::selection {
+  background: #0071e3;
+  color: #fff;
+}
+
+@layer base {
+  input,
+  textarea,
+  select {
+    @apply rounded-apple-sm border border-apple-border bg-apple-card px-3.5 py-2.5 text-[15px] outline-none transition-shadow duration-200 focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue;
+  }
+  button {
+    @apply transition-all duration-200;
+  }
+}

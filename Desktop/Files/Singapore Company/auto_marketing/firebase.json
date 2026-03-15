@@ -1,0 +1,28 @@
+{
+  "apphosting": [
+    {
+      "backendId": "automark-web",
+      "rootDir": "frontend",
+      "ignore": [
+        "node_modules",
+        "frontend/.next",
+        "frontend/playwright-report",
+        "frontend/test-results",
+        "frontend/tsconfig.tsbuildinfo",
+        "frontend/.DS_Store",
+        ".git",
+        ".gitignore",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions",
+        "infra",
+        ".cursor",
+        ".claude"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

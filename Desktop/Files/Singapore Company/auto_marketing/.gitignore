@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+__pycache__/
+*.pyc
+.env
+.env.local
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.zip
+.DS_Store
+.venv/
+venv/
+scripts/seed_oauth_creds.py
