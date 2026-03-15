@@ -82,7 +82,7 @@ async def export_account_data(
                 )
 
     buf.seek(0)
-    filename = f"automark-export-{tenant_id}-{datetime.now(timezone.utc).strftime('%Y%m%d')}.zip"
+    filename = f"intomarketing-export-{tenant_id}-{datetime.now(timezone.utc).strftime('%Y%m%d')}.zip"
     return StreamingResponse(
         buf,
         media_type="application/zip",

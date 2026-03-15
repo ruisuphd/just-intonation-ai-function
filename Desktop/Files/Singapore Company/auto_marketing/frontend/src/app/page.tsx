@@ -75,8 +75,8 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-[#0a0a0a] px-12 py-12 text-white">
         <div>
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-apple-blue font-bold text-white text-sm">A</div>
-            <span className="text-lg font-semibold">AutoMark</span>
+            <img src="/logo.png" alt="IntoMarketing" className="h-8 w-8 rounded-lg object-contain bg-white" />
+            <span className="text-lg font-semibold">IntoMarketing</span>
           </div>
         </div>
         <div className="space-y-8">
@@ -85,7 +85,7 @@ export default function LoginPage() {
               Your AI marketing team,<br />working while you sleep.
             </h1>
             <p className="mt-4 text-lg text-gray-400 leading-relaxed">
-              AutoMark generates daily social posts, monitors market signals, qualifies leads, and sends your morning brief — fully automated.
+              IntoMarketing generates daily social posts, monitors market signals, qualifies leads, and sends your morning brief — fully automated.
             </p>
           </div>
           <div className="space-y-4">
@@ -114,8 +114,8 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-apple-blue font-bold text-white text-sm">A</div>
-            <span className="text-lg font-semibold">AutoMark</span>
+            <img src="/logo.png" alt="IntoMarketing" className="h-8 w-8 rounded-lg object-contain bg-white border border-apple-border" />
+            <span className="text-lg font-semibold">IntoMarketing</span>
           </div>
 
           <h2 className="text-2xl font-semibold text-apple-text">
@@ -208,7 +208,7 @@ export default function LoginPage() {
           </p>
 
           <p className="mt-6 text-center text-xs text-apple-secondary">
-            By continuing, you agree to AutoMark&apos;s{" "}
+            By continuing, you agree to IntoMarketing&apos;s{" "}
             <a href="#" className="underline hover:text-apple-text">Terms of Service</a>{" "}
             and{" "}
             <a href="#" className="underline hover:text-apple-text">Privacy Policy</a>.

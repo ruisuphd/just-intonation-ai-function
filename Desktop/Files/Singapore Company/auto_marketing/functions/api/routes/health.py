@@ -12,5 +12,5 @@ async def health():
     return {
         "status": "ok",
         "version": VERSION,
-        "service": "automark-api",
+        "service": "intomarketing-api",
     }

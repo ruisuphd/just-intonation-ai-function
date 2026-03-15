@@ -58,7 +58,7 @@ export default function Nav({
             href="/dashboard"
             className="max-w-[11rem] truncate text-[15px] font-semibold tracking-tight sm:max-w-none"
           >
-            {companyName || "AutoMark"}
+            {companyName || "IntoMarketing"}
           </Link>
           {billing && (
             <span className="hidden rounded-full bg-apple-bg px-2 py-0.5 text-[11px] font-medium text-apple-secondary sm:inline-flex">

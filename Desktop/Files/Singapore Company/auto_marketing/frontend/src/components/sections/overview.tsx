@@ -147,7 +147,7 @@ export default function OverviewSection({ billing, platforms }: OverviewSectionP
             <div>
               <p className="text-sm font-medium">Enabled channels</p>
               <p className="text-sm text-apple-secondary">
-                AutoMark generates channel-specific variants for every saved draft pack.
+                IntoMarketing generates channel-specific variants for every saved draft pack.
               </p>
             </div>
             <p className="text-sm font-medium text-apple-secondary">

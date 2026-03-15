@@ -1,4 +1,4 @@
-"""FastAPI application for AutoMark SaaS API."""
+"""FastAPI application for IntoMarketing SaaS API."""
 
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ def _init_sentry() -> None:
 
 _init_sentry()
 
-app = FastAPI(title="AutoMark API", version="1.0.0")
+app = FastAPI(title="IntoMarketing API", version="1.0.0")
 logger = get_logger("api.app")
 
 allowed_origins = [
@@ -145,7 +145,7 @@ async def log_requests(request: Request, call_next):
 
 @app.get("/")
 async def root() -> dict[str, str]:
-    return {"status": "ok", "service": "automark-api"}
+    return {"status": "ok", "service": "intomarketing-api"}
 
 
 @app.get("/favicon.ico")

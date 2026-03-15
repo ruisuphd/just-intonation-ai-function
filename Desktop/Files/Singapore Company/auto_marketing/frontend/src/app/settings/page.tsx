@@ -610,7 +610,7 @@ export default function SettingsPage() {
             <div className="rounded-apple bg-apple-card p-5 shadow-apple sm:p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-apple-secondary">
-                Select which platforms AutoMark generates content for. Your saved choices
+                Select which platforms IntoMarketing generates content for. Your saved choices
                 drive the dashboard tabs, drafts, and calendar.
               </p>
               <p className="text-sm font-medium text-apple-secondary">
@@ -774,7 +774,7 @@ export default function SettingsPage() {
                     const blob = await apiFetchBlob("/api/account/export");
                     const a = document.createElement("a");
                     a.href = URL.createObjectURL(blob);
-                    a.download = `automark-export-${new Date().toISOString().slice(0, 10)}.zip`;
+                    a.download = `intomarketing-export-${new Date().toISOString().slice(0, 10)}.zip`;
                     a.click();
                     URL.revokeObjectURL(a.href);
                   } catch (e: any) {

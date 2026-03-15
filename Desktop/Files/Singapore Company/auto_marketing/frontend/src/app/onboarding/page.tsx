@@ -378,7 +378,7 @@ export default function Onboarding() {
           <div className="space-y-6">
             <h2 className="text-xl font-medium text-apple-text">Platforms</h2>
             <p className="text-sm text-apple-secondary">
-              Choose the platforms AutoMark should prepare content for. Direct OAuth publishing
+              Choose the platforms IntoMarketing should prepare content for. Direct OAuth publishing
               will remain disabled until platform credentials are connected.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -401,7 +401,7 @@ export default function Onboarding() {
               <p className="text-sm text-apple-secondary">
                 You can connect your LinkedIn and X accounts after setup in{" "}
                 <span className="font-medium text-apple-text">Settings &gt; Platforms</span>.
-                This enables direct publishing from AutoMark to your social profiles.
+                This enables direct publishing from IntoMarketing to your social profiles.
               </p>
             </div>
           </div>

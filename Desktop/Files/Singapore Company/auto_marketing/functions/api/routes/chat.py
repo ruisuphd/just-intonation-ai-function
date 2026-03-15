@@ -38,7 +38,7 @@ _UPDATABLE_FIELDS = {
     "timezone": "IANA timezone name (e.g. Asia/Singapore)",
 }
 
-_SYSTEM_PROMPT_TEMPLATE = """You are the AutoMark Marketing Assistant — a helpful AI that helps users configure their marketing workspace and improve their brand settings.
+_SYSTEM_PROMPT_TEMPLATE = """You are the IntoMarketing Assistant — a helpful AI that helps users configure their marketing workspace and improve their brand settings.
 
 ## Current workspace profile:
 {profile_json}

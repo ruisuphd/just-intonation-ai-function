@@ -4,11 +4,11 @@ import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AutoMark — AI Marketing Automation",
+  title: "IntoMarketing — AI Marketing Automation",
   description: "Daily AI-generated content, market intelligence and lead detection for B2B companies.",
   manifest: "/manifest.json",
   openGraph: {
-    title: "AutoMark — AI Marketing Automation",
+    title: "IntoMarketing — AI Marketing Automation",
     description: "Daily AI-generated content, market intelligence and lead detection for B2B companies.",
     type: "website",
   },
