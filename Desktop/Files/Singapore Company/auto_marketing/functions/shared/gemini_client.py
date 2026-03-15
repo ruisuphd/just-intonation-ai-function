@@ -34,6 +34,7 @@ TASK_MODEL_MAP: dict[str, dict[str, str]] = {
     "email_newsletter": {"starter": _FLASH_LITE, "pro": _PRO},
     "outreach": {"starter": _FLASH_LITE, "pro": _PRO},
     "quick_generate": {"starter": _FLASH_LITE, "pro": _PRO},
+    "marketing_chat": {"starter": _FLASH_LITE, "pro": _FLASH_LITE},
 }
 
 _MAX_RETRIES = 3

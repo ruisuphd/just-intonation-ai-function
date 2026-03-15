@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { apiFetch } from "@/lib/api";
 import { normalizePlatforms } from "@/lib/platforms";
+import ChatWidget from "@/components/chat-widget";
 import ErrorBoundary from "@/components/error-boundary";
 import Nav from "@/components/nav";
 import OverviewSection from "@/components/sections/overview";
@@ -214,6 +215,7 @@ export default function DashboardPage() {
           </>
         )}
       </main>
+      <ChatWidget />
     </div>
   );
 }

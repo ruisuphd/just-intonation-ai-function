@@ -1,4 +1,4 @@
-"""Admin configuration API for system-level secrets (OAuth, SMTP)."""
+"""Admin configuration API for system-level secrets (SMTP)."""
 
 from __future__ import annotations
 
@@ -17,51 +17,7 @@ router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 def _require_admin(tenant: TenantProfile = Depends(require_tenant)) -> TenantProfile:
     """Only allow tenant owners (the admin of a single-tenant workspace) to manage config."""
-    # In a single-tenant setup, the owner_uid is the admin.
-    # For multi-tenant/agency, this could check for agency_admin role.
     return tenant
-
-
-# ── OAuth Credentials ──────────────────────────────────────────────────────────
-
-
-class OAuthCredentialsUpdate(BaseModel):
-    linkedin_client_id: str | None = None
-    linkedin_client_secret: str | None = None
-    x_client_id: str | None = None
-    x_client_secret: str | None = None
-
-
-@router.get("/oauth-credentials")
-async def get_oauth_credentials(
-    tenant: TenantProfile = Depends(_require_admin),
-):
-    """Get configured OAuth credentials (secrets are masked)."""
-    doc = get_doc("system_config", "oauth_credentials", tenant_id=None) or {}
-    return {
-        "linkedin_client_id": _mask(doc.get("linkedin_client_id", "")),
-        "linkedin_client_secret": _mask(doc.get("linkedin_client_secret", "")),
-        "x_client_id": _mask(doc.get("x_client_id", "")),
-        "x_client_secret": _mask(doc.get("x_client_secret", "")),
-        "linkedin_configured": bool(doc.get("linkedin_client_id") and doc.get("linkedin_client_secret")),
-        "x_configured": bool(doc.get("x_client_id") and doc.get("x_client_secret")),
-    }
-
-
-@router.put("/oauth-credentials")
-async def update_oauth_credentials(
-    body: OAuthCredentialsUpdate,
-    tenant: TenantProfile = Depends(_require_admin),
-):
-    """Update OAuth app credentials. Only non-null fields are updated."""
-    existing = get_doc("system_config", "oauth_credentials", tenant_id=None) or {}
-    updates = {k: v for k, v in body.model_dump().items() if v is not None}
-    if not updates:
-        raise HTTPException(status_code=400, detail="No fields to update")
-    merged = {**existing, **updates}
-    set_doc("system_config", "oauth_credentials", merged, tenant_id=None)
-    logger.info("admin.oauth_credentials_updated", extra={"fields": list(updates.keys())})
-    return {"ok": True, "updated_fields": list(updates.keys())}
 
 
 # ── SMTP Configuration ─────────────────────────────────────────────────────────

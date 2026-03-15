@@ -116,11 +116,6 @@ export default function SettingsPage() {
   // Integrations state
   const [integrationsLoading, setIntegrationsLoading] = useState(false);
   const [integrationsSaved, setIntegrationsSaved] = useState(false);
-  const [linkedinClientId, setLinkedinClientId] = useState("");
-  const [linkedinClientSecret, setLinkedinClientSecret] = useState("");
-  const [xClientId, setXClientId] = useState("");
-  const [xClientSecret, setXClientSecret] = useState("");
-  const [oauthConfigured, setOauthConfigured] = useState({ linkedin: false, x: false });
   const [smtpHost, setSmtpHost] = useState("");
   const [smtpPort, setSmtpPort] = useState(587);
   const [smtpUser, setSmtpUser] = useState("");
@@ -725,15 +720,6 @@ export default function SettingsPage() {
           <IntegrationsTab
             loading={integrationsLoading}
             saved={integrationsSaved}
-            linkedinClientId={linkedinClientId}
-            setLinkedinClientId={setLinkedinClientId}
-            linkedinClientSecret={linkedinClientSecret}
-            setLinkedinClientSecret={setLinkedinClientSecret}
-            xClientId={xClientId}
-            setXClientId={setXClientId}
-            xClientSecret={xClientSecret}
-            setXClientSecret={setXClientSecret}
-            oauthConfigured={oauthConfigured}
             smtpHost={smtpHost}
             setSmtpHost={setSmtpHost}
             smtpPort={smtpPort}
@@ -750,18 +736,7 @@ export default function SettingsPage() {
             onLoadConfig={async () => {
               setIntegrationsLoading(true);
               try {
-                const [oauthData, smtpData] = await Promise.all([
-                  apiFetch<any>("/api/admin/oauth-credentials"),
-                  apiFetch<any>("/api/admin/smtp-config"),
-                ]);
-                setLinkedinClientId(oauthData.linkedin_client_id || "");
-                setLinkedinClientSecret(oauthData.linkedin_client_secret || "");
-                setXClientId(oauthData.x_client_id || "");
-                setXClientSecret(oauthData.x_client_secret || "");
-                setOauthConfigured({
-                  linkedin: oauthData.linkedin_configured || false,
-                  x: oauthData.x_configured || false,
-                });
+                const smtpData = await apiFetch<any>("/api/admin/smtp-config");
                 setSmtpHost(smtpData.smtp_host || "");
                 setSmtpPort(smtpData.smtp_port || 587);
                 setSmtpUser(smtpData.smtp_user || "");
@@ -773,39 +748,6 @@ export default function SettingsPage() {
                 setPageError(err.message || "Failed to load integration settings.");
               } finally {
                 setIntegrationsLoading(false);
-              }
-            }}
-            onSaveOAuth={async () => {
-              setIntegrationsSaved(false);
-              setPageError("");
-              try {
-                const updates: Record<string, string> = {};
-                if (linkedinClientId && !linkedinClientId.includes("*"))
-                  updates.linkedin_client_id = linkedinClientId;
-                if (linkedinClientSecret && !linkedinClientSecret.includes("*"))
-                  updates.linkedin_client_secret = linkedinClientSecret;
-                if (xClientId && !xClientId.includes("*"))
-                  updates.x_client_id = xClientId;
-                if (xClientSecret && !xClientSecret.includes("*"))
-                  updates.x_client_secret = xClientSecret;
-                if (Object.keys(updates).length === 0) {
-                  setPageError("Enter at least one credential to save.");
-                  return;
-                }
-                await apiFetch("/api/admin/oauth-credentials", {
-                  method: "PUT",
-                  body: JSON.stringify(updates),
-                });
-                setIntegrationsSaved(true);
-                setTimeout(() => setIntegrationsSaved(false), 2000);
-                // Refresh status
-                const oauthData = await apiFetch<any>("/api/admin/oauth-credentials");
-                setOauthConfigured({
-                  linkedin: oauthData.linkedin_configured || false,
-                  x: oauthData.x_configured || false,
-                });
-              } catch (err: any) {
-                setPageError(err.message || "Failed to save OAuth credentials.");
               }
             }}
             onSaveSMTP={async () => {
@@ -987,15 +929,6 @@ export default function SettingsPage() {
 function IntegrationsTab({
   loading,
   saved,
-  linkedinClientId,
-  setLinkedinClientId,
-  linkedinClientSecret,
-  setLinkedinClientSecret,
-  xClientId,
-  setXClientId,
-  xClientSecret,
-  setXClientSecret,
-  oauthConfigured,
   smtpHost,
   setSmtpHost,
   smtpPort,
@@ -1010,20 +943,10 @@ function IntegrationsTab({
   setSmtpUseTls,
   smtpConfigured,
   onLoadConfig,
-  onSaveOAuth,
   onSaveSMTP,
 }: {
   loading: boolean;
   saved: boolean;
-  linkedinClientId: string;
-  setLinkedinClientId: (v: string) => void;
-  linkedinClientSecret: string;
-  setLinkedinClientSecret: (v: string) => void;
-  xClientId: string;
-  setXClientId: (v: string) => void;
-  xClientSecret: string;
-  setXClientSecret: (v: string) => void;
-  oauthConfigured: { linkedin: boolean; x: boolean };
   smtpHost: string;
   setSmtpHost: (v: string) => void;
   smtpPort: number;
@@ -1038,7 +961,6 @@ function IntegrationsTab({
   setSmtpUseTls: (v: boolean) => void;
   smtpConfigured: boolean;
   onLoadConfig: () => void;
-  onSaveOAuth: () => void;
   onSaveSMTP: () => void;
 }) {
   const [loaded, setLoaded] = useState(false);
@@ -1060,96 +982,6 @@ function IntegrationsTab({
 
   return (
     <div className="space-y-6">
-      {/* OAuth Credentials */}
-      <div className="rounded-apple bg-apple-card p-5 shadow-apple sm:p-6">
-        <h2 className="mb-1 text-lg font-semibold">Social Platform OAuth</h2>
-        <p className="mb-4 text-sm text-apple-secondary">
-          Enter your OAuth app credentials to enable the Connect buttons for LinkedIn and X.
-          Create a LinkedIn app at{" "}
-          <a
-            href="https://www.linkedin.com/developers/apps"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-apple-blue underline"
-          >
-            LinkedIn Developers
-          </a>{" "}
-          and an X app at{" "}
-          <a
-            href="https://developer.x.com/en/portal/dashboard"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-apple-blue underline"
-          >
-            X Developer Portal
-          </a>
-          .
-        </p>
-
-        <div className="space-y-4">
-          <div className="rounded-apple-sm border border-apple-border p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold">LinkedIn</h3>
-              {oauthConfigured.linkedin && (
-                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                  Configured
-                </span>
-              )}
-            </div>
-            <div className="space-y-2">
-              <input
-                type="text"
-                value={linkedinClientId}
-                onChange={(e) => setLinkedinClientId(e.target.value)}
-                placeholder="Client ID"
-                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
-              />
-              <input
-                type="password"
-                value={linkedinClientSecret}
-                onChange={(e) => setLinkedinClientSecret(e.target.value)}
-                placeholder="Client Secret"
-                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
-              />
-            </div>
-          </div>
-
-          <div className="rounded-apple-sm border border-apple-border p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold">X (Twitter)</h3>
-              {oauthConfigured.x && (
-                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                  Configured
-                </span>
-              )}
-            </div>
-            <div className="space-y-2">
-              <input
-                type="text"
-                value={xClientId}
-                onChange={(e) => setXClientId(e.target.value)}
-                placeholder="Client ID"
-                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
-              />
-              <input
-                type="password"
-                value={xClientSecret}
-                onChange={(e) => setXClientSecret(e.target.value)}
-                placeholder="Client Secret"
-                className="w-full rounded-apple-sm border border-apple-border px-3 py-2 text-sm"
-              />
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={onSaveOAuth}
-          className="mt-4 rounded-apple-sm bg-apple-blue px-6 py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50"
-        >
-          {saved ? "Saved" : "Save OAuth credentials"}
-        </button>
-      </div>
-
       {/* SMTP Configuration */}
       <div className="rounded-apple bg-apple-card p-5 shadow-apple sm:p-6">
         <div className="mb-1 flex items-center justify-between">

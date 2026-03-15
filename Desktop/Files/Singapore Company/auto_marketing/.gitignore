@@ -14,3 +14,4 @@ terraform.tfvars
 .DS_Store
 .venv/
 venv/
+scripts/seed_oauth_creds.py

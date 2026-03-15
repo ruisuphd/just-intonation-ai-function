@@ -17,6 +17,7 @@ from api.routes import (
     analytics,
     billing,
     calendar as calendar_routes,
+    chat as chat_routes,
     documents,
     drafts,
     health,
@@ -73,6 +74,7 @@ app.add_middleware(
 # Paths with stricter rate limits (max requests per window)
 _RATE_LIMIT_CONFIG: dict[str, tuple[int, int]] = {
     # path_prefix: (max_requests, window_seconds)
+    "/api/chat": (10, 60),
     "/api/drafts/quick-generate": (5, 60),
     "/api/newsletters/generate": (3, 60),
     "/billing/checkout": (5, 60),
@@ -176,6 +178,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 app.include_router(health.router)
 app.include_router(account.router)
 app.include_router(admin_config.router)
+app.include_router(chat_routes.router)
 app.include_router(oauth.router)
 app.include_router(onboarding.router)
 app.include_router(billing.router)
