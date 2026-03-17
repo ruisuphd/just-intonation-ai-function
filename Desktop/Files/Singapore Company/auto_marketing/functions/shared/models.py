@@ -71,6 +71,24 @@ class TenantProfile(_Base):
     stripe_subscription_id: str | None = None
     starter_access_expires_at: datetime | None = None
     subscription_status: Literal["active", "trialing", "past_due", "canceled"] = "active"
+
+    @field_validator("subscription_tier", mode="before")
+    @classmethod
+    def normalize_tier(cls, v: object) -> str:
+        """Lazy migration: map legacy tier values to the current 2-tier system."""
+        raw = str(v or "").strip().lower()
+        if raw == "pro":
+            return "pro"
+        return "starter"  # "free", "growth", empty, anything else → starter
+
+    @field_validator("subscription_status", mode="before")
+    @classmethod
+    def normalize_status(cls, v: object) -> str:
+        """Lazy migration: map legacy status values to valid statuses."""
+        raw = str(v or "").strip().lower()
+        if raw in ("active", "trialing", "past_due", "canceled"):
+            return raw
+        return "active"  # "free", empty, anything else → active
     platforms_enabled: list[str] = Field(
         default_factory=lambda: list(DEFAULT_ENABLED_PLATFORMS)
     )
