@@ -30,9 +30,9 @@ async def list_documents(
 
 @router.post("")
 async def upload_document(
+    request: Request,
     file: UploadFile = File(...),
     doc_type: str = Form("other"),
-    request: Request,
     tenant: TenantProfile = Depends(require_access("starter", "pro")),
 ):
     tier = getattr(request.state, "tenant_tier", "starter")
