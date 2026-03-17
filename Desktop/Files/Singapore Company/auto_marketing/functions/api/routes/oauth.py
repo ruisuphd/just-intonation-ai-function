@@ -16,6 +16,7 @@ from fastapi.responses import RedirectResponse
 import httpx
 
 from api.middleware.auth import require_tenant
+from shared.usage_limits import get_limits_for_tier
 from shared.firestore_client import (
     add_doc,
     delete_doc,
@@ -152,6 +153,13 @@ async def linkedin_authorize(
     request: Request,
     tenant: TenantProfile = Depends(require_tenant),
 ):
+    tier = getattr(request.state, "tenant_tier", "starter")
+    limits = get_limits_for_tier(tier)
+    max_connections = limits["max_platform_connections"]
+    connected = len(tenant.platform_credentials or {})
+    if connected >= max_connections:
+        raise HTTPException(status_code=429, detail=f"Platform connection limit reached ({max_connections}). Upgrade to Pro.")
+
     client_id = _get_oauth_credential(
         "linkedin_client_id", "linkedin-client-id", "LINKEDIN_CLIENT_ID"
     )
@@ -291,6 +299,13 @@ async def x_authorize(
     request: Request,
     tenant: TenantProfile = Depends(require_tenant),
 ):
+    tier = getattr(request.state, "tenant_tier", "starter")
+    limits = get_limits_for_tier(tier)
+    max_connections = limits["max_platform_connections"]
+    connected = len(tenant.platform_credentials or {})
+    if connected >= max_connections:
+        raise HTTPException(status_code=429, detail=f"Platform connection limit reached ({max_connections}). Upgrade to Pro.")
+
     client_id = _get_oauth_credential(
         "x_client_id", "x-client-id", "X_CLIENT_ID"
     )

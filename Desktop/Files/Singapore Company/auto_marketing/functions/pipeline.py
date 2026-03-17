@@ -522,6 +522,32 @@ async def _run_pipeline(
     digest_tz = _resolve_timezone(digest_config.timezone_name)
     local_today = datetime.now(digest_tz).strftime("%Y-%m-%d")
 
+    from shared.usage_limits import get_limits_for_tier, is_pipeline_day
+    from shared.entitlements import resolve_access
+
+    # Resolve tier for limit enforcement
+    effective_tier = "starter"
+    if tenant is not None:
+        access = resolve_access(tenant)
+        effective_tier = access.effective_tier
+
+    tier_limits = get_limits_for_tier(effective_tier)
+
+    # Check if today is a pipeline day for this tier
+    if tenant_id and not is_pipeline_day(effective_tier, digest_config.timezone_name):
+        logger.info("pipeline.skipped_not_pipeline_day", extra={
+            "tenant_id": tenant_id, "tier": effective_tier,
+        })
+        return {
+            "tenant_id": tenant_id,
+            "date": local_today,
+            "timezone": digest_config.timezone_name,
+            "email_status": "skipped_not_pipeline_day",
+            "intel_items": 0, "post_generated": False,
+            "image_generated": False, "leads_found": 0,
+            "prospects_found": 0, "force_send": force_send,
+        }
+
     # ── Step 1: Fetch & score news ────────────────────────────────────────────
     logger.info(
         "pipeline.step1.intelligence_start", extra={"tenant_id": tenant_id or "legacy"}
@@ -534,6 +560,10 @@ async def _run_pipeline(
         )
     except Exception as exc:
         logger.error("pipeline.step1.intelligence_failed", extra={"error": str(exc)})
+
+    # Cap intelligence items per tier
+    max_intel = tier_limits.get("intelligence_items_per_run", 100)
+    intel_items = intel_items[:max_intel]
 
     top_intel = intel_items[: digest_config.top_k_intelligence]
     content_intel = _select_content_items(intel_items)
@@ -574,6 +604,7 @@ async def _run_pipeline(
                 intelligence_items=content_intel or None,
                 brand_context=brand_context or None,
                 tenant_id=tenant_id,
+                tier=effective_tier,
             )
             post_status = "ready" if content_intel else "best_effort"
 
@@ -642,29 +673,32 @@ async def _run_pipeline(
     prospect_items: list[dict] = []
 
     try:
+        max_leads = tier_limits.get("leads_per_run", 8)
         classified_signals = await run_and_classify(
             sources=sources,
             max_signals=8,
             tenant_id=tenant_id,
+            tier=effective_tier,
         )
         logger.info(
             "pipeline.step3.signals_detected", extra={"count": len(classified_signals)}
         )
 
         for signal in classified_signals:
-            if len(lead_items) >= 3 and len(prospect_items) >= 3:
+            if len(lead_items) >= max_leads and len(prospect_items) >= max_leads:
                 break
             try:
-                lead_data = await qualify_inline(signal, tenant_id=tenant_id)
+                lead_data = await qualify_inline(signal, tenant_id=tenant_id, tier=effective_tier)
                 is_qualified = lead_data.get("icp_fit") in ("high", "medium")
                 outreach: dict = {}
 
                 try:
-                    if is_qualified or len(prospect_items) < 3:
+                    if is_qualified or len(prospect_items) < max_leads:
                         outreach = await generate_outreach_inline(
                             lead_data,
                             signal,
                             tenant_id=tenant_id,
+                            tier=effective_tier,
                         )
                 except Exception as exc:
                     logger.warning(
@@ -676,7 +710,7 @@ async def _run_pipeline(
                     )
 
                 if is_qualified:
-                    if len(lead_items) < 3:
+                    if len(lead_items) < max_leads:
                         lead_items.append(
                             {
                                 "company_name": signal.get("company_name", "Unknown"),
@@ -697,14 +731,14 @@ async def _run_pipeline(
                         )
                     continue
 
-                if len(prospect_items) < 3:
+                if len(prospect_items) < max_leads:
                     prospect_items.append(
                         _build_best_effort_item(
                             signal, lead_data=lead_data, outreach=outreach
                         )
                     )
             except Exception as exc:
-                if len(prospect_items) < 3:
+                if len(prospect_items) < max_leads:
                     fallback_outreach: dict = {}
                     try:
                         fallback_outreach = await generate_outreach_inline(
@@ -714,6 +748,7 @@ async def _run_pipeline(
                             },
                             signal,
                             tenant_id=tenant_id,
+                            tier=effective_tier,
                         )
                     except Exception as outreach_exc:
                         logger.warning(

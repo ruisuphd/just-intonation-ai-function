@@ -5,6 +5,8 @@ from __future__ import annotations
 from datetime import datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from fastapi import HTTPException
+
 from shared.logger import get_logger
 from shared.redis_client import counter_get, counter_increment
 
@@ -125,3 +127,19 @@ def get_usage_summary(
     summary["pipeline_days_per_week"] = {"days": limits["pipeline_days_per_week"]}
 
     return summary
+
+
+def require_usage_limit(
+    tenant_id: str,
+    tier: str,
+    action: str,
+    timezone_name: str = "UTC",
+) -> None:
+    """Raise 429 if limit is exceeded. Call before the action."""
+    allowed, current, limit = check_limit(tenant_id, tier, action, timezone_name)
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Daily limit reached: {current}/{limit} {action.replace('_', ' ')}. "
+                   f"Upgrade to Pro for higher limits.",
+        )

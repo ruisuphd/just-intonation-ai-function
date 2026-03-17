@@ -22,6 +22,7 @@ async def generate_daily_post(
     intelligence_items: list[dict] | None = None,
     brand_context: list[dict] | None = None,
     tenant_id: str | None = None,
+    tier: str = "starter",
 ) -> DailyPostResult:
     """Generate the daily English-only post pack.
 
@@ -113,6 +114,7 @@ async def generate_daily_post(
         temperature=TEMPERATURE,
         response_model=RESPONSE_MODEL,
         task_name="linkedin",
+        tier=tier,
     )
 
     logger.info(
