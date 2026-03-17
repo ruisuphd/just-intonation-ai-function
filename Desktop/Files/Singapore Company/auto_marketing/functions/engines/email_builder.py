@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import os
+import re
 import smtplib
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -15,6 +16,17 @@ from shared.logger import get_logger
 from shared.models import DailyPostResult
 
 logger = get_logger("engine.email_builder")
+
+# RFC 2606 reserved domains and common test patterns that will never deliver.
+_UNDELIVERABLE_EMAIL_DOMAINS = {
+    "example.com",
+    "example.net",
+    "example.org",
+    "test.com",
+    "localhost",
+    "invalid",
+}
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 # Hard-coded SMTP fallback — platform-level sender credentials
 # Firestore system_config/smtp_config or env vars take precedence if set
@@ -75,6 +87,19 @@ class SMTPConfig:
         to_email = (recipient_email or os.getenv("SMTP_TO_EMAIL", "")).strip()
         if not to_email:
             raise ValueError("SMTP_TO_EMAIL is required")
+
+        # Guard against test/placeholder addresses that will never deliver
+        if not _EMAIL_RE.match(to_email):
+            raise ValueError(
+                f"Digest recipient '{to_email}' is not a valid email address"
+            )
+        email_domain = to_email.rsplit("@", 1)[-1].lower()
+        if email_domain in _UNDELIVERABLE_EMAIL_DOMAINS:
+            raise ValueError(
+                f"Digest recipient '{to_email}' uses reserved domain "
+                f"'{email_domain}' which cannot receive email. "
+                f"Update daily_digest_email in tenant settings."
+            )
 
         # ssl/tls flags: Firestore → env → hardcoded defaults
         fs_use_ssl = fs_config.get("smtp_use_ssl")
