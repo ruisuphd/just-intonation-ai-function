@@ -62,7 +62,7 @@ class TenantProfile(_Base):
     )
     language: Literal["en", "zh", "bilingual"] = "en"
     timezone: str = "Asia/Singapore"
-    subscription_tier: Literal["free", "starter", "growth", "pro"] = "free"
+    subscription_tier: Literal["starter", "pro"] = "starter"
     competitor_names: list[str] = Field(default_factory=list)
     industry_keywords: list[str] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -70,9 +70,7 @@ class TenantProfile(_Base):
     stripe_customer_id: str | None = None
     stripe_subscription_id: str | None = None
     starter_access_expires_at: datetime | None = None
-    subscription_status: Literal[
-        "free", "trialing", "active", "past_due", "canceled"
-    ] = "free"
+    subscription_status: Literal["active", "trialing", "past_due", "canceled"] = "active"
     platforms_enabled: list[str] = Field(
         default_factory=lambda: list(DEFAULT_ENABLED_PLATFORMS)
     )
