@@ -37,7 +37,7 @@ def _ensure_stripe_api_key() -> None:
 
 
 class BillingCheckoutRequest(BaseModel):
-    tier: Literal["starter", "pro"]
+    tier: Literal["pro"]  # Only Pro is purchasable; Starter is free
 
 
 def _app_url() -> str:
@@ -45,19 +45,16 @@ def _app_url() -> str:
 
 
 def _tier_from_price_id(price_id: str) -> str | None:
-    tier_price_map = {
-        os.getenv("STRIPE_STARTER_PRICE_ID", ""): "starter",
-        os.getenv("STRIPE_PRO_PRICE_ID", ""): "pro",
-    }
-    return tier_price_map.get(price_id)
+    pro_price = os.getenv("STRIPE_PRO_PRICE_ID", "")
+    if pro_price and price_id == pro_price:
+        return "pro"
+    return None
 
 
 def _price_id_for_tier(tier: str) -> str:
-    env_map = {
-        "starter": os.getenv("STRIPE_STARTER_PRICE_ID", ""),
-        "pro": os.getenv("STRIPE_PRO_PRICE_ID", ""),
-    }
-    return env_map.get(tier, "")
+    if tier == "pro":
+        return os.getenv("STRIPE_PRO_PRICE_ID", "")
+    return ""
 
 
 @router.post("/webhook")
@@ -170,7 +167,7 @@ def _handle_checkout_completed(session: dict):
     requested_tier = normalize_subscription_tier(
         session.get("metadata", {}).get("target_tier")
     )
-    if requested_tier in {"starter", "pro"}:
+    if requested_tier == "pro":
         updates["subscription_tier"] = requested_tier
     updates["subscription_status"] = "trialing"
     update_tenant(tenant_id, updates)
@@ -187,7 +184,7 @@ def _handle_subscription_deleted(sub: dict):
         tenant_id,
         {
             "subscription_status": "canceled",
-            "subscription_tier": "free",
+            "subscription_tier": "starter",
             "stripe_subscription_id": None,
         },
     )
