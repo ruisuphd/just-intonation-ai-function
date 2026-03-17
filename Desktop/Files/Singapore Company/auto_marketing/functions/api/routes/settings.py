@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, field_validator
 
@@ -17,6 +19,12 @@ from shared.settings_limits import (
 from shared.firestore_client import update_tenant
 from shared.models import TenantProfile
 from shared.redis_client import cache_delete_pattern
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_RESERVED_EMAIL_DOMAINS = {
+    "example.com", "example.net", "example.org",
+    "test.com", "localhost", "invalid",
+}
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 
@@ -108,6 +116,24 @@ class SettingsUpdate(BaseModel):
         if value is None:
             return None
         return normalize_platforms(value)
+
+    @field_validator("daily_digest_email")
+    @classmethod
+    def validate_digest_email(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            return value
+        if not _EMAIL_RE.match(value):
+            raise ValueError(f"'{value}' is not a valid email address")
+        domain = value.rsplit("@", 1)[-1].lower()
+        if domain in _RESERVED_EMAIL_DOMAINS:
+            raise ValueError(
+                f"'{domain}' is a reserved test domain that cannot receive "
+                f"email. Please use a real email address."
+            )
+        return value
 
     @field_validator("tone_formal_casual", "tone_technical_accessible")
     @classmethod

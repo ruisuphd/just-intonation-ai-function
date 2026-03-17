@@ -56,4 +56,16 @@ export async function signOut() {
   return firebaseSignOut(auth);
 }
 
+export async function resetPassword(email: string): Promise<void> {
+  const { sendPasswordResetEmail } = await import("firebase/auth");
+  if (!auth) throw new Error("Firebase not initialized");
+  await sendPasswordResetEmail(auth, email);
+}
+
+export async function verifyEmail(): Promise<void> {
+  const { sendEmailVerification } = await import("firebase/auth");
+  if (!auth?.currentUser) throw new Error("No user signed in");
+  await sendEmailVerification(auth.currentUser);
+}
+
 export type { User };

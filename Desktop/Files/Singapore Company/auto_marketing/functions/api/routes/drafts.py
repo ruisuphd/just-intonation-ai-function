@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from datetime import date, datetime, time, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, field_validator, model_validator
 
 from api.middleware.auth import require_access
+from shared.usage_limits import require_usage_limit, increment_usage
 from shared.datetime_utils import coerce_datetime
 from shared.draft_utils import best_effort_post_topic, build_draft_payload
 from shared.firestore_client import (
@@ -330,8 +331,12 @@ class QuickGenerateRequest(BaseModel):
 @router.post("/quick-generate")
 async def quick_generate(
     body: QuickGenerateRequest,
+    request: Request,
     tenant: TenantProfile = Depends(require_access("starter", "pro")),
 ):
+    tier = getattr(request.state, "tenant_tier", "starter")
+    require_usage_limit(tenant.tenant_id, tier, "post_generations_per_day", tenant.timezone)
+
     from engines.post_generate import generate_daily_post
     from shared.retriever import Retriever
 
@@ -371,4 +376,5 @@ async def quick_generate(
         platforms_enabled=tenant.platforms_enabled,
     )
     draft_id = add_doc("drafts", draft_payload, tenant_id=tenant.tenant_id)
+    increment_usage(tenant.tenant_id, "post_generations_per_day", tenant.timezone)
     return {"id": draft_id, **draft_payload}

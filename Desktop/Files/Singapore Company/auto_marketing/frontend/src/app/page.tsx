@@ -7,6 +7,8 @@ import {
   signInWithGoogle,
   signInWithEmail,
   signUpWithEmail,
+  resetPassword,
+  verifyEmail,
 } from "@/lib/firebase";
 
 export default function LoginPage() {
@@ -17,6 +19,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   useEffect(() => {
     if (!loading && user) router.replace("/dashboard");
@@ -36,6 +40,24 @@ export default function LoginPage() {
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      await resetPassword(email);
+      setResetSent(true);
+    } catch (err: any) {
+      if (err.code === "auth/user-not-found") {
+        setError("No account found with this email.");
+      } else {
+        setError("Failed to send reset email. Try again.");
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -43,6 +65,7 @@ export default function LoginPage() {
     try {
       if (mode === "signup") {
         await signUpWithEmail(email, password);
+        try { await verifyEmail(); } catch {} // Non-blocking
       } else {
         await signInWithEmail(email, password);
       }
@@ -105,7 +128,7 @@ export default function LoginPage() {
           </div>
         </div>
         <p className="text-xs text-gray-600">
-          Every new account starts on Free and includes 7 days of Starter access.
+          Every account includes our Starter plan — free forever.
         </p>
       </div>
 
@@ -156,9 +179,18 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <form onSubmit={handleEmail} className="space-y-3">
-            <div>
-              <label className="mb-1 block text-xs font-medium text-apple-secondary">Email</label>
+          {forgotMode && resetSent ? (
+            <div className="mt-6 text-center">
+              <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-apple-sm px-4 py-3">
+                Reset link sent! Check your inbox.
+              </p>
+              <button onClick={() => { setForgotMode(false); setResetSent(false); setError(""); }} className="mt-4 text-sm text-apple-blue hover:underline">
+                Back to sign in
+              </button>
+            </div>
+          ) : forgotMode && !resetSent ? (
+            <form onSubmit={handleResetPassword} className="mt-6 space-y-3">
+              <p className="text-sm text-apple-secondary">Enter your email to receive a password reset link.</p>
               <input
                 type="email"
                 required
@@ -167,27 +199,56 @@ export default function LoginPage() {
                 placeholder="you@company.com"
                 className="w-full rounded-apple-sm border border-apple-border bg-white px-3 py-2.5 text-sm text-apple-text placeholder:text-apple-secondary focus:border-apple-blue focus:outline-none focus:ring-1 focus:ring-apple-blue"
               />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-apple-secondary">Password</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full rounded-apple-sm border border-apple-border bg-white px-3 py-2.5 text-sm text-apple-text placeholder:text-apple-secondary focus:border-apple-blue focus:outline-none focus:ring-1 focus:ring-apple-blue"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={busy}
-              className="w-full rounded-apple-sm bg-apple-blue py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50 transition-colors"
-            >
-              {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
-            </button>
-          </form>
+              <button type="submit" disabled={busy} className="w-full rounded-apple-sm bg-apple-blue py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50 transition-colors">
+                {busy ? "Sending…" : "Send reset link"}
+              </button>
+              <button type="button" onClick={() => { setForgotMode(false); setError(""); }} className="w-full text-sm text-apple-blue hover:underline">
+                Back to sign in
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleEmail} className="space-y-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-apple-secondary">Email</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  className="w-full rounded-apple-sm border border-apple-border bg-white px-3 py-2.5 text-sm text-apple-text placeholder:text-apple-secondary focus:border-apple-blue focus:outline-none focus:ring-1 focus:ring-apple-blue"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-apple-secondary">Password</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full rounded-apple-sm border border-apple-border bg-white px-3 py-2.5 text-sm text-apple-text placeholder:text-apple-secondary focus:border-apple-blue focus:outline-none focus:ring-1 focus:ring-apple-blue"
+                />
+              </div>
+              {mode === "signin" && (
+                <button
+                  type="button"
+                  onClick={() => { setForgotMode(true); setError(""); }}
+                  className="text-xs text-apple-blue hover:underline"
+                >
+                  Forgot password?
+                </button>
+              )}
+              <button
+                type="submit"
+                disabled={busy}
+                className="w-full rounded-apple-sm bg-apple-blue py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50 transition-colors"
+              >
+                {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
+              </button>
+            </form>
+          )}
 
           <p className="mt-5 text-center text-sm text-apple-secondary">
             {mode === "signin" ? (
@@ -209,9 +270,9 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-xs text-apple-secondary">
             By continuing, you agree to IntoMarketing&apos;s{" "}
-            <a href="#" className="underline hover:text-apple-text">Terms of Service</a>{" "}
+            <a href="/terms" className="underline hover:text-apple-text">Terms of Service</a>{" "}
             and{" "}
-            <a href="#" className="underline hover:text-apple-text">Privacy Policy</a>.
+            <a href="/privacy" className="underline hover:text-apple-text">Privacy Policy</a>.
           </p>
         </div>
       </div>

@@ -73,6 +73,7 @@ async def run_and_classify(
     max_signals: int = 10,
     *,
     tenant_id: str | None = None,
+    tier: str = "starter",
 ) -> list[dict]:
     """Fetch items, classify for buying signals, store confirmed signals, return them.
 
@@ -153,6 +154,7 @@ async def run_and_classify(
                 temperature=TEMPERATURE,
                 response_model=SignalClassificationResult,
                 task_name="signal_classifier",
+                tier=tier,
             )
 
             if not result.is_buying_signal:

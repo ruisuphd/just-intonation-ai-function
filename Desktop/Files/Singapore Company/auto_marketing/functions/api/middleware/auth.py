@@ -11,7 +11,6 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from shared.firestore_client import create_tenant, query_docs, update_tenant
 from shared.redis_client import cache_get, cache_set
 from shared.entitlements import (
-    default_starter_access_expires_at,
     is_internal_test_email,
     normalize_email,
     resolve_access,
@@ -43,9 +42,8 @@ def _build_default_tenant(uid: str, email: str) -> dict[str, Any]:
         "company_name": "",
         "industry": "Other",
         "description": "",
-        "subscription_tier": "free",
-        "subscription_status": "free",
-        "starter_access_expires_at": default_starter_access_expires_at(),
+        "subscription_tier": "starter",
+        "subscription_status": "active",
         "daily_digest_email": normalized_email,
         "created_at": datetime.now(timezone.utc),
         "is_internal": is_internal_test_email(email),
@@ -64,18 +62,6 @@ def _profile_updates(profile: TenantProfile, email: str) -> dict[str, Any]:
 
     if is_internal_test_email(email) and not profile.is_internal:
         updates["is_internal"] = True
-
-    access = resolve_access(profile)
-    if profile.subscription_status == "trialing" and not (
-        profile.stripe_subscription_id or profile.stripe_customer_id
-    ):
-        updates.setdefault("subscription_tier", "free")
-        updates.setdefault("subscription_status", "free")
-        if (
-            access.starter_access_expires_at
-            and profile.starter_access_expires_at != access.starter_access_expires_at
-        ):
-            updates["starter_access_expires_at"] = access.starter_access_expires_at
 
     return updates
 

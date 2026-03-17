@@ -122,6 +122,7 @@ async def generate_outreach_inline(
     signal_data: dict,
     *,
     tenant_id: str | None = None,
+    tier: str = "starter",
 ) -> dict:
     """Generate LinkedIn DM and cold email without Firestore storage.
 
@@ -197,6 +198,7 @@ async def generate_outreach_inline(
         temperature=LINKEDIN_DM_TEMPERATURE,
         response_model=LINKEDIN_DM_RESPONSE_MODEL,
         task_name="outreach",
+        tier=tier,
     )
 
     cold_email_msg = build_cold_email_message(
@@ -213,6 +215,7 @@ async def generate_outreach_inline(
         temperature=COLD_EMAIL_TEMPERATURE,
         response_model=COLD_EMAIL_RESPONSE_MODEL,
         task_name="outreach",
+        tier=tier,
     )
 
     logger.info(

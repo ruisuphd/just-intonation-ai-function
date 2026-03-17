@@ -30,6 +30,7 @@ from api.routes import (
     outreach,
     settings,
 )
+from api.routes.usage import router as usage_router
 from shared.logger import get_logger
 from shared.redis_client import rate_limit_check
 
@@ -192,3 +193,4 @@ app.include_router(outreach.router)
 app.include_router(documents.router)
 app.include_router(settings.router)
 app.include_router(newsletters.router)
+app.include_router(usage_router)

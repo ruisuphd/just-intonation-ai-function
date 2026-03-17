@@ -6,10 +6,9 @@ from datetime import datetime, timedelta, timezone
 
 from shared.models import TenantProfile
 
-FREE_TIER = "free"
 STARTER_TIER = "starter"
 PRO_TIER = "pro"
-STARTER_ACCESS_DAYS = 7
+STARTER_ACCESS_DAYS = 7  # Keep for backward compat but unused
 
 _DEFAULT_INTERNAL_EMAILS = {"yoryouyoi@gmail.com"}
 
@@ -29,12 +28,11 @@ def normalize_email(email: str | None) -> str:
     return (email or "").strip().lower()
 
 
-def normalize_subscription_tier(tier: str | None) -> str:
-    if tier == PRO_TIER:
+def normalize_subscription_tier(raw: str | None) -> str:
+    raw = (raw or "").strip().lower()
+    if raw == "pro":
         return PRO_TIER
-    if tier in {STARTER_TIER, "growth"}:
-        return STARTER_TIER
-    return FREE_TIER
+    return STARTER_TIER  # "free", "growth", "starter", empty, anything else → starter
 
 
 def _as_utc(value: datetime) -> datetime:
@@ -107,50 +105,34 @@ def resolve_access(
     *,
     now: datetime | None = None,
 ) -> AccessSnapshot:
-    current = _as_utc(now or datetime.now(timezone.utc))
-    starter_access_expires_at = derive_starter_access_expires_at(profile)
-    starter_access_active = bool(
-        starter_access_expires_at and starter_access_expires_at > current
-    )
     paid_subscription = has_paid_subscription(profile)
 
     if profile.is_internal:
         return AccessSnapshot(
             effective_tier=PRO_TIER,
             access_source="internal",
-            starter_access_expires_at=starter_access_expires_at,
-            starter_access_active=starter_access_active,
+            starter_access_expires_at=None,
+            starter_access_active=False,
             has_paid_subscription=False,
             can_manage_billing=False,
             can_start_checkout=False,
         )
 
-    if paid_subscription:
+    if paid_subscription and profile.stripe_subscription_id:
         return AccessSnapshot(
             effective_tier=normalize_subscription_tier(profile.subscription_tier),
             access_source="paid_subscription",
-            starter_access_expires_at=starter_access_expires_at,
-            starter_access_active=starter_access_active,
+            starter_access_expires_at=None,
+            starter_access_active=False,
             has_paid_subscription=True,
             can_manage_billing=bool(profile.stripe_customer_id),
             can_start_checkout=False,
         )
 
-    if starter_access_active:
-        return AccessSnapshot(
-            effective_tier=STARTER_TIER,
-            access_source="starter_access",
-            starter_access_expires_at=starter_access_expires_at,
-            starter_access_active=True,
-            has_paid_subscription=False,
-            can_manage_billing=bool(profile.stripe_customer_id),
-            can_start_checkout=True,
-        )
-
     return AccessSnapshot(
-        effective_tier=FREE_TIER,
-        access_source="free",
-        starter_access_expires_at=starter_access_expires_at,
+        effective_tier=STARTER_TIER,
+        access_source="starter",
+        starter_access_expires_at=None,
         starter_access_active=False,
         has_paid_subscription=False,
         can_manage_billing=bool(profile.stripe_customer_id),

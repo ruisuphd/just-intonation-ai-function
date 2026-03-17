@@ -121,6 +121,44 @@ def cache_delete_pattern(pattern: str) -> None:
         del _local_cache[k]
 
 
+# ── Usage counters ────────────────────────────────────────────────────────────
+
+_in_memory_counters: dict[str, int] = {}
+
+
+def counter_increment(key: str, ttl_seconds: int = 172800) -> int:
+    """Atomically increment a Redis counter. Returns new value.
+
+    Falls back to in-memory dict when Redis is unavailable.
+    TTL defaults to 48 hours.
+    """
+    client = _get_redis()
+    if client is not None:
+        try:
+            pipe = client.pipeline()
+            pipe.incr(key)
+            pipe.expire(key, ttl_seconds)
+            results = pipe.execute()
+            return int(results[0])
+        except Exception as exc:
+            logger.warning("redis.counter_increment_failed", extra={"key": key, "error": str(exc)})
+    # In-memory fallback (resets on deploy — fail-open is acceptable)
+    _in_memory_counters[key] = _in_memory_counters.get(key, 0) + 1
+    return _in_memory_counters[key]
+
+
+def counter_get(key: str) -> int:
+    """Get current value of a Redis counter. Returns 0 if absent."""
+    client = _get_redis()
+    if client is not None:
+        try:
+            val = client.get(key)
+            return int(val) if val is not None else 0
+        except Exception as exc:
+            logger.warning("redis.counter_get_failed", extra={"key": key, "error": str(exc)})
+    return _in_memory_counters.get(key, 0)
+
+
 # ── Rate limiting ────────────────────────────────────────────────────────────
 
 

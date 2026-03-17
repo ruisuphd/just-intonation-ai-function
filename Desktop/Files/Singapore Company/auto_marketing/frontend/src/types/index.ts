@@ -1,6 +1,6 @@
-export type SubscriptionTier = "free" | "starter" | "growth" | "pro";
-export type SubscriptionStatus = "free" | "trialing" | "active" | "past_due" | "canceled";
-export type AccessSource = "free" | "starter_access" | "paid_subscription" | "internal";
+export type SubscriptionTier = "starter" | "pro";
+export type SubscriptionStatus = "trialing" | "active" | "past_due" | "canceled";
+export type AccessSource = "starter" | "paid_subscription" | "internal";
 export type Tone = "professional" | "friendly" | "authoritative" | "casual";
 export type Language = "en" | "zh" | "bilingual";
 export type PlatformId =

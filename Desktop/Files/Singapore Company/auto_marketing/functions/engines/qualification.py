@@ -24,7 +24,7 @@ _DEFAULT_SERVICES = [
 ]
 
 
-async def qualify_inline(signal_data: dict, *, tenant_id: str | None = None) -> dict:
+async def qualify_inline(signal_data: dict, *, tenant_id: str | None = None, tier: str = "starter") -> dict:
     """Qualify a prospect signal inline without Firestore lead storage.
 
     Used by the pipeline to qualify signals immediately after detection.
@@ -103,6 +103,7 @@ async def qualify_inline(signal_data: dict, *, tenant_id: str | None = None) -> 
         temperature=TEMPERATURE,
         response_model=ICPQualificationResult,
         task_name="icp_qualifier",
+        tier=tier,
     )
 
     logger.info(

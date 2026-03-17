@@ -5,10 +5,11 @@ from __future__ import annotations
 import json
 from typing import Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 
 from api.middleware.auth import require_tenant
+from shared.usage_limits import require_usage_limit, increment_usage
 from shared.firestore_client import get_tenant, update_tenant
 from shared.gemini_client import GeminiClient
 from shared.logger import get_logger
@@ -88,10 +89,14 @@ class ChatResponse(BaseModel):
 @router.post("", response_model=ChatResponse)
 async def chat(
     body: ChatRequest,
+    request: Request,
     tenant: TenantProfile = Depends(require_tenant),
 ):
     if not body.messages:
         return ChatResponse(reply="Hi! I'm your Marketing Assistant. How can I help you today?")
+
+    tier = getattr(request.state, "tenant_tier", "starter")
+    require_usage_limit(tenant.tenant_id, tier, "chat_messages_per_day", tenant.timezone)
 
     # Build profile summary for the system prompt
     profile = {
@@ -164,6 +169,7 @@ async def chat(
                     extra={"tenant_id": tenant.tenant_id, "fields": list(safe_updates.keys())},
                 )
 
+        increment_usage(tenant.tenant_id, "chat_messages_per_day", tenant.timezone)
         return ChatResponse(
             reply=reply,
             settings_updated=applied,
