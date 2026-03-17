@@ -41,6 +41,7 @@ export default function DashboardPage() {
   const [billing, setBilling] = useState<BillingSummary | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [pageError, setPageError] = useState("");
+  const [dismissedVerification, setDismissedVerification] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) router.replace("/");
@@ -140,6 +141,31 @@ export default function DashboardPage() {
         billing={billing}
         onSectionSelect={setActiveSection}
       />
+
+      {user && !user.emailVerified && user.providerData?.[0]?.providerId === "password" && !dismissedVerification && (
+        <div className="mx-4 mt-3 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <span>
+            Please verify your email address. Check your inbox or{" "}
+            <button
+              className="underline font-medium hover:text-amber-900"
+              onClick={async () => {
+                try {
+                  const { verifyEmail } = await import("@/lib/firebase");
+                  await verifyEmail();
+                } catch {}
+              }}
+            >
+              resend verification email
+            </button>.
+          </span>
+          <button
+            className="ml-4 text-amber-500 hover:text-amber-700"
+            onClick={() => setDismissedVerification(true)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <main className="mx-auto max-w-5xl space-y-10 px-4 py-8">
         <section id="overview" className="space-y-8 scroll-mt-28">
