@@ -7,7 +7,6 @@ import { useAuth } from "@/lib/auth-context";
 import { ALL_PLATFORMS, normalizePlatforms } from "@/lib/platforms";
 import { COMPANY_DESCRIPTION_MAX_CHARS, TARGET_AUDIENCE_MAX_CHARS } from "@/lib/settings";
 import Notice from "@/components/ui/notice";
-import { formatStarterAccessDate } from "@/lib/billing";
 import { apiFetch, apiFetchBlob } from "@/lib/api";
 import type { BillingSummary, TenantProfile } from "@/types";
 
@@ -51,31 +50,29 @@ const COMMON_TIMEZONES = [
   "Pacific/Honolulu",
 ];
 
-const PLAN_FEATURES: Record<string, string[]> = {
-  free: [
-    "Workspace access",
-    "Company profile settings",
-    "Billing and plan management",
-    "7 days of Starter access on first login",
-  ],
-  starter: [
-    "Core AI engine for daily content tasks",
-    "Daily content for your selected platforms",
-    "Market intelligence",
-    "1 image/day",
-    "Email digest",
-  ],
-  pro: [
-    "Everything in Starter",
-    "Advanced AI engine for premium workflows",
-    "Lead detection & qualification",
-    "Outreach drafts",
-    "Email newsletter",
-    "Bilingual content",
-    "Advanced image generation",
-    "Priority support",
-  ],
-};
+const STARTER_FEATURES = [
+  "Core AI engine",
+  "Content generation (3x/week)",
+  "25 intelligence items per run",
+  "1 post generation per day",
+  "10 chat messages per day",
+  "3 brand documents",
+  "1 platform connection",
+  "Daily email digest",
+];
+
+const PRO_FEATURES = [
+  "Everything in Starter, plus:",
+  "Daily content (7x/week)",
+  "100 intelligence items per run",
+  "5 post generations per day",
+  "100 chat messages per day",
+  "50 brand documents",
+  "10 platform connections",
+  "Newsletter generation",
+  "Gemini 3.1 Pro model",
+  "Priority support",
+];
 
 export default function SettingsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -92,6 +89,7 @@ export default function SettingsPage() {
     text: string;
   } | null>(null);
   const [billingBusy, setBillingBusy] = useState<"starter" | "pro" | "portal" | null>(null);
+  const [usage, setUsage] = useState<any>(null);
   const [exporting, setExporting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleteAcknowledged, setDeleteAcknowledged] = useState(false);
@@ -178,6 +176,12 @@ export default function SettingsPage() {
       fetchSettings();
     }
   }, [authLoading, user, fetchSettings]);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      apiFetch("/api/usage").then(setUsage).catch(() => {});
+    }
+  }, [authLoading, user]);
 
   async function handleSave(updates: Record<string, any>) {
     setSaving(true);
@@ -268,100 +272,22 @@ export default function SettingsPage() {
   function billingSummaryText() {
     if (!billing) return "Loading billing details.";
     if (billing.is_internal) return "Internal test account with full access.";
-    if (billing.access_source === "starter_access") {
-      return `Starter trial access is included until ${formatStarterAccessDate(billing) || "the current access window ends"}.`;
-    }
     if (billing.subscription_status === "past_due") {
       return "Your paid subscription needs attention before paid features are restored.";
     }
     if (billing.has_paid_subscription) {
       return `Paid subscription status: ${billing.subscription_status}.`;
     }
-    return "You are currently on the Free plan.";
+    return "You are currently on the Starter plan.";
   }
 
   function currentAccessLabel() {
     if (!billing) return "Loading";
     if (billing.is_internal) return "Internal access";
-    if (billing.access_source === "starter_access") return "Starter trial";
     if (billing.has_paid_subscription) {
       return `${billing.subscription_tier[0].toUpperCase()}${billing.subscription_tier.slice(1)} plan`;
     }
-    return "Free plan";
-  }
-
-  function renderPlanAction(tier: "free" | "starter" | "pro") {
-    if (!billing) return null;
-    if (tier === "free") {
-      return billing.effective_tier === "free" ? (
-        <button
-          disabled
-          className="mt-5 w-full rounded-apple-sm border border-apple-border px-4 py-2.5 text-sm font-medium text-apple-secondary"
-        >
-          Current plan
-        </button>
-      ) : null;
-    }
-
-    if (billing.is_internal) {
-      return (
-        <button
-          disabled
-          className="mt-5 w-full rounded-apple-sm border border-apple-border px-4 py-2.5 text-sm font-medium text-apple-secondary"
-        >
-          Included with internal access
-        </button>
-      );
-    }
-
-    if (billing.effective_tier === tier) {
-      const label =
-        billing.access_source === "starter_access"
-          ? "Included trial access"
-          : billing.has_paid_subscription
-            ? "Current plan"
-            : "Current access";
-      return (
-        <button
-          disabled
-          className="mt-5 w-full rounded-apple-sm border border-apple-border px-4 py-2.5 text-sm font-medium text-apple-secondary"
-        >
-          {label}
-        </button>
-      );
-    }
-
-    if (billing.can_manage_billing && billing.has_paid_subscription) {
-      return (
-        <button
-          onClick={handleBillingPortal}
-          disabled={billingBusy !== null}
-          className="mt-5 w-full rounded-apple-sm border border-apple-border px-4 py-2.5 text-sm font-medium hover:bg-apple-bg disabled:opacity-50"
-        >
-          {billingBusy === "portal" ? "Opening portal\u2026" : "Manage in portal"}
-        </button>
-      );
-    }
-
-    if (!billing.can_start_checkout) {
-      return null;
-    }
-
-    return (
-      <button
-        onClick={() => handleCheckout(tier)}
-        disabled={billingBusy !== null}
-        className="mt-5 w-full rounded-apple-sm bg-apple-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50"
-      >
-        {billingBusy === tier
-          ? "Redirecting\u2026"
-          : tier === "starter" && billing.access_source === "starter_access"
-            ? "Keep Starter after access ends"
-            : tier === "pro"
-              ? "Choose Pro"
-              : "Choose Starter"}
-      </button>
-    );
+    return "Starter plan";
   }
 
   if (authLoading || loading || !user) {
@@ -731,28 +657,116 @@ export default function SettingsPage() {
               <Notice tone={billingMessage.tone}>{billingMessage.text}</Notice>
             )}
 
-            <div className="grid gap-4 md:grid-cols-3">
-              {(["free", "starter", "pro"] as const).map((tier) => (
+            <div className="rounded-apple bg-apple-card p-5 shadow-apple sm:p-6">
+              {usage && (
+                <div className="mb-6 space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-700">Today&apos;s Usage</h3>
+                  {["post_generations_per_day", "chat_messages_per_day"].map(action => {
+                    const data = usage.usage?.[action];
+                    if (!data) return null;
+                    const pct = Math.min(data.percentage, 100);
+                    return (
+                      <div key={action} className="flex items-center gap-3">
+                        <span className="w-40 text-xs text-gray-600 truncate">
+                          {action === "post_generations_per_day" ? "Post generations" : "Chat messages"}
+                        </span>
+                        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${pct >= 100 ? "bg-red-500" : pct >= 80 ? "bg-amber-400" : "bg-blue-500"}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-500 w-16 text-right">{data.used}/{data.limit}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {/* Starter card */}
                 <div
-                  key={tier}
                   className={`rounded-apple border p-6 ${
-                    tier === billing.effective_tier
+                    billing.effective_tier === "starter"
                       ? "border-apple-blue bg-blue-50/30"
-                      : "border-apple-border bg-apple-card"
+                      : "border-apple-border bg-apple-bg"
                   } shadow-apple`}
                 >
-                  <h3 className="text-lg font-semibold capitalize">{tier}</h3>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-lg font-semibold">Starter</h3>
+                      <p className="text-2xl font-bold mt-1">Free</p>
+                      <p className="text-sm text-apple-secondary mt-0.5">For individuals getting started</p>
+                    </div>
+                    {billing.effective_tier === "starter" && (
+                      <span className="rounded-full bg-apple-blue/10 px-2.5 py-1 text-xs font-medium text-apple-blue">
+                        Current plan
+                      </span>
+                    )}
+                  </div>
                   <ul className="mt-4 space-y-2">
-                    {(PLAN_FEATURES[tier] || []).map((f, i) => (
+                    {STARTER_FEATURES.map((f, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-apple-text">
                         <span className="mt-0.5 text-green-500">&#10003;</span>
                         {f}
                       </li>
                     ))}
                   </ul>
-                  {renderPlanAction(tier)}
                 </div>
-              ))}
+
+                {/* Pro card */}
+                <div
+                  className={`rounded-apple border p-6 ${
+                    billing.effective_tier === "pro"
+                      ? "border-blue-500 bg-blue-50/30"
+                      : "border-blue-500 bg-apple-bg"
+                  } shadow-apple`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-lg font-semibold">Pro</h3>
+                      <p className="text-2xl font-bold mt-1">$29/mo</p>
+                      <p className="text-sm text-apple-secondary mt-0.5">For teams that want more</p>
+                    </div>
+                    {billing.effective_tier === "pro" && (
+                      <span className="rounded-full bg-apple-blue/10 px-2.5 py-1 text-xs font-medium text-apple-blue">
+                        Current plan
+                      </span>
+                    )}
+                  </div>
+                  <ul className="mt-4 space-y-2">
+                    {PRO_FEATURES.map((f, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-apple-text">
+                        <span className={`mt-0.5 ${i === 0 ? "text-apple-secondary" : "text-green-500"}`}>
+                          {i === 0 ? "" : "&#10003;"}
+                        </span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  {!billing.is_internal && (
+                    <div className="mt-5">
+                      {billing.effective_tier === "pro" ? (
+                        <button
+                          onClick={handleBillingPortal}
+                          disabled={billingBusy !== null}
+                          className="w-full rounded-apple-sm border border-apple-border px-4 py-2.5 text-sm font-medium hover:bg-apple-bg disabled:opacity-50"
+                        >
+                          {billingBusy === "portal" ? "Opening portal\u2026" : "Manage Subscription"}
+                        </button>
+                      ) : billing.can_start_checkout ? (
+                        <button
+                          onClick={() => handleCheckout("pro")}
+                          disabled={billingBusy !== null}
+                          className="w-full rounded-apple-sm bg-apple-blue px-4 py-2.5 text-sm font-medium text-white hover:bg-apple-blue-hover disabled:opacity-50"
+                        >
+                          {billingBusy === "pro" ? "Redirecting\u2026" : "Upgrade to Pro"}
+                        </button>
+                      ) : null}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}
