@@ -18,7 +18,6 @@ import IntelligenceSection from "@/components/sections/intelligence";
 import LeadsSection from "@/components/sections/leads";
 import OutreachSection from "@/components/sections/outreach";
 import Notice from "@/components/ui/notice";
-import { formatStarterAccessDate } from "@/lib/billing";
 import type { BillingSummary, TenantProfile } from "@/types";
 
 const SECTION_IDS = [
@@ -184,12 +183,6 @@ export default function DashboardPage() {
             </Notice>
           )}
 
-          {!pageError && billing?.access_source === "starter_access" && (
-            <Notice>
-              Starter access is active until {formatStarterAccessDate(billing) || "your trial ends"}.
-            </Notice>
-          )}
-
           {!pageError && billing?.subscription_status === "past_due" && (
             <Notice tone="warning">
               Your paid subscription has a billing issue. Update it in{" "}
@@ -197,16 +190,6 @@ export default function DashboardPage() {
                 Settings
               </Link>
               .
-            </Notice>
-          )}
-
-          {!pageError && billing?.effective_tier === "free" && !billing.is_internal && (
-            <Notice tone="warning">
-              You&apos;re on the Free plan. Upgrade in{" "}
-              <Link href="/settings?tab=billing" className="font-medium text-apple-blue">
-                Settings
-              </Link>{" "}
-              to unlock content generation and automation.
             </Notice>
           )}
 
