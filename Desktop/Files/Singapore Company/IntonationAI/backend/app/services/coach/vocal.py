@@ -35,6 +35,7 @@ class VocalCoach(BaseCoach):
         session_history: list[dict],
         *,
         use_rag: bool = True,
+        audio_bytes: bytes | None = None,
     ) -> dict:
         messages: list[dict] = []
         for entry in session_history:
@@ -52,13 +53,14 @@ class VocalCoach(BaseCoach):
         reply = await gemini_client.invoke(
             system_prompt=system_prompt,
             messages=messages,
+            audio_bytes=audio_bytes,
         )
 
         audio_url = None
         try:
-            audio_bytes = await polly_client.synthesize(reply)
+            tts_bytes = await polly_client.synthesize(reply)
             key = f"tts/{uuid.uuid4()}.mp3"
-            audio_url = await storage_service.upload(audio_bytes, key, "audio/mpeg")
+            audio_url = await storage_service.upload(tts_bytes, key, "audio/mpeg")
         except Exception:
             logger.debug("TTS generation skipped", exc_info=True)
 

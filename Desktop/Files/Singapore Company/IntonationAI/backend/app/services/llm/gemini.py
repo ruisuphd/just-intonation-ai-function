@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 class GeminiClient:
     def __init__(self) -> None:
+        if not settings.gcp_project:
+            raise ValueError("GOOGLE_CLOUD_PROJECT or FIREBASE_PROJECT_ID must be set")
         vertexai.init(
             project=settings.gcp_project,
             location=settings.VERTEX_AI_LOCATION,
