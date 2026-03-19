@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: intonation_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  firestore-emulator:
+    image: google/cloud-sdk:slim
+    restart: unless-stopped
+    command: gcloud emulators firestore start --host-port=0.0.0.0:8081
+    ports:
+      - "8081:8081"
+    environment:
+      - GCLOUD_PROJECT=intonation-ai-local
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - db
+      - firestore-emulator
+    volumes:
+      - ./backend:/app
+    environment:
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8081
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    working_dir: /app
+    image: node:20-alpine
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    command: sh -c "corepack enable && pnpm dev"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - NEXT_PUBLIC_FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - NEXT_PUBLIC_FIREBASE_API_KEY=${FIREBASE_WEB_API_KEY}
+
+volumes:
+  pgdata:

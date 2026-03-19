@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pnpm-store/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+frontend/.next/
+frontend/out/
+backend/*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg
+.eggs/
+*.egg-info/
+venv/
+.venv/
+env/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Docker
+docker-compose.override.yml
+
+# Firebase
+*-firebase-adminsdk-*.json
+firebase-service-account.json
+
+# Audio uploads (local dev)
+uploads/
+*.wav
+*.mp3
+*.ogg

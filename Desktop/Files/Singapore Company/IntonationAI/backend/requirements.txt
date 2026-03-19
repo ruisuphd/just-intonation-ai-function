@@ -1,0 +1,27 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+python-multipart>=0.0.18
+sqlalchemy[asyncio]>=2.0.36
+asyncpg>=0.30.0
+alembic>=1.14.0
+firebase-admin>=6.6.0
+librosa>=0.10.2
+numpy>=1.26.0
+pydub>=0.25.1
+scipy>=1.14.0
+stripe>=11.4.0
+websockets>=14.1
+pydantic-settings>=2.7.0
+python-jose[cryptography]>=3.3.0
+httpx>=0.28.0
+pytest>=8.3.0
+pytest-asyncio>=0.25.0
+
+# GCP services
+anthropic[vertex]>=0.42.0
+google-cloud-texttospeech>=2.21.0
+google-cloud-speech>=2.28.0
+google-cloud-storage>=2.19.0
+google-cloud-firestore>=2.19.0
+google-cloud-aiplatform>=1.74.0
+sentence-transformers>=3.3.0

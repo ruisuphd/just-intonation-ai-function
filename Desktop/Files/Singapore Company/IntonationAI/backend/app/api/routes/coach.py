@@ -19,11 +19,14 @@ from app.services.coach.vocal import VocalCoach
 from app.services.coach.piano import PianoCoach
 from app.services.coach.guitar import GuitarCoach
 from app.services.audio.analyser import audio_analyser
+from app.services.audio.piano_analysis import analyse_piano
+from app.services.audio.guitar_analysis import analyse_guitar
 from app.services.audio.processor import webm_to_wav_bytes
 from app.services.entitlement import entitlement_service
 from app.services.stt.transcribe import transcribe_client
 from app.services.llm.gemini import gemini_client
 from app.services.llm.prompts import SESSION_RECAP_PROMPT
+from app.services.audio.lyria_service import generate_backing_track
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +37,14 @@ _coaches = {
     "piano": PianoCoach(),
     "guitar": GuitarCoach(),
 }
+
+
+async def _analyse_audio(coach_type: str, audio_bytes: bytes) -> dict:
+    if coach_type == "piano":
+        return await analyse_piano(audio_bytes)
+    if coach_type == "guitar":
+        return await analyse_guitar(audio_bytes)
+    return await audio_analyser.analyse(audio_bytes)
 
 
 @router.post("/sessions", response_model=CoachSessionResponse)
@@ -48,7 +59,9 @@ async def create_session(
     if not coach:
         raise HTTPException(400, f"Unknown coach type: {body.coach_type}")
 
-    allowed, msg = await entitlement_service.check_coach_access(db, user.id)
+    allowed, msg = await entitlement_service.check_coach_access(
+        db, user.id, coach_type=body.coach_type
+    )
     if not allowed:
         raise HTTPException(
             403,
@@ -102,10 +115,13 @@ async def end_session(
     if not conversation.strip():
         return {"recap": "Session ended.", "next_step": "Start a new session to get feedback."}
 
+    coach_label = {"vocal": "vocal", "piano": "piano", "guitar": "guitar"}.get(
+        session.coach_type or "vocal", "coach"
+    )
     prompt = SESSION_RECAP_PROMPT.format(conversation=conversation)
     try:
         response = await gemini_client.invoke(
-            system_prompt="You are a concise vocal coach.",
+            system_prompt=f"You are a concise {coach_label} coach.",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=150,
         )
@@ -165,8 +181,8 @@ async def send_message(
     if audio and audio.filename:
         try:
             audio_bytes = await audio.read()
-            if len(audio_bytes) >= 512 and await entitlement_service.is_pro(db, user.id):
-                audio_analysis = await audio_analyser.analyse(audio_bytes)
+            if len(audio_bytes) >= 512 and await entitlement_service.is_essential(db, user.id):
+                audio_analysis = await _analyse_audio(session.coach_type, audio_bytes)
                 if session.coach_type == "vocal":
                     try:
                         stt_bytes = (
@@ -185,13 +201,11 @@ async def send_message(
             logger.exception("Audio analysis failed: %s", e)
 
     coach = _coaches.get(session.coach_type, _coaches["vocal"])
-    is_pro = await entitlement_service.is_pro(db, user.id)
-    if session.coach_type == "vocal":
-        response = await coach.process_message(
-            content, audio_analysis, history, use_rag=is_pro, audio_bytes=audio_bytes
-        )
-    else:
-        response = await coach.process_message(content, audio_analysis, history)
+    use_rag = await entitlement_service.is_essential(db, user.id)
+    response = await coach.process_message(
+        content, audio_analysis, history,
+        use_rag=use_rag, audio_bytes=audio_bytes
+    )
 
     coach_msg = SessionMessage(
         session_id=session.id,
@@ -216,14 +230,51 @@ async def send_message(
     )
 
 
+@router.get("/backing-track")
+async def get_backing_track(
+    tempo_bpm: int = 120,
+    key: str = "G major",
+    style: str = "metronome",
+    duration_seconds: int = 30,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    from fastapi import HTTPException
+
+    if not await entitlement_service.can_use_lyria(db, user.id):
+        raise HTTPException(
+            403,
+            "Lyria backing tracks require Pro. Upgrade to unlock.",
+        )
+    url = await generate_backing_track(
+        tempo_bpm=tempo_bpm,
+        key=key,
+        style=style,
+        duration_seconds=min(30, max(10, duration_seconds)),
+    )
+    return {"url": url or None}
+
+
 @router.websocket("/stream/{session_id}")
-async def coach_stream(websocket: WebSocket, session_id: str):
+async def coach_stream(
+    websocket: WebSocket,
+    session_id: str,
+    db: AsyncSession = Depends(get_db),
+):
     await websocket.accept()
+    coach_type = "vocal"
+    result = await db.execute(
+        select(Session).where(Session.id == session_id)
+    )
+    session = result.scalar_one_or_none()
+    if session:
+        coach_type = session.coach_type or "vocal"
+
     try:
         while True:
             data = await websocket.receive_bytes()
             try:
-                analysis = await audio_analyser.analyse(data)
+                analysis = await _analyse_audio(coach_type, data)
                 await websocket.send_json({"type": "analysis", "data": analysis})
             except Exception as e:
                 logger.error("Stream analysis error: %s", e)

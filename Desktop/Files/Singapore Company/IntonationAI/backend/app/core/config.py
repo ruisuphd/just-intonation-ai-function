@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     STRIPE_WEBHOOK_SECRET: str | None = None
     STRIPE_PRICE_ID_MONTHLY: str | None = None
     STRIPE_PRICE_ID_YEARLY: str | None = None
+    STRIPE_PRICE_ID_ESSENTIAL_MONTHLY: str | None = None
+    STRIPE_PRICE_ID_ESSENTIAL_YEARLY: str | None = None
+    STRIPE_PRICE_ID_PRO_MONTHLY: str | None = None
+    STRIPE_PRICE_ID_PRO_YEARLY: str | None = None
 
     # App
     BACKEND_URL: str = "http://localhost:8000"
