@@ -9,8 +9,9 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
 
-from api.middleware.auth import get_current_user, require_access, require_tenant
-from shared.entitlements import is_internal_test_email, normalize_email
+from api.middleware.auth import get_current_user, require_access
+from api.middleware.legal import ensure_legal_acceptance, require_legal_acceptance
+from shared.entitlements import normalize_email
 from shared.firestore_client import update_tenant
 from shared.logger import get_logger
 from shared.platforms import normalize_platforms
@@ -50,7 +51,7 @@ class TenantCreateResponse(BaseModel):
 @router.post("/create-tenant", response_model=TenantCreateResponse)
 async def create_tenant_endpoint(
     body: TenantCreateRequest,
-    tenant=Depends(require_tenant),
+    tenant=Depends(require_legal_acceptance),
     user: dict = Depends(get_current_user),
 ):
     email = user.get("email", "")
@@ -74,9 +75,6 @@ async def create_tenant_endpoint(
         "owner_email": normalize_email(email),
     }
 
-    if is_internal_test_email(email):
-        updates["is_internal"] = True
-
     update_tenant(tenant.tenant_id, updates)
     logger.info(
         "onboarding.tenant_profile_updated", extra={"tenant_id": tenant.tenant_id}
@@ -91,11 +89,25 @@ async def create_tenant_endpoint(
 async def complete_onboarding(
     tenant=Depends(require_access("starter", "pro")),
 ):
+    ensure_legal_acceptance(tenant)
     update_tenant(tenant.tenant_id, {"onboarding_completed": True})
 
-    from pipeline import _run_pipeline
+    from shared.pipeline_runs import run_tenant_pipeline_with_record
 
-    asyncio.create_task(_run_pipeline(force_send=False, tenant_id=tenant.tenant_id))
+    async def _first_pipeline() -> None:
+        try:
+            await run_tenant_pipeline_with_record(
+                tenant.tenant_id,
+                ignore_pipeline_schedule=True,
+                force_send=False,
+            )
+        except Exception as exc:
+            logger.error(
+                "onboarding.pipeline_failed",
+                extra={"tenant_id": tenant.tenant_id, "error": str(exc)},
+            )
+
+    asyncio.create_task(_first_pipeline())
 
     return {"ok": True, "tenant_id": tenant.tenant_id}
 
@@ -105,6 +117,7 @@ async def upload_document(
     file: UploadFile = File(...),
     tenant=Depends(require_access("starter", "pro")),
 ):
+    ensure_legal_acceptance(tenant)
     content = await file.read()
     validated = validate_upload(file, len(content))
 

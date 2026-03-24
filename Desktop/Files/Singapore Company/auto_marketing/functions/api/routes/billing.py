@@ -8,14 +8,14 @@ from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
-from api.middleware.auth import require_tenant
+from api.middleware.auth import require_tenant, require_tenant_verified
 from shared.entitlements import (
     normalize_email,
     normalize_subscription_tier,
     resolve_access,
 )
 from shared.firestore_client import query_docs, update_tenant
-from shared.redis_client import cache_delete_pattern
+from shared.redis_client import cache_delete_pattern, cache_get, cache_set
 from shared.logger import get_logger
 from shared.models import TenantProfile
 from shared.secrets import get_secret_or_env
@@ -57,6 +57,54 @@ def _price_id_for_tier(tier: str) -> str:
     return ""
 
 
+def _subscription_first_price_id(subscription_id: str) -> str | None:
+    """First recurring price on a subscription (for Pricing Table checkouts without metadata)."""
+    import stripe
+
+    _ensure_stripe_api_key()
+    try:
+        sub = stripe.Subscription.retrieve(subscription_id)
+        if not getattr(sub, "items", None) or not sub.items.data:
+            return None
+        price = sub.items.data[0].price
+        return price.id if price else None
+    except Exception as exc:
+        logger.warning(
+            "billing.subscription_price_lookup_failed",
+            extra={"subscription_id": subscription_id, "error": str(exc)},
+        )
+        return None
+
+
+def _cached_pro_price_snapshot() -> dict | None:
+    """Stripe Price fields for displaying Pro on the billing page. Cached to limit API calls."""
+    price_id = os.getenv("STRIPE_PRO_PRICE_ID", "")
+    if not price_id:
+        return None
+    cache_key = f"stripe:pro_price:{price_id}"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        return cached
+
+    import stripe
+
+    _ensure_stripe_api_key()
+    try:
+        p = stripe.Price.retrieve(price_id)
+        recurring = getattr(p, "recurring", None)
+        interval = getattr(recurring, "interval", None) if recurring else None
+        snap = {
+            "pro_unit_amount": getattr(p, "unit_amount", None),
+            "pro_currency": (getattr(p, "currency", None) or "usd").lower(),
+            "pro_interval": interval or "month",
+        }
+        cache_set(cache_key, snap, ttl_seconds=300)
+        return snap
+    except Exception as exc:
+        logger.warning("billing.pro_price_fetch_failed", extra={"error": str(exc)})
+        return None
+
+
 @router.post("/webhook")
 async def stripe_webhook(request: Request):
     import stripe
@@ -78,6 +126,12 @@ async def stripe_webhook(request: Request):
     except stripe.error.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid webhook signature")
 
+    event_id = event.get("id") or ""
+    dedupe_key = f"stripe_webhook_evt:{event_id}" if event_id else ""
+    if dedupe_key and cache_get(dedupe_key):
+        logger.info("billing.webhook_duplicate", extra={"event_id": event_id})
+        return {"received": True}
+
     event_type = event["type"]
     data = event["data"]["object"]
     logger.info("billing.webhook", extra={"type": event_type})
@@ -92,6 +146,9 @@ async def stripe_webhook(request: Request):
         _handle_payment_failed(data)
     elif event_type == "checkout.session.completed":
         _handle_checkout_completed(data)
+
+    if dedupe_key:
+        cache_set(dedupe_key, {"processed": True}, ttl_seconds=86400 * 3)
 
     return {"received": True}
 
@@ -145,10 +202,19 @@ def _handle_subscription_updated(sub: dict):
 
 def _handle_checkout_completed(session: dict):
     customer_id = session.get("customer", "")
+    meta = session.get("metadata") or {}
+    if not isinstance(meta, dict):
+        meta = dict(meta) if hasattr(meta, "items") else {}
+    sub_details = session.get("subscription_details") or {}
+    if not isinstance(sub_details, dict):
+        sub_details = {}
+    sub_details_meta = sub_details.get("metadata") or {}
+    if not isinstance(sub_details_meta, dict):
+        sub_details_meta = {}
+
+    cref = str(session.get("client_reference_id") or "").strip()
     tenant_id = (
-        session.get("metadata", {}).get("tenant_id")
-        or session.get("subscription_details", {}).get("metadata", {}).get("tenant_id")
-        or ""
+        meta.get("tenant_id") or sub_details_meta.get("tenant_id") or cref or ""
     )
     if not tenant_id and customer_id:
         tenant = _find_tenant_by_stripe_customer(customer_id)
@@ -164,11 +230,14 @@ def _handle_checkout_completed(session: dict):
         updates["stripe_customer_id"] = customer_id
     if session.get("subscription"):
         updates["stripe_subscription_id"] = session["subscription"]
-    requested_tier = normalize_subscription_tier(
-        session.get("metadata", {}).get("target_tier")
-    )
+    requested_tier = normalize_subscription_tier(meta.get("target_tier"))
     if requested_tier == "pro":
         updates["subscription_tier"] = requested_tier
+    elif session.get("subscription"):
+        price_id = _subscription_first_price_id(session["subscription"])
+        inferred = _tier_from_price_id(price_id or "")
+        if inferred:
+            updates["subscription_tier"] = inferred
     updates["subscription_status"] = "trialing"
     update_tenant(tenant_id, updates)
     logger.info("billing.checkout_completed", extra={"tenant_id": tenant_id, **updates})
@@ -220,13 +289,8 @@ def _ensure_customer(tenant: TenantProfile, owner_email: str, company_name: str)
 async def create_checkout_session(
     body: BillingCheckoutRequest,
     request: Request,
-    tenant: TenantProfile = Depends(require_tenant),
+    tenant: TenantProfile = Depends(require_tenant_verified),
 ):
-    if request.state.bypass_billing:
-        raise HTTPException(
-            status_code=400, detail="Internal accounts do not have billing"
-        )
-
     access = resolve_access(tenant)
     if access.has_paid_subscription and tenant.stripe_subscription_id:
         raise HTTPException(
@@ -257,8 +321,8 @@ async def create_checkout_session(
         customer=customer_id,
         billing_address_collection="auto",
         line_items=[{"price": price_id, "quantity": 1}],
-        success_url=f"{app_url}/settings?tab=billing&checkout=success",
-        cancel_url=f"{app_url}/settings?tab=billing&checkout=canceled",
+        success_url=f"{app_url}/billing?checkout=success",
+        cancel_url=f"{app_url}/billing?checkout=canceled",
         metadata={"tenant_id": tenant.tenant_id, "target_tier": tier},
         subscription_data={
             "metadata": {"tenant_id": tenant.tenant_id, "target_tier": tier}
@@ -269,14 +333,8 @@ async def create_checkout_session(
 
 @router.get("/portal")
 async def billing_portal(
-    request: Request,
-    tenant: TenantProfile = Depends(require_tenant),
+    tenant: TenantProfile = Depends(require_tenant_verified),
 ):
-    if request.state.bypass_billing:
-        raise HTTPException(
-            status_code=400, detail="Internal accounts do not have billing"
-        )
-
     import stripe
 
     _ensure_stripe_api_key()
@@ -284,7 +342,7 @@ async def billing_portal(
     if not tenant.stripe_customer_id:
         raise HTTPException(status_code=400, detail="No Stripe customer linked")
 
-    return_url = f"{_app_url()}/settings?tab=billing"
+    return_url = f"{_app_url()}/billing"
     session = stripe.billing_portal.Session.create(
         customer=tenant.stripe_customer_id,
         return_url=return_url,
@@ -292,12 +350,55 @@ async def billing_portal(
     return {"url": session.url}
 
 
+@router.get("/invoices")
+async def get_invoices(
+    tenant: TenantProfile = Depends(require_tenant_verified),
+    starting_after: str | None = None,
+):
+    """Return Stripe invoices for the tenant's customer. Supports pagination via starting_after."""
+    import stripe
+
+    _ensure_stripe_api_key()
+
+    if not tenant.stripe_customer_id:
+        return {"invoices": [], "has_more": False}
+
+    try:
+        list_params = {
+            "customer": tenant.stripe_customer_id,
+            "limit": 12,
+            "status": "paid",
+        }
+        if starting_after:
+            list_params["starting_after"] = starting_after
+        invoices = stripe.Invoice.list(**list_params)
+        return {
+            "invoices": [
+                {
+                    "id": inv.id,
+                    "number": inv.number,
+                    "amount_paid": inv.amount_paid,
+                    "currency": inv.currency,
+                    "status": inv.status,
+                    "created": inv.created,
+                    "invoice_pdf": inv.invoice_pdf,
+                }
+                for inv in invoices.data
+            ],
+            "has_more": invoices.has_more,
+        }
+    except Exception as exc:
+        logger.warning("billing.invoices_failed", extra={"error": str(exc)})
+        return {"invoices": [], "has_more": False}
+
+
 @router.get("/subscription")
 async def get_subscription(
     tenant: TenantProfile = Depends(require_tenant),
 ):
     access = resolve_access(tenant)
-    return {
+    price_snap = _cached_pro_price_snapshot()
+    payload: dict = {
         "tenant_id": tenant.tenant_id,
         "subscription_tier": normalize_subscription_tier(tenant.subscription_tier),
         "subscription_status": tenant.subscription_status,
@@ -309,5 +410,7 @@ async def get_subscription(
         "can_manage_billing": access.can_manage_billing,
         "can_start_checkout": access.can_start_checkout,
         "stripe_customer_linked": bool(tenant.stripe_customer_id),
-        "is_internal": tenant.is_internal,
     }
+    if price_snap:
+        payload.update(price_snap)
+    return payload

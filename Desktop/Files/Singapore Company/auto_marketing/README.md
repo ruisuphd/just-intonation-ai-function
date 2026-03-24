@@ -64,6 +64,7 @@ flowchart TB
 
 - GCP project with billing enabled
 - Python 3.12+
+- Node.js 20+ and npm (for `frontend/`; CI and `Makefile` use `npm ci` / `npm install`)
 - Terraform 1.5+
 - gcloud CLI
 - SMTP credentials for the daily brief
@@ -169,8 +170,10 @@ See `.env.example` for the full reference. Key variables:
 - `GCP_PROJECT_ID`, `GCP_REGION` — GCP project and region
 - `BRAND_DOCS_BUCKET` — Cloud Storage bucket name
 - `APP_URL` — public frontend URL used for Stripe billing return links
-- `STRIPE_*_PRICE_ID` — Stripe product price IDs for Starter and Pro
-- `INTERNAL_TEST_EMAILS` — comma-separated emails that should bypass billing with internal access
+- `STRIPE_*_PRICE_ID` — Stripe product price IDs for Starter and Pro (`STRIPE_PRO_PRICE_ID` must match the Pro price embedded in your Stripe Pricing Table)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID` — frontend embed for Settings → Billing (set in `.env` / App Hosting / GitHub Actions build secrets)
+- **Stripe webhooks:** endpoint URL `https://<your-api-host>/webhooks/stripe` (alias of `POST /billing/webhook`). Use the endpoint signing secret as `STRIPE_WEBHOOK_SECRET`.
+- **Stripe Dashboard (Pricing table):** success URL `{APP_URL}/billing?checkout=success`, cancel URL `{APP_URL}/billing?checkout=canceled` (resolves to Settings → Billing with the same polling UX)
 - `EMBEDDING_MODEL` — Vertex AI embedding model ID
 - `SMTP_*` — SMTP configuration for the daily email brief
 

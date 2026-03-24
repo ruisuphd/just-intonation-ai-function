@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from datetime import datetime, timezone
 from typing import Any
 
@@ -10,11 +11,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from shared.firestore_client import create_tenant, query_docs, update_tenant
 from shared.redis_client import cache_get, cache_set
-from shared.entitlements import (
-    is_internal_test_email,
-    normalize_email,
-    resolve_access,
-)
+from shared.entitlements import normalize_email, resolve_access
 from shared.logger import get_logger
 from shared.models import TenantProfile
 
@@ -30,7 +27,7 @@ def _verify_firebase_token(token: str) -> dict:
     if not firebase_admin._apps:
         firebase_admin.initialize_app()
 
-    return firebase_auth.verify_id_token(token)
+    return firebase_auth.verify_id_token(token, check_revoked=True)
 
 
 def _build_default_tenant(uid: str, email: str) -> dict[str, Any]:
@@ -46,7 +43,6 @@ def _build_default_tenant(uid: str, email: str) -> dict[str, Any]:
         "subscription_status": "active",
         "daily_digest_email": normalized_email,
         "created_at": datetime.now(timezone.utc),
-        "is_internal": is_internal_test_email(email),
     }
 
 
@@ -59,9 +55,6 @@ def _profile_updates(profile: TenantProfile, email: str) -> dict[str, Any]:
 
     if normalized_email and not profile.daily_digest_email:
         updates["daily_digest_email"] = normalized_email
-
-    if is_internal_test_email(email) and not profile.is_internal:
-        updates["is_internal"] = True
 
     return updates
 
@@ -82,6 +75,23 @@ async def get_current_user(
     uid = decoded.get("uid", "")
     email = decoded.get("email", "")
 
+    allow_raw = (os.getenv("BETA_ALLOWED_EMAILS") or "").strip()
+    if allow_raw:
+        allowed = {
+            normalize_email(x.strip())
+            for x in allow_raw.split(",")
+            if x.strip()
+        }
+        if allowed and normalize_email(email or "") not in allowed:
+            logger.warning(
+                "auth.beta_allowlist_reject",
+                extra={"uid": uid},
+            )
+            raise HTTPException(
+                status_code=403,
+                detail="This account is not authorized for this deployment.",
+            )
+
     # ── Try cache first for tenant lookup ─────────────────────────────────
     cache_key = f"tenant:uid:{uid}"
     tenant: dict[str, Any] | None = cache_get(cache_key)
@@ -96,7 +106,11 @@ async def get_current_user(
             tenant = {**profile_data, "id": profile_data["tenant_id"]}
             logger.info(
                 "auth.auto_tenant_created",
-                extra={"tenant_id": profile_data["tenant_id"], "uid": uid},
+                extra={
+                    "tenant_id": profile_data["tenant_id"],
+                    "uid": uid,
+                    "log_metric_hint": "auto_tenant_created",
+                },
             )
 
         cache_set(cache_key, tenant, ttl_seconds=300)
@@ -110,7 +124,6 @@ async def get_current_user(
         cache_set(cache_key, tenant, ttl_seconds=300)
 
     access = resolve_access(profile)
-    request.state.bypass_billing = access.access_source == "internal"
     request.state.tenant_tier = access.effective_tier
     request.state.access_source = access.access_source
     request.state.starter_access_expires_at = access.starter_access_expires_at
@@ -120,7 +133,34 @@ async def get_current_user(
 
     request.state.uid = uid
     request.state.email = email
+    request.state.email_verified = bool(decoded.get("email_verified"))
     return {"uid": uid, "email": email}
+
+
+def client_ip_for_rate_limit(request: Request) -> str:
+    """Client IP from trusted proxy headers (Cloud Run / load balancers)."""
+    forwarded = (request.headers.get("x-forwarded-for") or "").strip()
+    if forwarded:
+        return forwarded.split(",")[0].strip() or "unknown"
+    if request.client:
+        return request.client.host or "unknown"
+    return "unknown"
+
+
+def rate_limit_identity_key(request: Request) -> str:
+    """Stable rate-limit bucket: verified Firebase uid, else client IP."""
+    auth_header = (request.headers.get("authorization") or "").strip()
+    if auth_header.lower().startswith("bearer "):
+        token = auth_header[7:].strip()
+        if token:
+            try:
+                decoded = _verify_firebase_token(token)
+                uid = decoded.get("uid") or ""
+                if uid:
+                    return f"uid:{uid}"
+            except Exception:
+                pass
+    return f"ip:{client_ip_for_rate_limit(request)}"
 
 
 def require_tenant(
@@ -132,6 +172,17 @@ def require_tenant(
             detail="No tenant found for this account. Complete onboarding first.",
         )
     return request.state.tenant
+
+
+def require_tenant_verified(
+    request: Request, tenant: TenantProfile = Depends(require_tenant)
+) -> TenantProfile:
+    if not getattr(request.state, "email_verified", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Verify your email address before using this feature.",
+        )
+    return tenant
 
 
 def require_access(*tiers: str):

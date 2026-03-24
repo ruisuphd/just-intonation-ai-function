@@ -61,7 +61,7 @@ export default function IntelligenceSection({ billing }: IntelligenceSectionProp
   }
 
   return (
-    <section id="intelligence" className="scroll-mt-28">
+    <section>
       <h2 className="mb-1 text-xl font-semibold">Market Intelligence</h2>
       <p className="mb-4 text-sm text-apple-secondary">AI-curated industry digest.</p>
 

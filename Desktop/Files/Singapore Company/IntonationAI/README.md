@@ -1,60 +1,54 @@
 # IntonationAI
 
-AI-powered vocal and music coaching platform on Google Cloud. Vocal coach first; piano and guitar coaches coming next.
+AI music coach: vocal, piano, and guitar feedback with real-time analysis.
 
 ## Stack
 
-- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
-- **Backend**: Python FastAPI, SQLAlchemy (async), PostgreSQL (Cloud SQL)
-- **AI/ML**: Claude on Vertex AI (LLM), librosa/pYIN (audio analysis)
-- **Voice**: Google Cloud TTS Chirp 3 HD (TTS), Google Cloud Speech-to-Text Chirp (STT)
-- **Real-time**: Firestore for live coaching chat sync
-- **Auth**: Firebase Auth
-- **Payments**: Stripe
-- **Storage**: Google Cloud Storage
-- **Deploy**: Cloud Run + Cloud Build
+- **Frontend:** Next.js 16, React 19, Firebase Auth/Firestore (client SDK)
+- **Backend:** FastAPI on Cloud Run
+- **Database:** Postgres (Cloud SQL), Firestore (realtime messages)
+- **Services:** Vertex AI/Gemini, Stripe, GCS
 
-## Quick Start
+## Production Project
+
+All Firebase and GCP resources use project **intonationai**. See `.firebaserc` and `cloudbuild.yaml`.
+
+## Env Contract
+
+**Root `.env`** (backend + docker-compose):
+
+- `FIREBASE_PROJECT_ID`, `GOOGLE_CLOUD_PROJECT`: intonationai
+- `FIREBASE_WEB_API_KEY`: Firebase web API key (public, used by frontend)
+- `GOOGLE_APPLICATION_CREDENTIALS`: path to service account JSON
+- `DATABASE_URL`, `GCS_BUCKET`, Stripe vars, `FRONTEND_URL`, `BACKEND_URL`
+- `ENVIRONMENT` (`development` | `production`; production requires `FIREBASE_PROJECT_ID` at startup)
+- `DATABASE_AUTO_CREATE` (`true` for local SQLAlchemy `create_all`; `false` in production — use Alembic)
+
+**Frontend `.env.local`** (or build-time env):
+
+- `NEXT_PUBLIC_BACKEND_URL`: production API URL
+- `NEXT_PUBLIC_FIREBASE_API_KEY`: same as FIREBASE_WEB_API_KEY
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`: intonationai
+
+## Local
 
 ```bash
-# 1. Copy env and fill in credentials
-cp .env.example .env
-
-# 2. Start PostgreSQL + Firestore emulator + backend + frontend
+cp .env.example .env   # fill values
+cp frontend/.env.example frontend/.env.local
 docker compose up
+```
 
-# Or run services individually:
+Frontend: http://localhost:3000  
+Backend: http://localhost:8000
 
-# Backend
+## Deploy
+
+See [DEPLOY.md](DEPLOY.md) for Firebase Hosting, Cloud Run, Firestore, rollback, and URLs.
+
+## Backend tests
+
+```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-
-# Frontend
-cd frontend
-pnpm install
-pnpm dev
+pip install -r requirements-dev.txt
+pytest tests -q
 ```
-
-## Project Structure
-
-```
-├── frontend/          Next.js 15 app (TypeScript + Tailwind)
-├── backend/           FastAPI app (Python)
-│   ├── app/services/  LLM, TTS, STT, audio, coach, RAG, warmup, payment
-│   ├── app/db/        SQLAlchemy + Firestore
-│   └── data/          RAG knowledge base materials
-├── cloudbuild.yaml    Cloud Build → Cloud Run deployment
-└── docker-compose.yml Local dev environment
-```
-
-## Environment Setup
-
-1. **GCP Project**: Create a project in Google Cloud Console
-2. **Firebase**: Enable Auth (email + Google sign-in)
-3. **Vertex AI**: Enable API, request Claude model access
-4. **Cloud SQL**: Create PostgreSQL instance (or use local Docker)
-5. **Stripe**: Create test-mode account and products
-
-Frontend: `http://localhost:3000` | Backend: `http://localhost:8000` | API docs: `http://localhost:8000/docs`

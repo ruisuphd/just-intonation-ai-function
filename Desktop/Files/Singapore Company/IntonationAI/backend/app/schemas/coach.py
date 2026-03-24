@@ -13,6 +13,9 @@ class CoachMessageResponse(BaseModel):
 
 class CoachSessionCreate(BaseModel):
     coach_type: str
+    timezone: str | None = None
+    practice_mode: bool | None = None
+    locale: str | None = None
 
     @field_validator("coach_type")
     @classmethod
@@ -27,5 +30,7 @@ class CoachSessionResponse(BaseModel):
 
     id: str
     coach_type: str
+    locale: str = "en"
     started_at: str
     ended_at: str | None = None
+    prompt_version: str = "1"

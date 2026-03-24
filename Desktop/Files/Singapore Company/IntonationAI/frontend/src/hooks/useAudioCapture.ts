@@ -4,6 +4,26 @@ import { useRef, useState, useCallback } from "react";
 import { SAMPLE_RATE, FFT_SIZE } from "@/lib/constants";
 
 const RECORDER_CHUNK_MS = 250;
+const MAX_CHUNK_RETENTION_SEC = 60;
+const MAX_CHUNKS = Math.ceil(
+  (MAX_CHUNK_RETENTION_SEC * 1000) / RECORDER_CHUNK_MS
+);
+
+function pickRecorderMimeType(): string {
+  const candidates = [
+    "audio/webm;codecs=opus",
+    "audio/webm",
+    "audio/mp4",
+    "audio/mp4;codecs=mp4a.40.2",
+    "audio/aac",
+  ];
+  for (const t of candidates) {
+    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t)) {
+      return t;
+    }
+  }
+  return "";
+}
 
 export interface AudioCaptureState {
   isCapturing: boolean;
@@ -27,6 +47,7 @@ export function useAudioCapture() {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const recordedMimeRef = useRef<string>("audio/webm");
 
   const start = useCallback(async (options?: AudioCaptureOptions) => {
     try {
@@ -42,22 +63,66 @@ export function useAudioCapture() {
         audio: audioConstraints,
       });
       const ctx = new AudioContext({ sampleRate: SAMPLE_RATE });
+      await ctx.resume();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
       analyser.fftSize = FFT_SIZE;
       source.connect(analyser);
 
-      chunksRef.current = [];
-      const recorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-          ? "audio/webm;codecs=opus"
-          : "audio/webm",
+      const mimeType = pickRecorderMimeType();
+      recordedMimeRef.current = mimeType || "audio/webm";
+      const recorderOptions: MediaRecorderOptions = {
         audioBitsPerSecond: 128000,
-      });
+      };
+      if (mimeType) {
+        recorderOptions.mimeType = mimeType;
+      }
+      const recorder = new MediaRecorder(stream, recorderOptions);
+
+      chunksRef.current = [];
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
+        if (e.data.size > 0) {
+          chunksRef.current.push(e.data);
+          if (chunksRef.current.length > MAX_CHUNKS) {
+            chunksRef.current = chunksRef.current.slice(-MAX_CHUNKS);
+          }
+        }
       };
       recorder.start(RECORDER_CHUNK_MS);
+
+      const audioTrack = stream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.addEventListener(
+          "ended",
+          () => {
+            setState({
+              isCapturing: false,
+              analyserNode: null,
+              error:
+                "Microphone disconnected. Reconnect your mic or pick another device.",
+            });
+            if (recorderRef.current?.state === "recording") {
+              try {
+                recorderRef.current.stop();
+              } catch {
+                /* ignore */
+              }
+            }
+            recorderRef.current = null;
+            streamRef.current?.getTracks().forEach((t) => t.stop());
+            streamRef.current = null;
+            sourceRef.current = null;
+            const c = ctxRef.current;
+            ctxRef.current = null;
+            if (c) {
+              requestAnimationFrame(() => {
+                void c.close().catch(() => {});
+              });
+            }
+          },
+          { once: true }
+        );
+      }
 
       ctxRef.current = ctx;
       streamRef.current = stream;
@@ -78,11 +143,16 @@ export function useAudioCapture() {
     if (recorderRef.current?.state === "recording") recorderRef.current.stop();
     recorderRef.current = null;
     streamRef.current?.getTracks().forEach((t) => t.stop());
-    ctxRef.current?.close();
     streamRef.current = null;
-    ctxRef.current = null;
     sourceRef.current = null;
+    const ctx = ctxRef.current;
+    ctxRef.current = null;
     setState({ isCapturing: false, analyserNode: null, error: null });
+    if (ctx) {
+      requestAnimationFrame(() => {
+        void ctx.close().catch(() => {});
+      });
+    }
   }, []);
 
   const getLastSeconds = useCallback((seconds: number): Blob | null => {
@@ -94,7 +164,8 @@ export function useAudioCapture() {
       chunks.length
     );
     const toKeep = chunks.slice(-targetChunks);
-    return new Blob(toKeep, { type: chunks[0]?.type ?? "audio/webm" });
+    const blobType = chunks[0]?.type || recordedMimeRef.current;
+    return new Blob(toKeep, { type: blobType });
   }, []);
 
   const getTimeDomainData = useCallback((): Float32Array | null => {

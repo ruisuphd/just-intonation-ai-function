@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
@@ -9,8 +8,6 @@ from shared.models import TenantProfile
 STARTER_TIER = "starter"
 PRO_TIER = "pro"
 STARTER_ACCESS_DAYS = 7  # Keep for backward compat but unused
-
-_DEFAULT_INTERNAL_EMAILS = {"yoryouyoi@gmail.com"}
 
 
 @dataclass(frozen=True)
@@ -57,19 +54,6 @@ def default_starter_access_expires_at(now: datetime | None = None) -> datetime:
     return current + timedelta(days=STARTER_ACCESS_DAYS)
 
 
-def internal_test_emails() -> set[str]:
-    configured = {
-        normalize_email(raw)
-        for raw in os.getenv("INTERNAL_TEST_EMAILS", "").split(",")
-        if normalize_email(raw)
-    }
-    return _DEFAULT_INTERNAL_EMAILS | configured
-
-
-def is_internal_test_email(email: str | None) -> bool:
-    return normalize_email(email) in internal_test_emails()
-
-
 def derive_starter_access_expires_at(profile: TenantProfile) -> datetime | None:
     explicit = parse_datetime(profile.starter_access_expires_at)
     if explicit:
@@ -79,7 +63,6 @@ def derive_starter_access_expires_at(profile: TenantProfile) -> datetime | None:
     if (
         normalize_subscription_tier(profile.subscription_tier) == STARTER_TIER
         and profile.subscription_status == "trialing"
-        and not profile.is_internal
         and not (profile.stripe_subscription_id or profile.stripe_customer_id)
     ):
         return default_starter_access_expires_at(profile.created_at)
@@ -106,17 +89,6 @@ def resolve_access(
     now: datetime | None = None,
 ) -> AccessSnapshot:
     paid_subscription = has_paid_subscription(profile)
-
-    if profile.is_internal:
-        return AccessSnapshot(
-            effective_tier=PRO_TIER,
-            access_source="internal",
-            starter_access_expires_at=None,
-            starter_access_active=False,
-            has_paid_subscription=False,
-            can_manage_billing=False,
-            can_start_checkout=False,
-        )
 
     if paid_subscription and profile.stripe_subscription_id:
         return AccessSnapshot(

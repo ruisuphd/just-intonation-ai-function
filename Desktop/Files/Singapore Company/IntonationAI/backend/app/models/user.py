@@ -13,6 +13,7 @@ class User(Base):
     firebase_uid = Column(String(128), unique=True, index=True)
     email = Column(String(256))
     display_name = Column(String(256), default="")
+    preferred_locale = Column(String(32), nullable=True)
     voice_profile_json = Column(JSON, nullable=True)
     skill_profile_json = Column(JSON, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

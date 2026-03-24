@@ -2,17 +2,20 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date, datetime, time, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, field_validator, model_validator
 
 from api.middleware.auth import require_access
+from api.middleware.legal import require_access_with_legal, require_access_with_legal_verified
 from shared.usage_limits import require_usage_limit, increment_usage
 from shared.datetime_utils import coerce_datetime
 from shared.draft_utils import best_effort_post_topic, build_draft_payload
 from shared.firestore_client import (
     add_doc,
+    count_docs,
     delete_doc,
     get_doc,
     query_docs,
@@ -48,6 +51,50 @@ def _draft_platforms(draft_doc: dict) -> list[str]:
     if not raw_platforms:
         return []
     return normalize_platforms(raw_platforms)
+
+
+def _draft_sort_key(draft_doc: dict) -> datetime:
+    return (
+        coerce_datetime(draft_doc.get("created_at"))
+        or coerce_datetime(draft_doc.get("updated_at"))
+        or _default_scheduled_for(draft_doc.get("batch_date") or "1970-01-01")
+    )
+
+
+def _list_drafts_fallback(
+    *,
+    tenant_id: str,
+    date: str | None,
+    platform: str | None,
+    status: str | None,
+    limit: int,
+    cursor: str | None,
+) -> tuple[list[dict], str | None]:
+    docs = query_docs("drafts", limit=500, tenant_id=tenant_id)
+    filtered = []
+    for doc in docs:
+        if date and doc.get("batch_date") != date:
+            continue
+        if status and doc.get("status") != status:
+            continue
+        if platform and platform not in _draft_platforms(doc):
+            continue
+        filtered.append(doc)
+
+    filtered.sort(key=_draft_sort_key, reverse=True)
+
+    start_index = 0
+    if cursor:
+        for index, doc in enumerate(filtered):
+            if doc.get("id") == cursor:
+                start_index = index + 1
+                break
+
+    page = filtered[start_index : start_index + limit]
+    next_cursor = (
+        page[-1]["id"] if start_index + limit < len(filtered) and page else None
+    )
+    return page, next_cursor
 
 
 def _sync_scheduled_records(
@@ -120,18 +167,56 @@ async def list_drafts(
     if platform:
         filters.append(("platforms_generated", "array_contains", platform))
     page_limit = min(limit, 100)
-    docs, next_cursor = query_docs_paginated(
-        "drafts",
-        filters=filters or None,
-        order_by="-created_at",
-        limit=page_limit,
-        tenant_id=tenant.tenant_id,
-        start_after_id=cursor,
-    )
+    try:
+        docs, next_cursor = query_docs_paginated(
+            "drafts",
+            filters=filters or None,
+            order_by="-created_at",
+            limit=page_limit,
+            tenant_id=tenant.tenant_id,
+            start_after_id=cursor,
+        )
+    except Exception as exc:
+        logger.warning(
+            "drafts.list_fallback",
+            extra={
+                "tenant_id": tenant.tenant_id,
+                "status": status,
+                "date": date,
+                "platform": platform,
+                "cursor": cursor,
+                "error": str(exc),
+            },
+        )
+        docs, next_cursor = _list_drafts_fallback(
+            tenant_id=tenant.tenant_id,
+            date=date,
+            platform=platform,
+            status=status,
+            limit=page_limit,
+            cursor=cursor,
+        )
     out: dict = {"drafts": docs}
     if next_cursor:
         out["next_cursor"] = next_cursor
     return out
+
+
+@router.get("/count")
+async def count_drafts(
+    status: str | None = None,
+    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+):
+    filters: list[tuple] = []
+    if status:
+        filters.append(("status", "==", status))
+    n = await asyncio.to_thread(
+        count_docs,
+        "drafts",
+        filters if filters else None,
+        tenant_id=tenant.tenant_id,
+    )
+    return {"count": n}
 
 
 @router.get("/{draft_id}")
@@ -168,7 +253,7 @@ class DraftStatusUpdate(BaseModel):
 async def update_draft_status(
     draft_id: str,
     body: DraftStatusUpdate,
-    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+    tenant: TenantProfile = Depends(require_access_with_legal("starter", "pro")),
 ):
     existing_doc = get_doc("drafts", draft_id, tenant_id=tenant.tenant_id)
     if not existing_doc:
@@ -247,7 +332,7 @@ def _cleanup_scheduled_draft(*, tenant_id: str, draft_id: str, draft_doc: dict) 
 @router.delete("/{draft_id}")
 async def delete_draft(
     draft_id: str,
-    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+    tenant: TenantProfile = Depends(require_access_with_legal("starter", "pro")),
 ):
     existing_doc = get_doc("drafts", draft_id, tenant_id=tenant.tenant_id)
     if not existing_doc:
@@ -281,7 +366,7 @@ class DraftContentUpdate(BaseModel):
 async def update_draft_content(
     draft_id: str,
     body: DraftContentUpdate,
-    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+    tenant: TenantProfile = Depends(require_access_with_legal("starter", "pro")),
 ):
     existing_doc = get_doc("drafts", draft_id, tenant_id=tenant.tenant_id)
     if not existing_doc:
@@ -332,10 +417,12 @@ class QuickGenerateRequest(BaseModel):
 async def quick_generate(
     body: QuickGenerateRequest,
     request: Request,
-    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+    tenant: TenantProfile = Depends(require_access_with_legal_verified("starter", "pro")),
 ):
     tier = getattr(request.state, "tenant_tier", "starter")
-    require_usage_limit(tenant.tenant_id, tier, "post_generations_per_day", tenant.timezone)
+    require_usage_limit(
+        tenant.tenant_id, tier, "post_generations_per_day", tenant.timezone
+    )
 
     from engines.post_generate import generate_daily_post
     from shared.retriever import Retriever
@@ -378,3 +465,125 @@ async def quick_generate(
     draft_id = add_doc("drafts", draft_payload, tenant_id=tenant.tenant_id)
     increment_usage(tenant.tenant_id, "post_generations_per_day", tenant.timezone)
     return {"id": draft_id, **draft_payload}
+
+
+@router.post("/{draft_id}/regenerate")
+async def regenerate_draft(
+    draft_id: str,
+    request: Request,
+    tenant: TenantProfile = Depends(require_access_with_legal_verified("starter", "pro")),
+):
+    existing_doc = get_doc("drafts", draft_id, tenant_id=tenant.tenant_id)
+    if not existing_doc:
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    tier = getattr(request.state, "tenant_tier", "starter")
+    require_usage_limit(
+        tenant.tenant_id, tier, "post_generations_per_day", tenant.timezone
+    )
+
+    from engines.post_generate import generate_daily_post
+    from shared.retriever import Retriever
+
+    topic = (
+        existing_doc.get("headline")
+        or existing_doc.get("why_it_matters")
+        or existing_doc.get("topic")
+        or ""
+    ).strip()
+    platforms = _draft_platforms(existing_doc)
+    primary_platform = platforms[0] if platforms else "linkedin"
+
+    if not topic:
+        intel_docs = query_docs(
+            "intelligence_items",
+            order_by="-postability_score",
+            limit=1,
+            tenant_id=tenant.tenant_id,
+        )
+        if intel_docs:
+            topic = intel_docs[0].get("summary") or intel_docs[0].get("title", "")
+    if not topic:
+        topic = best_effort_post_topic(tenant)
+
+    retriever = Retriever(top_k=4, tenant_id=tenant.tenant_id)
+    chunks, _ = retriever.retrieve(topic, language="en")
+    brand_context = [
+        {"text": c.get("text", ""), "doc_type": c.get("doc_type", "other")}
+        for c in chunks
+    ]
+
+    result = await generate_daily_post(
+        intelligence_summaries=[topic],
+        brand_context=brand_context or None,
+        tenant_id=tenant.tenant_id,
+    )
+
+    draft_payload = build_draft_payload(
+        result,
+        tenant=tenant,
+        origin="regenerate",
+        primary_platform=primary_platform,
+        topic=topic,
+        platforms_enabled=tenant.platforms_enabled or platforms,
+    )
+    version = existing_doc.get("version", 0) + 1
+    updates = {
+        **draft_payload,
+        "updated_at": datetime.now(timezone.utc),
+        "version": version,
+        "created_at": existing_doc.get("created_at") or draft_payload.get("created_at"),
+    }
+    update_doc("drafts", draft_id, updates, tenant_id=tenant.tenant_id)
+    increment_usage(tenant.tenant_id, "post_generations_per_day", tenant.timezone)
+    updated_doc = {**existing_doc, **updates, "id": draft_id}
+    return updated_doc
+
+
+class DraftFeedbackRequest(BaseModel):
+    thumbs: str
+    reason: str | None = None
+
+    @field_validator("thumbs")
+    @classmethod
+    def validate_thumbs(cls, value: str) -> str:
+        v = (value or "").strip().lower()
+        if v not in ("up", "down"):
+            raise ValueError("thumbs must be 'up' or 'down'")
+        return v
+
+    @field_validator("reason")
+    @classmethod
+    def validate_reason(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        s = value.strip()
+        if len(s) > 500:
+            raise ValueError("reason must be at most 500 characters")
+        return s or None
+
+
+@router.post("/{draft_id}/feedback")
+async def draft_feedback(
+    draft_id: str,
+    body: DraftFeedbackRequest,
+    tenant: TenantProfile = Depends(require_access_with_legal("starter", "pro")),
+):
+    existing_doc = get_doc("drafts", draft_id, tenant_id=tenant.tenant_id)
+    if not existing_doc:
+        raise HTTPException(status_code=404, detail="Draft not found")
+    now = datetime.now(timezone.utc)
+    updates: dict = {
+        "feedback_thumbs": body.thumbs,
+        "feedback_at": now,
+        "updated_at": now,
+    }
+    if body.reason is not None:
+        updates["feedback_reason"] = body.reason
+    update_doc(
+        "drafts",
+        draft_id,
+        updates,
+        tenant_id=tenant.tenant_id,
+    )
+    return {"ok": True, "thumbs": body.thumbs}

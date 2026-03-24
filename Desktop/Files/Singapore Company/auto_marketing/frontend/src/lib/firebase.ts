@@ -68,4 +68,32 @@ export async function verifyEmail(): Promise<void> {
   await sendEmailVerification(auth.currentUser);
 }
 
+export async function updatePassword(newPassword: string): Promise<void> {
+  const { updatePassword: firebaseUpdatePassword } = await import("firebase/auth");
+  if (!auth?.currentUser) throw new Error("No user signed in");
+  await firebaseUpdatePassword(auth.currentUser, newPassword);
+}
+
+export async function changePasswordWithReauth(
+  currentPassword: string,
+  newPassword: string
+): Promise<void> {
+  const {
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    updatePassword: firebaseUpdatePassword,
+  } = await import("firebase/auth");
+  const user = auth?.currentUser;
+  if (!user?.email) throw new Error("No user signed in with email");
+  const cred = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, cred);
+  await firebaseUpdatePassword(user, newPassword);
+}
+
+export async function updateProfile(updates: { displayName?: string; photoURL?: string }): Promise<void> {
+  const { updateProfile: firebaseUpdateProfile } = await import("firebase/auth");
+  if (!auth?.currentUser) throw new Error("No user signed in");
+  await firebaseUpdateProfile(auth.currentUser, updates);
+}
+
 export type { User };

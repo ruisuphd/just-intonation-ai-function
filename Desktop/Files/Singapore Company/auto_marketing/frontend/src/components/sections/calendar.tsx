@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import LockedState from "@/components/ui/locked-state";
+import Notice from "@/components/ui/notice";
 import { hasTierAccess } from "@/lib/billing";
 import { PLATFORM_BY_ID, normalizePlatforms } from "@/lib/platforms";
 import type { BillingSummary, DraftContent, PlatformId } from "@/types";
@@ -135,7 +136,7 @@ export default function CalendarSection({ billing, platforms }: CalendarSectionP
   }
 
   return (
-    <section id="calendar" className="scroll-mt-28">
+    <section>
       <h2 className="mb-4 text-xl font-semibold">Content Calendar</h2>
 
       {billing && !hasTierAccess(billing, "starter") ? (
@@ -145,6 +146,12 @@ export default function CalendarSection({ billing, platforms }: CalendarSectionP
         />
       ) : (
         <>
+          <div className="mb-4">
+            <Notice tone="neutral">
+              The calendar plans when drafts and newsletters run. Direct auto-post to every network is still in rollout;
+              you can copy drafts out or use connected accounts where OAuth is enabled.
+            </Notice>
+          </div>
           {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
 
           {drafts.length === 0 ? (

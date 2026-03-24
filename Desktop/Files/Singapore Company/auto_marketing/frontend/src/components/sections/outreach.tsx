@@ -30,7 +30,7 @@ export default function OutreachSection({ billing }: OutreachSectionProps) {
   }, [billing]);
 
   return (
-    <section id="outreach" className="scroll-mt-28">
+    <section>
       <h2 className="mb-4 text-xl font-semibold">Outreach</h2>
 
       {billing && !hasTierAccess(billing, "pro") ? (

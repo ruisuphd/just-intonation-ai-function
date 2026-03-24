@@ -9,6 +9,10 @@ import {
 } from "react";
 import * as Sentry from "@sentry/nextjs";
 import { onAuthStateChanged } from "firebase/auth";
+import {
+  readAnalyticsConsent,
+  COOKIE_CONSENT_UPDATED_EVENT,
+} from "@/lib/cookie-consent-storage";
 import { auth, type User } from "./firebase";
 
 interface AuthState {
@@ -17,6 +21,14 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState>({ user: null, loading: true });
+
+function applySentryUser(user: User | null) {
+  if (user && readAnalyticsConsent()) {
+    Sentry.setUser({ id: user.uid, email: user.email ?? undefined });
+  } else {
+    Sentry.setUser(null);
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ user: null, loading: true });
@@ -28,13 +40,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const unsub = onAuthStateChanged(auth, (user) => {
       setState({ user, loading: false });
-      if (user) {
-        Sentry.setUser({ id: user.uid, email: user.email ?? undefined });
-      } else {
-        Sentry.setUser(null);
-      }
+      applySentryUser(user);
     });
     return unsub;
+  }, []);
+
+  useEffect(() => {
+    const onConsentUpdated = () => {
+      applySentryUser(auth?.currentUser ?? null);
+    };
+    window.addEventListener(COOKIE_CONSENT_UPDATED_EVENT, onConsentUpdated);
+    return () =>
+      window.removeEventListener(COOKIE_CONSENT_UPDATED_EVENT, onConsentUpdated);
   }, []);
 
   return (

@@ -39,7 +39,7 @@ export function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-[#1d1d1f]"
+          className="text-[#e8e8ed]"
         />
         <circle
           cx={size / 2}
@@ -58,7 +58,7 @@ export function ProgressRing({
         className="absolute inset-0 flex flex-col items-center justify-center"
         aria-live="polite"
       >
-        <span className="text-2xl font-semibold tabular-nums text-white">
+        <span className="text-2xl font-semibold tabular-nums text-[#1d1d1f]">
           {Math.round(clamped)}%
         </span>
         {label && (

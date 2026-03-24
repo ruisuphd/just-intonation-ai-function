@@ -6,7 +6,8 @@ interface GuitarFretboardProps {
   mutedStrings?: number[];
 }
 
-// finger positions use 1-indexed strings: 1=high-E, 2=B, 3=G, 4=D, 5=A, 6=low-E
+// Finger positions use 1-indexed strings: 1=high-E … 6=low-E. SVG strings are drawn
+// low-E (6) on the left, high-E (1) on the right — map with x = 30 + (6 - string) * spacing.
 const CHORD_SHAPES: Record<string, { string: number; fret: number }[]> = {
   // Open chords
   Am:  [{ string: 2, fret: 2 }, { string: 3, fret: 2 }, { string: 4, fret: 1 }],
@@ -70,7 +71,16 @@ export function GuitarFretboard({
           </span>
         </div>
       )}
-      <svg viewBox={`0 0 ${w} ${h}`} className="w-full max-w-[200px]">
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        className="w-full max-w-[200px]"
+        role="img"
+        aria-label={
+          detectedChord
+            ? `Guitar fretboard, ${detectedChord} chord shape`
+            : "Guitar fretboard"
+        }
+      >
         {Array.from({ length: 6 }, (_, i) => (
           <line
             key={i}
@@ -96,7 +106,7 @@ export function GuitarFretboard({
         {fingers.map((f, i) => (
           <circle
             key={i}
-            cx={30 + (f.string - 1) * stringSpacing}
+            cx={30 + (6 - f.string) * stringSpacing}
             cy={10 + (f.fret + 0.5) * fretSpacing}
             r={6}
             fill="#0071e3"

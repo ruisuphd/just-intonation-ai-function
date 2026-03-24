@@ -1,5 +1,7 @@
 # Runbook: DLQ Replay
 
+For synchronous API failures and `trace_id` correlation, see [api-5xx-triage.md](./api-5xx-triage.md).
+
 ## Scope
 
 Dead-letter topics:

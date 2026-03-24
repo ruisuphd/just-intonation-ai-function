@@ -3,13 +3,23 @@ Guitar-specific audio analysis: chord recognition, muted strings, strumming, bar
 """
 
 import asyncio
-import numpy as np
-import librosa
 
+import librosa
+import numpy as np
+
+from app.services.audio.audio_advanced import piano_guitar_advanced_bundle
 from app.services.audio.audio_utils import bytes_to_array, detect_onset_frames
 from app.services.audio.chord_templates import match_chord
 
 GUITAR_STRING_FUNDAMENTALS = [82.41, 110.0, 146.83, 196.0, 246.94, 329.63]
+
+
+def _tempo_value(tempo_est: float | np.ndarray | list[float]) -> float:
+    arr = np.asarray(tempo_est)
+    if arr.size == 0:
+        return 120.0
+    value = float(arr.reshape(-1)[0])
+    return value if np.isfinite(value) else 120.0
 
 
 def _energy_at_freq(y: np.ndarray, sr: int, freq: float, tolerance: float = 0.1) -> float:
@@ -25,7 +35,12 @@ def _energy_at_freq(y: np.ndarray, sr: int, freq: float, tolerance: float = 0.1)
     return float(np.mean(S[idx, :]))
 
 
-def analyze_guitar_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> dict:
+def analyze_guitar_audio(
+    audio_data: np.ndarray,
+    sample_rate: int = 44100,
+    *,
+    full_analysis: bool = False,
+) -> dict:
     if len(audio_data) < 512:
         return {
             "chord_detected": None,
@@ -34,6 +49,8 @@ def analyze_guitar_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> di
             "strumming_pattern": "",
             "timing_accuracy": 0.5,
             "barre_detected": False,
+            "schema_version": 2,
+            "analysis_tier": "full" if full_analysis else "basic",
         }
 
     y = audio_data.astype(np.float32) if audio_data.dtype != np.float32 else audio_data
@@ -72,7 +89,7 @@ def analyze_guitar_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> di
         strumming_pattern = " ".join(pattern[:6]) if pattern else "D D U D"
 
     tempo_est, _ = librosa.beat.beat_track(y=harmonic, sr=sample_rate, hop_length=512)
-    tempo = float(tempo_est) if np.isfinite(tempo_est) else 120.0
+    tempo = _tempo_value(tempo_est)
     beat_interval = 60.0 / tempo if tempo > 0 else 0.5
     timing_accuracy = 0.7
     if len(onset_times) >= 2 and beat_interval > 0:
@@ -83,23 +100,53 @@ def analyze_guitar_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> di
             deviations.append(dev)
         timing_accuracy = float(np.clip(1 - np.mean(deviations), 0.3, 0.95))
 
-    barre_chords = {"F", "Fm", "F7", "Fmaj7", "Fm7", "F#", "F#m", "F#7", "F#maj7", "F#m7",
-                    "Bb", "Bbm", "Bb7", "Bbmaj7", "Bbm7", "B", "Bm", "B7", "Bmaj7", "Bm7"}
+    barre_chords = {
+        "F",
+        "Fm",
+        "F7",
+        "Fmaj7",
+        "Fm7",
+        "F#",
+        "F#m",
+        "F#7",
+        "F#maj7",
+        "F#m7",
+        "Bb",
+        "Bbm",
+        "Bb7",
+        "Bbmaj7",
+        "Bbm7",
+        "B",
+        "Bm",
+        "B7",
+        "Bmaj7",
+        "Bm7",
+    }
     barre_detected = chord_detected in barre_chords if chord_detected else False
 
-    return {
+    out = {
         "chord_detected": chord_detected,
         "chord_confidence": chord_confidence,
         "muted_strings": muted_strings,
         "strumming_pattern": strumming_pattern,
         "timing_accuracy": timing_accuracy,
         "barre_detected": barre_detected,
+        "schema_version": 2,
+        "analysis_tier": "full" if full_analysis else "basic",
     }
+    if full_analysis:
+        out.update(piano_guitar_advanced_bundle(y, sample_rate))
+    return out
 
 
-async def analyse_guitar(audio_bytes: bytes, sample_rate: int = 44100) -> dict:
+async def analyse_guitar(
+    audio_bytes: bytes,
+    sample_rate: int = 44100,
+    *,
+    full_analysis: bool = False,
+) -> dict:
     def _run() -> dict:
         y = bytes_to_array(audio_bytes, sample_rate)
-        return analyze_guitar_audio(y, sample_rate)
+        return analyze_guitar_audio(y, sample_rate, full_analysis=full_analysis)
 
     return await asyncio.to_thread(_run)

@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel
 
 import httpx
 
@@ -30,18 +31,9 @@ from shared.secrets import get_secret_or_env
 
 logger = get_logger("api.oauth")
 
-# Hard-coded platform credentials (last-resort fallback)
-# These are the platform app credentials, not user credentials
-_PLATFORM_CREDS = {
-    "linkedin_client_id": "77vag0bv15gmoa",
-    "linkedin_client_secret": "WPL_AP1.UYVHWkIWXeXyhOiW.ysPxEA==",
-    "x_client_id": "NGE0cVA1NUlqM19VdGNwc3pLeDE6MTpjaQ",
-    "x_client_secret": "2xH9Y1teOMAuG9LLt7outqDGfsmRIYMLNNMQH_pEu3rld6gvDX",
-}
-
 
 def _get_oauth_credential(field: str, secret_id: str, env_var: str) -> str | None:
-    """Read an OAuth credential from Firestore first, then Secret Manager/env, then hardcoded fallback."""
+    """Resolve OAuth credential from Firestore admin config → Secret Manager → env. Returns None if none found."""
     try:
         doc = get_doc("system_config", "oauth_credentials", tenant_id=None) or {}
         value = doc.get(field, "").strip()
@@ -50,9 +42,8 @@ def _get_oauth_credential(field: str, secret_id: str, env_var: str) -> str | Non
     except Exception:
         pass
     result = get_secret_or_env(secret_id=secret_id, env_var=env_var)
-    if result:
-        return result
-    return _PLATFORM_CREDS.get(field)
+    return result if result else None
+
 
 router = APIRouter(prefix="/api/oauth", tags=["oauth"])
 
@@ -67,15 +58,28 @@ X_ME = "https://api.x.com/2/users/me"
 OAUTH_STATE_TTL_MINUTES = 10
 
 
+def _is_managed_runtime() -> bool:
+    return bool(
+        os.getenv("K_SERVICE")
+        or os.getenv("FUNCTION_TARGET")
+        or os.getenv("FUNCTION_NAME")
+    )
+
+
 def _get_state_signing_key() -> str:
     """Get a server-side secret for HMAC-signing OAuth state parameters."""
     key = get_secret_or_env(
         secret_id="oauth-state-secret", env_var="OAUTH_STATE_SECRET"
     )
-    if not key:
-        # Fallback: derive from project ID (stable but less ideal)
-        key = os.getenv("GCP_PROJECT_ID", "automark-dev-fallback")
-    return key
+    if key:
+        return key
+    if _is_managed_runtime():
+        logger.error("oauth.missing_oauth_state_secret")
+        raise HTTPException(
+            status_code=503,
+            detail="OAuth state secret is not configured for this deployment.",
+        )
+    return os.getenv("GCP_PROJECT_ID", "automark-dev-fallback")
 
 
 def _oauth_state(tenant_id: str, nonce: str) -> str:
@@ -158,7 +162,10 @@ async def linkedin_authorize(
     max_connections = limits["max_platform_connections"]
     connected = len(tenant.platform_credentials or {})
     if connected >= max_connections:
-        raise HTTPException(status_code=429, detail=f"Platform connection limit reached ({max_connections}). Upgrade to Pro.")
+        raise HTTPException(
+            status_code=429,
+            detail=f"Platform connection limit reached ({max_connections}). Upgrade to Pro.",
+        )
 
     client_id = _get_oauth_credential(
         "linkedin_client_id", "linkedin-client-id", "LINKEDIN_CLIENT_ID"
@@ -278,10 +285,11 @@ async def linkedin_callback(
         if lid:
             author_urn = f"urn:li:person:{lid}"
 
+    expires_at = datetime.now(timezone.utc) + timedelta(days=60)
     creds = PlatformCredentials(
         access_token=access_token,
         refresh_token=token_data.get("refresh_token"),
-        expires_at=None,
+        expires_at=expires_at,
         platform_id=author_urn,
     )
     platform_creds = tenant_doc.get("platform_credentials") or {}
@@ -304,11 +312,12 @@ async def x_authorize(
     max_connections = limits["max_platform_connections"]
     connected = len(tenant.platform_credentials or {})
     if connected >= max_connections:
-        raise HTTPException(status_code=429, detail=f"Platform connection limit reached ({max_connections}). Upgrade to Pro.")
+        raise HTTPException(
+            status_code=429,
+            detail=f"Platform connection limit reached ({max_connections}). Upgrade to Pro.",
+        )
 
-    client_id = _get_oauth_credential(
-        "x_client_id", "x-client-id", "X_CLIENT_ID"
-    )
+    client_id = _get_oauth_credential("x_client_id", "x-client-id", "X_CLIENT_ID")
     if not client_id:
         raise HTTPException(
             status_code=501,
@@ -387,9 +396,7 @@ async def x_callback(
         )
         raise HTTPException(status_code=403, detail="OAuth flow ownership mismatch")
 
-    client_id = _get_oauth_credential(
-        "x_client_id", "x-client-id", "X_CLIENT_ID"
-    )
+    client_id = _get_oauth_credential("x_client_id", "x-client-id", "X_CLIENT_ID")
     client_secret = _get_oauth_credential(
         "x_client_secret", "x-client-secret", "X_CLIENT_SECRET"
     )
@@ -438,10 +445,12 @@ async def x_callback(
     except Exception as exc:
         logger.warning("oauth.x_me_failed", extra={"error": str(exc)})
 
+    expires_in = token_data.get("expires_in", 7200)
+    expires_at = datetime.now(timezone.utc) + timedelta(seconds=expires_in)
     creds = PlatformCredentials(
         access_token=access_token,
         refresh_token=token_data.get("refresh_token"),
-        expires_at=None,
+        expires_at=expires_at,
         platform_id=x_user_id,
     )
     platform_creds = tenant_doc.get("platform_credentials") or {}
@@ -457,9 +466,43 @@ async def x_callback(
 @router.get("/status")
 async def oauth_status(tenant: TenantProfile = Depends(require_tenant)):
     creds = tenant.platform_credentials or {}
+    linkedin_cred = creds.get("linkedin") or {}
+    x_cred = creds.get("x_twitter") or {}
+    linkedin_expires_at = linkedin_cred.get("expires_at")
+    x_expires_at = x_cred.get("expires_at")
     return {
-        "linkedin": "linkedin" in creds
-        and bool(creds.get("linkedin", {}).get("access_token")),
-        "x_twitter": "x_twitter" in creds
-        and bool(creds.get("x_twitter", {}).get("access_token")),
+        "linkedin": bool(linkedin_cred.get("access_token")),
+        "x_twitter": bool(x_cred.get("access_token")),
+        "linkedin_expires_at": linkedin_expires_at.isoformat()
+        if linkedin_expires_at and hasattr(linkedin_expires_at, "isoformat")
+        else (str(linkedin_expires_at) if linkedin_expires_at else None),
+        "x_twitter_expires_at": x_expires_at.isoformat()
+        if x_expires_at and hasattr(x_expires_at, "isoformat")
+        else (str(x_expires_at) if x_expires_at else None),
     }
+
+
+class DisconnectRequest(BaseModel):
+    platform: str
+
+
+@router.post("/disconnect")
+async def oauth_disconnect(
+    body: DisconnectRequest,
+    tenant: TenantProfile = Depends(require_tenant),
+):
+    platform = (body.platform or "").strip().lower()
+    if platform not in ("linkedin", "x_twitter"):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid platform. Use linkedin or x_twitter.",
+        )
+    creds = dict(tenant.platform_credentials or {})
+    if platform in creds:
+        del creds[platform]
+        update_tenant(tenant.tenant_id, {"platform_credentials": creds})
+        logger.info(
+            "oauth.disconnected",
+            extra={"tenant_id": tenant.tenant_id, "platform": platform},
+        )
+    return {"ok": True, "platform": platform}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 import pytest
 from pydantic import ValidationError
@@ -70,9 +71,11 @@ def test_quick_generate_persists_real_draft(monkeypatch):
         brand_context=None,
         tenant_id=None,
         intelligence_items=None,
+        tier="starter",
     ):
         assert intelligence_summaries
         assert tenant_id == "tenant-1"
+        assert tier == "starter"
         return DailyPostResult(
             headline="Tailored company update",
             linkedin_post="LinkedIn variant",
@@ -112,6 +115,9 @@ def test_quick_generate_persists_real_draft(monkeypatch):
     response = asyncio.run(
         drafts.quick_generate(
             drafts.QuickGenerateRequest(platform="google_business_profile"),
+            request=SimpleNamespace(
+                state=SimpleNamespace(tenant_tier="starter", email_verified=True)
+            ),
             tenant=_tenant(),
         )
     )
@@ -133,6 +139,84 @@ def test_quick_generate_persists_real_draft(monkeypatch):
     assert stored["data"]["origin"] == "quick_generate"
     assert stored["data"]["headline"] == "Tailored company update"
     assert stored["data"]["platform"] == "google_business_profile"
+
+
+def test_list_drafts_falls_back_when_indexed_query_fails(monkeypatch):
+    draft_docs = [
+        {
+            "id": "draft-older",
+            "status": "draft",
+            "batch_date": "2026-03-10",
+            "created_at": datetime(2026, 3, 10, 8, tzinfo=timezone.utc),
+        },
+        {
+            "id": "draft-newer",
+            "status": "draft",
+            "batch_date": "2026-03-11",
+            "created_at": datetime(2026, 3, 11, 8, tzinfo=timezone.utc),
+        },
+        {
+            "id": "draft-scheduled",
+            "status": "scheduled",
+            "batch_date": "2026-03-12",
+            "created_at": datetime(2026, 3, 12, 8, tzinfo=timezone.utc),
+        },
+    ]
+
+    def fake_query_docs_paginated(*args, **kwargs):
+        raise RuntimeError("missing composite index")
+
+    def fake_query_docs(
+        collection, filters=None, order_by=None, limit=None, *, tenant_id=None
+    ):
+        assert collection == "drafts"
+        assert tenant_id == "tenant-1"
+        assert filters is None
+        assert order_by is None
+        assert limit == 500
+        return draft_docs
+
+    monkeypatch.setattr(drafts, "query_docs_paginated", fake_query_docs_paginated)
+    monkeypatch.setattr(drafts, "query_docs", fake_query_docs, raising=False)
+
+    response = asyncio.run(
+        drafts.list_drafts(status="draft", limit=1, tenant=_tenant())
+    )
+
+    assert [item["id"] for item in response["drafts"]] == ["draft-newer"]
+    assert response["next_cursor"] == "draft-newer"
+
+
+def test_draft_feedback_persists_thumbs_and_reason(monkeypatch):
+    updates: list[dict] = []
+
+    def fake_get_doc(collection, doc_id, *, tenant_id=None):
+        assert collection == "drafts"
+        assert doc_id == "d1"
+        return {"id": "d1", "headline": "H"}
+
+    def fake_update_doc(collection, doc_id, data, *, tenant_id=None):
+        updates.append(
+            {
+                "collection": collection,
+                "doc_id": doc_id,
+                "data": data,
+                "tenant_id": tenant_id,
+            }
+        )
+
+    monkeypatch.setattr(drafts, "get_doc", fake_get_doc)
+    monkeypatch.setattr(drafts, "update_doc", fake_update_doc)
+
+    body = drafts.DraftFeedbackRequest(thumbs="down", reason="Too generic")
+    result = asyncio.run(drafts.draft_feedback("d1", body, tenant=_tenant()))
+
+    assert result["ok"] is True
+    assert result["thumbs"] == "down"
+    assert len(updates) == 1
+    assert updates[0]["data"]["feedback_thumbs"] == "down"
+    assert updates[0]["data"]["feedback_reason"] == "Too generic"
+    assert "feedback_at" in updates[0]["data"]
 
 
 def test_update_settings_normalizes_platforms_and_clamps_text(monkeypatch):

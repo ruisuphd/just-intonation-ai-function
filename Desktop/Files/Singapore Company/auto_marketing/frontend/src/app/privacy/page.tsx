@@ -1,8 +1,26 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getSiteUrl } from "@/lib/site-url";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How IntoMarketing collects, uses, and protects personal data (GDPR, CCPA, PDPA).",
+  alternates: {
+    canonical: "/privacy",
+  },
+  openGraph: {
+    url: `${getSiteUrl()}/privacy`,
+  },
+};
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <a href="/" className="text-sm text-blue-600 hover:underline">← Back to IntoMarketing</a>
+        <Link href="/" className="text-sm text-blue-600 hover:underline">
+          ← Back to IntoMarketing
+        </Link>
         <h1 className="mt-8 text-3xl font-bold">Privacy Policy</h1>
         <p className="mt-2 text-sm text-gray-500">Effective: March 17, 2026</p>
         <div className="prose prose-gray mt-8 max-w-none">

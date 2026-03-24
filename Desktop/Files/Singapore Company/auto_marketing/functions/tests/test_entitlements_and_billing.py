@@ -26,12 +26,12 @@ def _tenant(**overrides) -> TenantProfile:
 
 
 def test_build_default_tenant_starts_with_free_and_starter_access():
-    tenant = _build_default_tenant("uid-123", "yoryouyoi@gmail.com")
+    tenant = _build_default_tenant("uid-123", "owner@example.com")
 
-    assert tenant["subscription_tier"] == "free"
-    assert tenant["subscription_status"] == "free"
-    assert tenant["is_internal"] is True
-    assert tenant["starter_access_expires_at"] > datetime.now(timezone.utc)
+    assert tenant["subscription_tier"] == "starter"
+    assert tenant["subscription_status"] == "active"
+    assert "is_internal" not in tenant
+    assert tenant.get("starter_access_expires_at") is None
 
 
 def test_resolve_access_uses_starter_window_before_free():
@@ -42,8 +42,8 @@ def test_resolve_access_uses_starter_window_before_free():
     access = resolve_access(profile)
 
     assert access.effective_tier == "starter"
-    assert access.access_source == "starter_access"
-    assert access.starter_access_active is True
+    assert access.access_source == "starter"
+    assert access.starter_access_active is False
 
 
 def test_resolve_access_falls_back_to_free_after_starter_window():
@@ -53,18 +53,8 @@ def test_resolve_access_falls_back_to_free_after_starter_window():
 
     access = resolve_access(profile)
 
-    assert access.effective_tier == "free"
-    assert access.access_source == "free"
-
-
-def test_resolve_access_internal_account_bypasses_billing():
-    profile = _tenant(is_internal=True)
-
-    access = resolve_access(profile)
-
-    assert access.effective_tier == "pro"
-    assert access.access_source == "internal"
-    assert access.can_manage_billing is False
+    assert access.effective_tier == "starter"
+    assert access.access_source == "starter"
 
 
 def test_resolve_access_treats_paid_subscription_as_authoritative():
@@ -116,7 +106,6 @@ def test_handle_subscription_updated_maps_price_to_starter(monkeypatch):
             {
                 "subscription_status": "active",
                 "stripe_subscription_id": "sub_123",
-                "subscription_tier": "starter",
             },
         )
     ]
@@ -155,6 +144,80 @@ def test_handle_checkout_completed_sets_trialing_for_selected_tier(monkeypatch):
     ]
 
 
+def test_handle_checkout_completed_uses_client_reference_id(monkeypatch):
+    """Pricing Table passes tenant id as client_reference_id, not session metadata."""
+    updates: list[tuple[str, dict]] = []
+
+    monkeypatch.setenv("STRIPE_PRO_PRICE_ID", "price_pro")
+    monkeypatch.setattr(
+        billing,
+        "update_tenant",
+        lambda tenant_id, payload: updates.append((tenant_id, payload)),
+    )
+    monkeypatch.setattr(
+        billing,
+        "_subscription_first_price_id",
+        lambda _sid: "price_pro",
+    )
+
+    billing._handle_checkout_completed(
+        {
+            "customer": "cus_456",
+            "subscription": "sub_456",
+            "client_reference_id": "tenant-pricing-table",
+            "metadata": {},
+        }
+    )
+
+    assert updates == [
+        (
+            "tenant-pricing-table",
+            {
+                "stripe_customer_id": "cus_456",
+                "stripe_subscription_id": "sub_456",
+                "subscription_tier": "pro",
+                "subscription_status": "trialing",
+            },
+        )
+    ]
+
+
+def test_handle_checkout_completed_client_ref_skips_tier_if_price_unknown(monkeypatch):
+    updates: list[tuple[str, dict]] = []
+
+    monkeypatch.setenv("STRIPE_PRO_PRICE_ID", "price_pro")
+    monkeypatch.setattr(
+        billing,
+        "update_tenant",
+        lambda tenant_id, payload: updates.append((tenant_id, payload)),
+    )
+    monkeypatch.setattr(
+        billing,
+        "_subscription_first_price_id",
+        lambda _sid: "price_unknown",
+    )
+
+    billing._handle_checkout_completed(
+        {
+            "customer": "cus_789",
+            "subscription": "sub_789",
+            "client_reference_id": "tenant-2",
+            "metadata": {},
+        }
+    )
+
+    assert updates == [
+        (
+            "tenant-2",
+            {
+                "stripe_customer_id": "cus_789",
+                "stripe_subscription_id": "sub_789",
+                "subscription_status": "trialing",
+            },
+        )
+    ]
+
+
 def test_handle_subscription_deleted_resets_to_free(monkeypatch):
     updates: list[tuple[str, dict]] = []
 
@@ -178,7 +241,7 @@ def test_handle_subscription_deleted_resets_to_free(monkeypatch):
             "tenant-1",
             {
                 "subscription_status": "canceled",
-                "subscription_tier": "free",
+                "subscription_tier": "starter",
                 "stripe_subscription_id": None,
             },
         )

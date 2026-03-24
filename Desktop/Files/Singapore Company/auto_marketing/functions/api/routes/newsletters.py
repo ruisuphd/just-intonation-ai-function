@@ -8,6 +8,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from api.middleware.auth import require_subscription
+from api.middleware.legal import (
+    require_subscription_with_legal,
+    require_subscription_with_legal_verified,
+)
 from shared.firestore_client import add_doc, get_doc, query_docs_paginated
 from shared.models import TenantProfile
 
@@ -36,7 +40,7 @@ async def list_newsletters(
 
 @router.post("/generate")
 async def generate_newsletter_endpoint(
-    tenant: TenantProfile = Depends(require_subscription("pro")),
+    tenant: TenantProfile = Depends(require_subscription_with_legal_verified("pro")),
 ):
     from engines.newsletter_generate import generate_newsletter
 
@@ -56,7 +60,7 @@ class ScheduleNewsletterRequest(BaseModel):
 @router.post("/schedule")
 async def schedule_newsletter_endpoint(
     body: ScheduleNewsletterRequest,
-    tenant: TenantProfile = Depends(require_subscription("pro")),
+    tenant: TenantProfile = Depends(require_subscription_with_legal("pro")),
 ):
     newsletter_id = body.newsletter_id
     scheduled_at = body.scheduled_at

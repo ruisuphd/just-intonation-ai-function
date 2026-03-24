@@ -23,7 +23,6 @@ def float32_to_wav(samples: np.ndarray, sample_rate: int) -> bytes:
     byte_rate = sample_rate * 2
     block_align = 2
     data_size = num_samples * block_align
-    header_size = 44
 
     header = struct.pack(
         "<4sI4s4sIHHIIHH4sI",

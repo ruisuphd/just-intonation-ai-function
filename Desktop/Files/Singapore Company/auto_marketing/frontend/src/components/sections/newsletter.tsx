@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiError } from "@/lib/api";
 import LockedState from "@/components/ui/locked-state";
 import { hasTierAccess } from "@/lib/billing";
 import type { BillingSummary } from "@/types";
@@ -78,8 +78,11 @@ export default function NewsletterSection({ billing }: NewsletterSectionProps) {
         await fetchNewsletters();
         window.dispatchEvent(new Event("newsletters:changed"));
       }
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      const msg = e instanceof ApiError && e.status === 429
+        ? "Too many requests. Please wait a minute and try again."
+        : e instanceof Error ? e.message : "Failed to generate newsletter";
+      setError(msg);
     } finally {
       setGenerating(false);
     }
@@ -122,7 +125,7 @@ export default function NewsletterSection({ billing }: NewsletterSectionProps) {
   );
 
   return (
-    <section id="newsletter" className="scroll-mt-28">
+    <section>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold">Email Newsletter</h2>

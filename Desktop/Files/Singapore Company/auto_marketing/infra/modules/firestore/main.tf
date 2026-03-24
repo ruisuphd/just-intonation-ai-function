@@ -127,8 +127,76 @@ resource "google_firestore_index" "drafts_batch_status_platforms" {
     order      = "ASCENDING"
   }
   fields {
-    field_path = "platforms_generated"
+    field_path   = "platforms_generated"
     array_config = "CONTAINS"
+  }
+}
+
+resource "google_firestore_index" "drafts_status_created" {
+  project    = var.project_id
+  database   = google_firestore_database.default.name
+  collection = "drafts"
+
+  fields {
+    field_path = "status"
+    order      = "ASCENDING"
+  }
+  fields {
+    field_path = "created_at"
+    order      = "DESCENDING"
+  }
+}
+
+resource "google_firestore_index" "drafts_batch_created" {
+  project    = var.project_id
+  database   = google_firestore_database.default.name
+  collection = "drafts"
+
+  fields {
+    field_path = "batch_date"
+    order      = "ASCENDING"
+  }
+  fields {
+    field_path = "created_at"
+    order      = "DESCENDING"
+  }
+}
+
+resource "google_firestore_index" "drafts_batch_status_created" {
+  project    = var.project_id
+  database   = google_firestore_database.default.name
+  collection = "drafts"
+
+  fields {
+    field_path = "batch_date"
+    order      = "ASCENDING"
+  }
+  fields {
+    field_path = "status"
+    order      = "ASCENDING"
+  }
+  fields {
+    field_path = "created_at"
+    order      = "DESCENDING"
+  }
+}
+
+resource "google_firestore_index" "drafts_status_platforms_created" {
+  project    = var.project_id
+  database   = google_firestore_database.default.name
+  collection = "drafts"
+
+  fields {
+    field_path = "status"
+    order      = "ASCENDING"
+  }
+  fields {
+    field_path   = "platforms_generated"
+    array_config = "CONTAINS"
+  }
+  fields {
+    field_path = "created_at"
+    order      = "DESCENDING"
   }
 }
 

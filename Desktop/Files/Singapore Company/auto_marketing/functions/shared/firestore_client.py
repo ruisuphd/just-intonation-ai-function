@@ -317,6 +317,23 @@ def query_docs_paginated(
     return results, next_cursor
 
 
+def count_docs(
+    collection: str,
+    filters: list[tuple[str, str, Any]] | None = None,
+    *,
+    tenant_id: str | None = None,
+) -> int:
+    """Return document count for a query (Firestore aggregation)."""
+    path = _resolve_collection(collection, tenant_id)
+    ref: Any = get_db().collection(path)
+    for field, op, value in filters or []:
+        ref = ref.where(field, op, value)
+    results = ref.count().get()
+    if not results:
+        return 0
+    return int(results[0].value)
+
+
 def increment_field(
     collection: str,
     doc_id: str,

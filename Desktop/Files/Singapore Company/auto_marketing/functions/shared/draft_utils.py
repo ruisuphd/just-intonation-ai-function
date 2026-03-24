@@ -98,4 +98,5 @@ def build_draft_payload(
         ),
         "tiktok_caption": content_by_platform.get("tiktok", ""),
         "xiaohongshu_post": content_by_platform.get("xiaohongshu", ""),
+        "version": 0,
     }

@@ -6,9 +6,7 @@ from app.services.warmup.exercises import WARMUP_EXERCISES, score_exercise
 
 
 class WarmupEngine:
-    def create_session(
-        self, user_level: int = 1, full_library: bool = True
-    ) -> dict:
+    def create_session(self, user_level: int = 1, full_library: bool = True) -> dict:
         max_difficulty = min(user_level + 1, 5)
         candidate = [
             {
@@ -23,9 +21,7 @@ class WarmupEngine:
             for e in WARMUP_EXERCISES
             if e.difficulty <= max_difficulty
         ]
-        exercises = (
-            candidate[:3] if not full_library and len(candidate) > 3 else candidate
-        )
+        exercises = candidate[:3] if not full_library and len(candidate) > 3 else candidate
         if not exercises:
             take = 3 if not full_library else len(WARMUP_EXERCISES)
             exercises = [
@@ -55,9 +51,7 @@ class WarmupEngine:
         exercise_id: str,
         audio_analysis: dict,
     ) -> dict:
-        exercise = next(
-            (e for e in session["exercises"] if e["id"] == exercise_id), None
-        )
+        exercise = next((e for e in session["exercises"] if e["id"] == exercise_id), None)
         if not exercise:
             raise ValueError(f"Exercise {exercise_id} not found in session")
 

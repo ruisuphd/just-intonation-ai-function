@@ -1,8 +1,26 @@
+/* eslint-disable react/no-unescaped-entities */
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getSiteUrl } from "@/lib/site-url";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Terms governing use of the IntoMarketing platform and subscriptions.",
+  alternates: {
+    canonical: "/terms",
+  },
+  openGraph: {
+    url: `${getSiteUrl()}/terms`,
+  },
+};
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <a href="/" className="text-sm text-blue-600 hover:underline">← Back to IntoMarketing</a>
+        <Link href="/" className="text-sm text-blue-600 hover:underline">
+          ← Back to IntoMarketing
+        </Link>
         <h1 className="mt-8 text-3xl font-bold">Terms of Service</h1>
         <p className="mt-2 text-sm text-gray-500">Effective: March 17, 2026</p>
         <div className="prose prose-gray mt-8 max-w-none">
@@ -158,7 +176,10 @@ export default function TermsPage() {
           <p>
             Your privacy is important to us. Our collection, use, storage, and disclosure of personal data in
             connection with the Service is governed by our Privacy Policy, available at{" "}
-            <a href="/privacy" className="text-blue-600 hover:underline">/privacy</a>, which is incorporated
+            <Link href="/privacy" className="text-blue-600 hover:underline">
+              /privacy
+            </Link>
+            , which is incorporated
             into these Terms by reference. By using the Service, you consent to the processing of your personal
             data as described in our Privacy Policy. We process personal data in accordance with applicable data
             protection laws, including the EU General Data Protection Regulation (GDPR) and the California

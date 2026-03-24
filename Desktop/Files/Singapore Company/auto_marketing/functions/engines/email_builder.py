@@ -28,14 +28,13 @@ _UNDELIVERABLE_EMAIL_DOMAINS = {
 }
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
-# Hard-coded SMTP fallback — platform-level sender credentials
-# Firestore system_config/smtp_config or env vars take precedence if set
+# Non-secret defaults only — credentials must come from per-tenant Firestore or env.
 _SMTP_DEFAULTS = {
-    "smtp_host": "smtp.gmail.com",
+    "smtp_host": "",
     "smtp_port": 587,
-    "smtp_user": "rui@intonationlabs.com",
-    "smtp_password": "ooggezaijanarmjk",
-    "smtp_from_email": "noreply@intonationlabs.com",
+    "smtp_user": "",
+    "smtp_password": "",
+    "smtp_from_email": "",
     "smtp_use_tls": True,
     "smtp_use_ssl": False,
 }
@@ -59,24 +58,46 @@ class SMTPConfig:
     to_email: str
 
     @classmethod
-    def from_env(cls, recipient_email: str | None = None) -> "SMTPConfig":
-        # Priority: Firestore system_config → env vars → hardcoded defaults
+    def from_env(
+        cls,
+        recipient_email: str | None = None,
+        *,
+        tenant_id: str | None = None,
+    ) -> "SMTPConfig":
+        """Resolve SMTP for digest sends.
+
+        If ``tenant_id`` is set and ``tenants/{id}/tenant_settings/smtp`` has
+        ``smtp_host``, that document drives connection settings (multi-tenant).
+        Otherwise platform ``SMTP_*`` environment variables apply.
+        """
         fs_config: dict = {}
         try:
             from shared.firestore_client import get_doc
 
-            fs_config = get_doc("system_config", "smtp_config", tenant_id=None) or {}
+            if tenant_id:
+                doc = get_doc("tenant_settings", "smtp", tenant_id=tenant_id) or {}
+                if (doc.get("smtp_host") or "").strip():
+                    fs_config = doc
         except Exception:
             pass
 
         def _get(key: str, env_var: str, default: str = "") -> str:
-            return (fs_config.get(key) or os.getenv(env_var, "") or _SMTP_DEFAULTS.get(key, default) or "").strip()
+            return (
+                fs_config.get(key)
+                or os.getenv(env_var, "")
+                or _SMTP_DEFAULTS.get(key, default)
+                or ""
+            ).strip()
 
         host = _get("smtp_host", "SMTP_HOST")
         if not host:
             raise ValueError("SMTP not configured — no host available.")
 
-        port_raw = fs_config.get("smtp_port") or os.getenv("SMTP_PORT") or _SMTP_DEFAULTS["smtp_port"]
+        port_raw = (
+            fs_config.get("smtp_port")
+            or os.getenv("SMTP_PORT")
+            or _SMTP_DEFAULTS["smtp_port"]
+        )
         port = int(port_raw)
         username = _get("smtp_user", "SMTP_USER") or None
         password = _get("smtp_password", "SMTP_PASSWORD") or None
@@ -107,11 +128,15 @@ class SMTPConfig:
         if fs_use_ssl is not None:
             use_ssl = bool(fs_use_ssl)
         else:
-            use_ssl = _as_bool(os.getenv("SMTP_USE_SSL"), default=bool(_SMTP_DEFAULTS["smtp_use_ssl"]))
+            use_ssl = _as_bool(
+                os.getenv("SMTP_USE_SSL"), default=bool(_SMTP_DEFAULTS["smtp_use_ssl"])
+            )
         if fs_use_tls is not None:
             use_tls = bool(fs_use_tls)
         else:
-            use_tls = _as_bool(os.getenv("SMTP_USE_TLS"), default=bool(_SMTP_DEFAULTS["smtp_use_tls"]))
+            use_tls = _as_bool(
+                os.getenv("SMTP_USE_TLS"), default=bool(_SMTP_DEFAULTS["smtp_use_tls"])
+            )
 
         return cls(
             host=host,
@@ -399,6 +424,7 @@ def _send(*, config: SMTPConfig, subject: str, html_body: str) -> None:
 
 def send_daily_brief(
     *,
+    tenant_id: str,
     today: str,
     post_draft: DailyPostResult | None,
     post_status: str,
@@ -413,7 +439,10 @@ def send_daily_brief(
 ) -> None:
     """Build and send the daily HTML email digest."""
     try:
-        smtp_config = SMTPConfig.from_env(recipient_email=recipient_email)
+        smtp_config = SMTPConfig.from_env(
+            recipient_email=recipient_email,
+            tenant_id=tenant_id,
+        )
     except ValueError as exc:
         logger.error("email_builder.smtp_not_configured", extra={"error": str(exc)})
         raise

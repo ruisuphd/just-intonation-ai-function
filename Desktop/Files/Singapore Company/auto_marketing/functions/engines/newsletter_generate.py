@@ -10,6 +10,7 @@ from prompts.email_newsletter import (
     RESPONSE_MODEL,
     build_user_message,
 )
+from shared.datetime_utils import coerce_datetime
 from shared.firestore_client import add_doc, query_docs
 from shared.gemini_client import GeminiClient
 from shared.logger import get_logger
@@ -45,13 +46,26 @@ async def generate_newsletter(
             "reason": f"A newsletter for the week of {week_start} already exists.",
         }
 
-    weekly_items = query_docs(
-        "intelligence_items",
-        filters=[("gathered_at", ">=", cutoff)],
-        order_by="-relevance_score",
-        limit=10,
-        tenant_id=tenant_id,
-    )
+    try:
+        weekly_items = query_docs(
+            "intelligence_items",
+            filters=[("gathered_at", ">=", cutoff)],
+            order_by="-relevance_score",
+            limit=10,
+            tenant_id=tenant_id,
+        )
+    except Exception:
+        weekly_items = query_docs(
+            "intelligence_items",
+            order_by="-relevance_score",
+            limit=50,
+            tenant_id=tenant_id,
+        )
+        weekly_items = [
+            item
+            for item in weekly_items
+            if (dt := coerce_datetime(item.get("gathered_at"))) and dt >= cutoff
+        ][:10]
 
     if not weekly_items:
         logger.info("newsletter.no_intel", extra={"tenant_id": tenant_id})

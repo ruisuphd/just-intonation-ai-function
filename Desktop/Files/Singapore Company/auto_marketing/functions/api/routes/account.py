@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 
-from api.middleware.auth import require_tenant
+from api.middleware.auth import require_tenant_verified
 from shared.firestore_client import get_db, get_tenant, query_docs
 from shared.logger import get_logger
 from shared.models import TenantProfile
@@ -49,7 +49,7 @@ def _serialize(obj):
 
 @router.get("/export")
 async def export_account_data(
-    tenant: TenantProfile = Depends(require_tenant),
+    tenant: TenantProfile = Depends(require_tenant_verified),
 ):
     """Export all tenant data as a JSON ZIP for GDPR compliance."""
     tenant_id = tenant.tenant_id
@@ -113,7 +113,7 @@ def _delete_collection(tenant_id: str, collection: str, batch_size: int = 100) -
 @router.delete("")
 async def delete_account(
     confirm: str | None = None,
-    tenant: TenantProfile = Depends(require_tenant),
+    tenant: TenantProfile = Depends(require_tenant_verified),
 ):
     """Permanently delete the account and all associated data.
     Requires confirm=DELETE in query params."""

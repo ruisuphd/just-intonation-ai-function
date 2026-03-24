@@ -3,9 +3,11 @@ Piano-specific audio analysis: note detection, chord recognition, timing, veloci
 """
 
 import asyncio
-import numpy as np
-import librosa
 
+import librosa
+import numpy as np
+
+from app.services.audio.audio_advanced import piano_guitar_advanced_bundle
 from app.services.audio.audio_utils import (
     bytes_to_array,
     calculate_rms_db,
@@ -16,7 +18,20 @@ from app.services.audio.audio_utils import (
 from app.services.audio.chord_templates import match_chord
 
 
-def analyze_piano_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> dict:
+def _tempo_value(tempo_est: float | np.ndarray | list[float]) -> float:
+    arr = np.asarray(tempo_est)
+    if arr.size == 0:
+        return 120.0
+    value = float(arr.reshape(-1)[0])
+    return value if np.isfinite(value) else 120.0
+
+
+def analyze_piano_audio(
+    audio_data: np.ndarray,
+    sample_rate: int = 44100,
+    *,
+    full_analysis: bool = False,
+) -> dict:
     if len(audio_data) < 512:
         return {
             "note_name": None,
@@ -25,6 +40,8 @@ def analyze_piano_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> dic
             "timing_offset_ms": 0.0,
             "velocity_db": -60.0,
             "accuracy_score": 0.5,
+            "schema_version": 2,
+            "analysis_tier": "full" if full_analysis else "basic",
         }
 
     y = audio_data.astype(np.float32) if audio_data.dtype != np.float32 else audio_data
@@ -48,7 +65,7 @@ def analyze_piano_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> dic
     tempo = None
     if onset_detected:
         tempo_est, _ = librosa.beat.beat_track(y=y, sr=sample_rate, hop_length=512)
-        tempo = float(tempo_est) if np.isfinite(tempo_est) else 120.0
+        tempo = _tempo_value(tempo_est)
         hop_ms = 512 / sample_rate * 1000
         first_onset_ms = float(onset_frames[0]) * hop_ms
         if tempo and tempo > 0:
@@ -73,19 +90,29 @@ def analyze_piano_audio(audio_data: np.ndarray, sample_rate: int = 44100) -> dic
         accuracy_score = min(1.0, accuracy_score + 0.05)
     accuracy_score = float(np.clip(accuracy_score, 0, 1))
 
-    return {
+    out = {
         "note_name": note_name,
         "chord_detected": chord_detected,
         "chord_confidence": chord_confidence,
         "timing_offset_ms": timing_offset_ms,
         "velocity_db": velocity_db,
         "accuracy_score": accuracy_score,
+        "schema_version": 2,
+        "analysis_tier": "full" if full_analysis else "basic",
     }
+    if full_analysis:
+        out.update(piano_guitar_advanced_bundle(y, sample_rate))
+    return out
 
 
-async def analyse_piano(audio_bytes: bytes, sample_rate: int = 44100) -> dict:
+async def analyse_piano(
+    audio_bytes: bytes,
+    sample_rate: int = 44100,
+    *,
+    full_analysis: bool = False,
+) -> dict:
     def _run() -> dict:
         y = bytes_to_array(audio_bytes, sample_rate)
-        return analyze_piano_audio(y, sample_rate)
+        return analyze_piano_audio(y, sample_rate, full_analysis=full_analysis)
 
     return await asyncio.to_thread(_run)

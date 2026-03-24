@@ -2,9 +2,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from app.services.coach.vocal import VocalCoach
-from app.services.coach.piano import PianoCoach
 from app.services.coach.guitar import GuitarCoach
+from app.services.coach.piano import PianoCoach
+from app.services.coach.vocal import VocalCoach
 
 
 class TestVocalCoach:
@@ -14,6 +14,52 @@ class TestVocalCoach:
         msg = await coach.get_welcome_message()
         assert isinstance(msg, str)
         assert len(msg) > 10
+
+    @pytest.mark.asyncio
+    async def test_welcome_with_skill_profile_mentions_prior_sessions(self):
+        coach = VocalCoach()
+        sp = {
+            "recent_sessions": [
+                {
+                    "coach_type": "vocal",
+                    "recap_snippet": "worked on breath",
+                    "next_step_snippet": "sustain A4",
+                    "metrics": {"pitch_stability": 0.7},
+                }
+            ]
+        }
+        msg = await coach.get_welcome_message(sp)
+        assert "recent sessions" in msg.lower() or "sessions" in msg.lower()
+
+    @pytest.mark.asyncio
+    async def test_process_message_includes_session_stage_in_system_prompt(self):
+        coach = VocalCoach()
+        captured: dict = {}
+
+        async def fake_invoke(*args, **kwargs):
+            captured["system_prompt"] = kwargs.get("system_prompt", "")
+            return "ok"
+
+        history = [{"role": "user", "content": "first"}]
+        with (
+            patch(
+                "app.services.coach.vocal.gemini_client.invoke",
+                new_callable=AsyncMock,
+                side_effect=fake_invoke,
+            ),
+            patch(
+                "app.services.coach.vocal.retriever.retrieve_context",
+                new_callable=AsyncMock,
+                return_value="",
+            ),
+        ):
+            await coach.process_message(
+                "hello",
+                None,
+                history,
+                session_stage_hint="Session pacing: TEST_STAGE_HINT_XYZ",
+            )
+        assert "TEST_STAGE_HINT_XYZ" in captured.get("system_prompt", "")
 
 
 class TestPianoCoach:

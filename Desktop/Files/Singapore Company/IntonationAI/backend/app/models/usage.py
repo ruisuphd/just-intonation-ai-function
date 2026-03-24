@@ -8,9 +8,7 @@ from app.db.base import Base
 
 class Usage(Base):
     __tablename__ = "usage"
-    __table_args__ = (
-    UniqueConstraint("user_id", "period_start", name="uq_usage_user_period"),
-)
+    __table_args__ = (UniqueConstraint("user_id", "period_start", name="uq_usage_user_period"),)
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)

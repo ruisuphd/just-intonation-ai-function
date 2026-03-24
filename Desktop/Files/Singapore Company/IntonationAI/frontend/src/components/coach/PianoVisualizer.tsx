@@ -42,8 +42,14 @@ function getKeyState(
 
   if (isDetected && isTarget) return "correct";
   if (isDetected && !isTarget) return "wrong";
-  // "close": student played a note within ±50 cents of this target key
-  if (isTarget && !isDetected && Math.abs(centsDev) <= 50) return "close";
+  // "close": active pitch near target (requires a detected note, not silence at centsDev=0)
+  if (
+    detectedNote &&
+    isTarget &&
+    !isDetected &&
+    Math.abs(centsDev) <= 50
+  )
+    return "close";
   return "idle";
 }
 
@@ -89,6 +95,8 @@ export function PianoVisualizer({
         className="w-full"
         style={{ maxWidth: w }}
         preserveAspectRatio="none"
+        role="img"
+        aria-label="Piano keyboard showing detected and target notes"
       >
         {WHITE_KEYS.map((key, i) => (
           <rect

@@ -2,13 +2,35 @@
 Knowledge base for RAG. Supports vector search (embeddings) with keyword fallback.
 """
 
+import asyncio
 import logging
 import re
+from collections import OrderedDict
 from pathlib import Path
 
 from app.services.rag.embedding import cosine_similarity, embed_text
 
 logger = logging.getLogger(__name__)
+
+_QUERY_EMBED_CACHE: OrderedDict[str, list[float]] = OrderedDict()
+_QUERY_EMBED_CACHE_MAX = 64
+
+
+async def _query_embedding_cached(query: str) -> list[float]:
+    q = query.strip()
+    if not q:
+        return []
+    if q in _QUERY_EMBED_CACHE:
+        _QUERY_EMBED_CACHE.move_to_end(q)
+        return _QUERY_EMBED_CACHE[q]
+    emb = await asyncio.to_thread(embed_text, q)
+    if emb:
+        _QUERY_EMBED_CACHE[q] = emb
+        _QUERY_EMBED_CACHE.move_to_end(q)
+        while len(_QUERY_EMBED_CACHE) > _QUERY_EMBED_CACHE_MAX:
+            _QUERY_EMBED_CACHE.popitem(last=False)
+    return emb
+
 
 CHUNK_WORDS = 500
 OVERLAP_WORDS = 50
@@ -66,7 +88,7 @@ class KnowledgeBase:
 
         if self._use_vectors:
             try:
-                query_emb = embed_text(query)
+                query_emb = await _query_embedding_cached(query)
                 if query_emb:
                     scored: list[tuple[dict, float]] = []
                     for doc, emb in zip(self._documents, self._embeddings):
@@ -93,8 +115,7 @@ class KnowledgeBase:
             scored.append((doc, score))
         scored.sort(key=lambda x: x[1], reverse=True)
         return [
-            {"text": d["text"], "metadata": d["metadata"], "score": s}
-            for d, s in scored[:top_k]
+            {"text": d["text"], "metadata": d["metadata"], "score": s} for d, s in scored[:top_k]
         ]
 
     def __len__(self) -> int:
@@ -104,12 +125,9 @@ class KnowledgeBase:
 knowledge_base = KnowledgeBase()
 
 
-def _seed_knowledge_base() -> None:
+def seed_knowledge_base() -> None:
     data_dir = Path(__file__).resolve().parent.parent.parent.parent / "data"
     for filename in ("vocal_pedagogy.md", "piano_pedagogy.md", "guitar_pedagogy.md"):
         path = data_dir / filename
         if path.exists():
             knowledge_base.add_from_file(str(path))
-
-
-_seed_knowledge_base()

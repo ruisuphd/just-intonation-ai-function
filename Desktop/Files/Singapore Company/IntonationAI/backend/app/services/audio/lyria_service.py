@@ -38,7 +38,7 @@ async def generate_backing_track(
             _call_lyria(prompt),
             timeout=REQUEST_TIMEOUT,
         )
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.warning("Lyria request timed out after %ds", REQUEST_TIMEOUT)
         return await _fallback_url()
     except Exception as e:
@@ -61,13 +61,12 @@ async def _call_lyria(prompt: str) -> str:
             f"/publishers/google/models/{LYRIA_MODEL}:predict"
         )
         body = {
-            "instances": [
-                {"prompt": prompt, "negative_prompt": "vocals, lyrics"}
-            ],
+            "instances": [{"prompt": prompt, "negative_prompt": "vocals, lyrics"}],
             "parameters": {"sample_count": 1},
         }
 
         import urllib.request
+
         req = urllib.request.Request(
             url,
             data=json.dumps(body).encode(),
@@ -98,6 +97,7 @@ async def _fallback_url() -> str:
         return ""
     try:
         from datetime import timedelta
+
         bucket = storage_service._client.bucket(storage_service._bucket_name)
         blob = bucket.blob(FALLBACK_BACKING_PATH)
         if blob.exists():

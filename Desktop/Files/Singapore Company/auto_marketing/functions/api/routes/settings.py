@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, field_validator
 
 from api.middleware.auth import require_tenant
+from api.middleware.legal import require_legal_acceptance
 from shared.entitlements import normalize_subscription_tier
 from shared.platforms import normalize_platforms
 from shared.settings_limits import (
@@ -17,13 +18,18 @@ from shared.settings_limits import (
     TARGET_AUDIENCE_MAX_CHARS,
 )
 from shared.firestore_client import update_tenant
+from shared.legal_version import LEGAL_DOCS_VERSION
 from shared.models import TenantProfile
 from shared.redis_client import cache_delete_pattern
 
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _RESERVED_EMAIL_DOMAINS = {
-    "example.com", "example.net", "example.org",
-    "test.com", "localhost", "invalid",
+    "example.com",
+    "example.net",
+    "example.org",
+    "test.com",
+    "localhost",
+    "invalid",
 }
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
@@ -49,10 +55,14 @@ async def get_settings(tenant: TenantProfile = Depends(require_tenant)):
         "subscription_tier": normalize_subscription_tier(tenant.subscription_tier),
         "subscription_status": tenant.subscription_status,
         "starter_access_expires_at": tenant.starter_access_expires_at,
-        "is_internal": tenant.is_internal,
         "onboarding_completed": tenant.onboarding_completed,
         "tone_formal_casual": getattr(tenant, "tone_formal_casual", 50),
         "tone_technical_accessible": getattr(tenant, "tone_technical_accessible", 50),
+        "legal_terms_version": tenant.legal_terms_version,
+        "legal_terms_accepted_at": tenant.legal_terms_accepted_at.isoformat()
+        if tenant.legal_terms_accepted_at
+        else None,
+        "legal_docs_current_version": LEGAL_DOCS_VERSION,
     }
 
 
@@ -146,7 +156,7 @@ class SettingsUpdate(BaseModel):
 @router.put("")
 async def update_settings(
     body: SettingsUpdate,
-    tenant: TenantProfile = Depends(require_tenant),
+    tenant: TenantProfile = Depends(require_legal_acceptance),
 ):
     updates = {k: v for k, v in body.model_dump().items() if v is not None}
 

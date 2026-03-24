@@ -21,7 +21,27 @@ export function planBadgeLabel(
   billing: BillingSummary | null | undefined,
 ): string {
   if (!billing) return "Starter";
-  if (billing.is_internal) return "Internal";
   if (billing.effective_tier === "pro") return "Pro";
   return "Starter";
+}
+
+/** Display string for Pro list price from /billing/subscription Stripe snapshot. */
+export function formatProListPrice(billing: BillingSummary | null | undefined): string {
+  if (!billing) return "$29/mo";
+  const amt = billing.pro_unit_amount;
+  const cur = billing.pro_currency;
+  const interval = billing.pro_interval;
+  if (amt != null && cur) {
+    try {
+      const formatted = new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: cur.toUpperCase(),
+      }).format(amt / 100);
+      if (interval === "year") return `${formatted}/yr`;
+      return `${formatted}/mo`;
+    } catch {
+      /* fall through */
+    }
+  }
+  return "$29/mo";
 }

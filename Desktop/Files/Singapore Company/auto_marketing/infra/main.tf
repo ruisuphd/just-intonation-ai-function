@@ -61,7 +61,8 @@ module "storage" {
   depends_on = [module.project]
 }
 
-# Single daily Cloud Scheduler job → fn-daily-pipeline at 07:00 SGT.
+# Daily Cloud Scheduler → tenant pipeline function at 07:00 in scheduler_timezone
+# (see module.scheduler). Dashboard "next run" copy uses per-tenant notification_time only.
 module "scheduler" {
   source                     = "./modules/scheduler"
   project_id                 = var.project_id

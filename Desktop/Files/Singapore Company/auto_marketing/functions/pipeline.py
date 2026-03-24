@@ -459,6 +459,7 @@ def run_daily_pipeline(request: Request):
     force_send = _request_force_send(request)
     set_trace_id(trace_id)
     t0 = time.monotonic()
+    started_at = datetime.now(timezone.utc)
     logger.info(
         "pipeline.start",
         extra={"force_send": force_send, "tenant_id": tenant_id or "legacy"},
@@ -466,10 +467,29 @@ def run_daily_pipeline(request: Request):
 
     try:
         result = asyncio.run(
-            _run_pipeline(force_send=force_send, trace_id=trace_id, tenant_id=tenant_id)
+            _run_pipeline(
+                force_send=force_send,
+                trace_id=trace_id,
+                tenant_id=tenant_id,
+                ignore_pipeline_schedule=False,
+            )
         )
         elapsed_ms = round((time.monotonic() - t0) * 1000)
         logger.info("pipeline.done", extra={"elapsed_ms": elapsed_ms, **result})
+        if tenant_id:
+            from shared.pipeline_runs import (
+                pipeline_run_status_from_result,
+                record_pipeline_run,
+            )
+
+            completed_at = datetime.now(timezone.utc)
+            record_pipeline_run(
+                tenant_id,
+                started_at=started_at,
+                completed_at=completed_at,
+                status=pipeline_run_status_from_result(result),
+                result=result,
+            )
         return jsonify({"ok": True, **result}), 200
     except Exception as exc:
         elapsed_ms = round((time.monotonic() - t0) * 1000)
@@ -482,6 +502,16 @@ def run_daily_pipeline(request: Request):
                 "tenant_id": tenant_id or "legacy",
             },
         )
+        if tenant_id:
+            from shared.pipeline_runs import record_pipeline_run
+
+            record_pipeline_run(
+                tenant_id,
+                started_at=started_at,
+                completed_at=datetime.now(timezone.utc),
+                status="failed",
+                error=str(exc),
+            )
         return jsonify({"ok": False, "error": str(exc)}), 500
     finally:
         clear_trace_id()
@@ -495,6 +525,7 @@ async def _run_pipeline(
     force_send: bool = False,
     trace_id: str = "",
     tenant_id: str | None = None,
+    ignore_pipeline_schedule: bool = False,
 ) -> dict:
     from engines import image_generate
     from engines import email_builder
@@ -533,19 +564,32 @@ async def _run_pipeline(
 
     tier_limits = get_limits_for_tier(effective_tier)
 
-    # Check if today is a pipeline day for this tier
-    if tenant_id and not is_pipeline_day(effective_tier, digest_config.timezone_name):
-        logger.info("pipeline.skipped_not_pipeline_day", extra={
-            "tenant_id": tenant_id, "tier": effective_tier,
-        })
+    # Check if today is a pipeline day for this tier (scheduled runs only).
+    # Manual API/onboarding triggers pass ignore_pipeline_schedule=True so "Run now"
+    # always executes; digest email dedup still applies unless force_send.
+    if (
+        tenant_id
+        and not ignore_pipeline_schedule
+        and not is_pipeline_day(effective_tier, digest_config.timezone_name)
+    ):
+        logger.info(
+            "pipeline.skipped_not_pipeline_day",
+            extra={
+                "tenant_id": tenant_id,
+                "tier": effective_tier,
+            },
+        )
         return {
             "tenant_id": tenant_id,
             "date": local_today,
             "timezone": digest_config.timezone_name,
             "email_status": "skipped_not_pipeline_day",
-            "intel_items": 0, "post_generated": False,
-            "image_generated": False, "leads_found": 0,
-            "prospects_found": 0, "force_send": force_send,
+            "intel_items": 0,
+            "post_generated": False,
+            "image_generated": False,
+            "leads_found": 0,
+            "prospects_found": 0,
+            "force_send": force_send,
         }
 
     # ── Step 1: Fetch & score news ────────────────────────────────────────────
@@ -688,7 +732,9 @@ async def _run_pipeline(
             if len(lead_items) >= max_leads and len(prospect_items) >= max_leads:
                 break
             try:
-                lead_data = await qualify_inline(signal, tenant_id=tenant_id, tier=effective_tier)
+                lead_data = await qualify_inline(
+                    signal, tenant_id=tenant_id, tier=effective_tier
+                )
                 is_qualified = lead_data.get("icp_fit") in ("high", "medium")
                 outreach: dict = {}
 
@@ -793,6 +839,7 @@ async def _run_pipeline(
     else:
         try:
             email_builder.send_daily_brief(
+                tenant_id=tenant_id,
                 today=local_today,
                 post_draft=post_draft,
                 post_status=post_status,

@@ -54,11 +54,13 @@ def test_run_pipeline_returns_summary(monkeypatch):
         intelligence_items,
         brand_context,
         tenant_id=None,
+        tier="starter",
     ):
         assert intelligence_summaries
         assert intelligence_items
         assert brand_context
         assert tenant_id is None
+        assert tier == "starter"
         return DailyPostResult(
             headline="Hook EN",
             linkedin_post="English post",
@@ -76,15 +78,19 @@ def test_run_pipeline_returns_summary(monkeypatch):
         assert prompt
         return b"png-bytes"
 
-    async def fake_run_and_classify(*, sources, max_signals, tenant_id=None):
+    async def fake_run_and_classify(
+        *, sources, max_signals, tenant_id=None, tier="starter"
+    ):
         assert sources
         assert max_signals == 8
         assert tenant_id is None
+        assert tier == "starter"
         return signals_found
 
-    async def fake_qualify_inline(signal_data, *, tenant_id=None):
+    async def fake_qualify_inline(signal_data, *, tenant_id=None, tier="starter"):
         assert signal_data["company_name"] == "Acme Robotics"
         assert tenant_id is None
+        assert tier == "starter"
         return {
             "company_name": "Acme Robotics",
             "icp_fit": "high",
@@ -92,9 +98,12 @@ def test_run_pipeline_returns_summary(monkeypatch):
             "suggested_outreach_angle": "Series A expansion support",
         }
 
-    async def fake_generate_outreach_inline(lead_data, signal_data, *, tenant_id=None):
+    async def fake_generate_outreach_inline(
+        lead_data, signal_data, *, tenant_id=None, tier="starter"
+    ):
         assert lead_data["company_name"] == signal_data["company_name"]
         assert tenant_id is None
+        assert tier == "starter"
         return {
             "linkedin_dm": "Congrats on the raise.",
             "cold_email": {
@@ -271,11 +280,13 @@ def test_run_pipeline_generates_best_effort_draft_for_tenant(monkeypatch):
         intelligence_items=None,
         brand_context=None,
         tenant_id=None,
+        tier="starter",
     ):
         assert intelligence_summaries
         assert intelligence_items is None
         assert brand_context
         assert tenant_id == "tenant-1"
+        assert tier == "starter"
         return DailyPostResult(
             headline="Best effort hook",
             linkedin_post="Best effort LinkedIn post",
@@ -289,10 +300,13 @@ def test_run_pipeline_generates_best_effort_draft_for_tenant(monkeypatch):
             image_prompt="",
         )
 
-    async def fake_run_and_classify(*, sources, max_signals, tenant_id=None):
+    async def fake_run_and_classify(
+        *, sources, max_signals, tenant_id=None, tier="starter"
+    ):
         assert sources
         assert max_signals == 8
         assert tenant_id == "tenant-1"
+        assert tier == "starter"
         return []
 
     def fake_retrieve(self, query_text, language="en"):
@@ -354,6 +368,9 @@ def test_run_pipeline_generates_best_effort_draft_for_tenant(monkeypatch):
     monkeypatch.setattr(
         pipeline_module, "_update_daily_digest_send", lambda **kwargs: None
     )
+    monkeypatch.setattr(
+        "shared.usage_limits.is_pipeline_day", lambda tier, timezone_name: True
+    )
     monkeypatch.setattr(pipeline_module, "add_doc", fake_add_doc)
     monkeypatch.setattr(intelligence, "run_and_return_items", fake_run_and_return_items)
     monkeypatch.setattr(post_generate, "generate_daily_post", fake_generate_daily_post)
@@ -378,3 +395,107 @@ def test_run_pipeline_generates_best_effort_draft_for_tenant(monkeypatch):
     ]
     assert stored["doc_id"] == f"{stored['data']['batch_date']}__pipeline_post"
     assert sent["post_status"] == "best_effort"
+
+
+def test_run_pipeline_skips_when_not_pipeline_day_without_bypass(monkeypatch):
+    monkeypatch.setattr(
+        pipeline_module,
+        "get_tenant",
+        lambda tid: {
+            "tenant_id": tid,
+            "owner_uid": "uid-1",
+            "owner_email": "founder@intonationlabs.ai",
+            "company_name": "Intonation Labs",
+            "industry": "AI consulting",
+            "description": "We help founders ship practical AI systems.",
+            "target_audience": "Founders and CTOs",
+            "platforms_enabled": ["linkedin"],
+            "subscription_tier": "starter",
+            "subscription_status": "active",
+            "daily_digest_email": "founder@intonationlabs.ai",
+            "created_at": datetime(2026, 3, 13, tzinfo=timezone.utc),
+        },
+    )
+    monkeypatch.setattr(
+        pipeline_module,
+        "_load_digest_config",
+        lambda tenant_id=None: pipeline_module.DigestConfig(
+            enabled=True,
+            recipient_email="founder@intonationlabs.ai",
+            timezone_name="Asia/Singapore",
+            top_k_intelligence=2,
+        ),
+    )
+    monkeypatch.setattr(
+        "shared.usage_limits.is_pipeline_day", lambda tier, timezone_name: False
+    )
+
+    result = asyncio.run(
+        pipeline_module._run_pipeline(
+            tenant_id="tenant-1", ignore_pipeline_schedule=False
+        )
+    )
+
+    assert result["email_status"] == "skipped_not_pipeline_day"
+    assert result["post_generated"] is False
+
+
+def test_run_pipeline_schedule_bypass_skips_day_check(monkeypatch):
+    checked: list[bool] = []
+
+    def track(tier, timezone_name):
+        checked.append(True)
+        return False
+
+    monkeypatch.setattr("shared.usage_limits.is_pipeline_day", track)
+    monkeypatch.setattr(
+        pipeline_module,
+        "get_tenant",
+        lambda tid: {
+            "tenant_id": tid,
+            "owner_uid": "uid-1",
+            "owner_email": "founder@intonationlabs.ai",
+            "company_name": "Intonation Labs",
+            "industry": "AI consulting",
+            "description": "We help founders ship practical AI systems.",
+            "target_audience": "Founders and CTOs",
+            "platforms_enabled": ["linkedin"],
+            "subscription_tier": "starter",
+            "subscription_status": "active",
+            "daily_digest_email": "founder@intonationlabs.ai",
+            "created_at": datetime(2026, 3, 13, tzinfo=timezone.utc),
+        },
+    )
+    monkeypatch.setattr(
+        pipeline_module,
+        "_load_digest_config",
+        lambda tenant_id=None: pipeline_module.DigestConfig(
+            enabled=True,
+            recipient_email="founder@intonationlabs.ai",
+            timezone_name="Asia/Singapore",
+            top_k_intelligence=2,
+        ),
+    )
+
+    async def fake_run_and_return_items(*, sources, tenant_id=None):
+        return []
+
+    async def fake_run_and_classify(
+        *, sources, max_signals, tenant_id=None, tier="starter"
+    ):
+        return []
+
+    monkeypatch.setattr(
+        pipeline_module, "_claim_daily_digest_send", lambda **kwargs: False
+    )
+    monkeypatch.setattr(intelligence, "run_and_return_items", fake_run_and_return_items)
+    monkeypatch.setattr(signals, "run_and_classify", fake_run_and_classify)
+    monkeypatch.setattr(email_builder, "send_daily_brief", lambda **kwargs: None)
+
+    asyncio.run(
+        pipeline_module._run_pipeline(
+            tenant_id="tenant-1", ignore_pipeline_schedule=True
+        )
+    )
+
+    assert checked == []

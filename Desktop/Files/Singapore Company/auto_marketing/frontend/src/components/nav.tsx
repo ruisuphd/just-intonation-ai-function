@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { planBadgeLabel } from "@/lib/billing";
 import { signOut } from "@/lib/firebase";
+import NotificationPanel from "@/components/notification-panel";
 import type { BillingSummary } from "@/types";
 
 const SECTIONS = [
@@ -68,6 +69,12 @@ export default function Nav({
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          <NotificationPanel
+            onNavigate={(sectionId) => {
+              onSectionSelect?.(sectionId);
+              document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          />
           <Link
             href="/settings"
             className="rounded-full p-2 text-apple-secondary hover:bg-apple-bg"
@@ -82,14 +89,60 @@ export default function Nav({
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setMenuOpen((v) => !v);
+                }
+                if (e.key === "Escape") setMenuOpen(false);
+              }}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-apple-text text-xs font-bold text-white"
+              aria-label="User menu"
+              aria-expanded={menuOpen}
+              aria-haspopup="true"
             >
               {initials}
             </button>
             {menuOpen && (
               <>
-                <div className="fixed inset-0" onClick={() => setMenuOpen(false)} />
-                <div className="absolute right-0 mt-2 w-40 rounded-apple-sm border border-apple-border bg-apple-card p-1 shadow-apple-lg">
+                <div className="fixed inset-0" onClick={() => setMenuOpen(false)} aria-hidden="true" />
+                <div
+                  className="absolute right-0 mt-2 w-48 rounded-apple-sm border border-apple-border bg-apple-card p-1 shadow-apple-lg"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="User menu options"
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") setMenuOpen(false);
+                  }}
+                >
+                  <Link
+                    href="/settings?tab=account"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-md px-3 py-2 text-left text-sm text-apple-text hover:bg-apple-bg"
+                  >
+                    Account settings
+                  </Link>
+                  <Link
+                    href="/billing"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-md px-3 py-2 text-left text-sm text-apple-text hover:bg-apple-bg"
+                  >
+                    Billing
+                  </Link>
+                  <Link
+                    href="/changelog"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-md px-3 py-2 text-left text-sm text-apple-text hover:bg-apple-bg"
+                  >
+                    What&apos;s New
+                  </Link>
+                  <Link
+                    href="/help"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-md px-3 py-2 text-left text-sm text-apple-text hover:bg-apple-bg"
+                  >
+                    Help / Docs
+                  </Link>
                   <button
                     onClick={() => { signOut(); setMenuOpen(false); }}
                     className="w-full rounded-md px-3 py-2 text-left text-sm text-apple-text hover:bg-apple-bg"

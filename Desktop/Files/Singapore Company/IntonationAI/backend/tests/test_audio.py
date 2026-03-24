@@ -2,10 +2,10 @@ import numpy as np
 import pytest
 
 from app.services.audio.analyser import AudioAnalyser
-from app.services.audio.processor import pcm16_to_float32, float32_to_wav
-from app.services.audio.piano_analysis import analyze_piano_audio
-from app.services.audio.guitar_analysis import analyze_guitar_audio
 from app.services.audio.chord_templates import match_chord
+from app.services.audio.guitar_analysis import analyze_guitar_audio
+from app.services.audio.piano_analysis import analyze_piano_audio
+from app.services.audio.processor import float32_to_wav, pcm16_to_float32
 
 
 class TestAudioProcessor:
@@ -32,12 +32,14 @@ class TestAudioProcessor:
 class TestAudioAnalyser:
     def test_frequency_to_note_a4(self):
         from app.services.audio.audio_utils import frequency_to_note
+
         name, cents = frequency_to_note(440.0)
         assert name == "A4"
         assert abs(cents) < 1.0
 
     def test_frequency_to_note_c4(self):
         from app.services.audio.audio_utils import frequency_to_note
+
         name, cents = frequency_to_note(261.63)
         assert name == "C4"
         assert abs(cents) < 5.0

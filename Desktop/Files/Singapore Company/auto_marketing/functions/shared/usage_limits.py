@@ -119,7 +119,9 @@ def get_usage_summary(
         }
 
     # Add non-daily limits for display
-    summary["intelligence_items_per_run"] = {"limit": limits["intelligence_items_per_run"]}
+    summary["intelligence_items_per_run"] = {
+        "limit": limits["intelligence_items_per_run"]
+    }
     summary["leads_per_run"] = {"limit": limits["leads_per_run"]}
     summary["brand_documents_total"] = {"limit": limits["brand_documents_total"]}
     summary["newsletter_enabled"] = {"enabled": limits["newsletter_enabled"]}
@@ -141,5 +143,5 @@ def require_usage_limit(
         raise HTTPException(
             status_code=429,
             detail=f"Daily limit reached: {current}/{limit} {action.replace('_', ' ')}. "
-                   f"Upgrade to Pro for higher limits.",
+            f"Upgrade to Pro for higher limits.",
         )

@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File, Form
 
 from api.middleware.auth import require_access
+from api.middleware.legal import require_access_with_legal
 from shared.usage_limits import get_limits_for_tier
 from shared.firestore_client import add_doc, delete_doc, query_docs
 from shared.logger import get_logger
@@ -33,14 +34,17 @@ async def upload_document(
     request: Request,
     file: UploadFile = File(...),
     doc_type: str = Form("other"),
-    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+    tenant: TenantProfile = Depends(require_access_with_legal("starter", "pro")),
 ):
     tier = getattr(request.state, "tenant_tier", "starter")
     limits = get_limits_for_tier(tier)
     max_docs = limits["brand_documents_total"]
     current_docs = query_docs("documents", tenant_id=tenant.tenant_id)
     if len(current_docs) >= max_docs:
-        raise HTTPException(status_code=429, detail=f"Document limit reached ({max_docs}). Upgrade to Pro for more.")
+        raise HTTPException(
+            status_code=429,
+            detail=f"Document limit reached ({max_docs}). Upgrade to Pro for more.",
+        )
 
     content = await file.read()
     validated = validate_upload(file, len(content))
@@ -91,7 +95,7 @@ async def upload_document(
 @router.delete("/{doc_id}")
 async def delete_document(
     doc_id: str,
-    tenant: TenantProfile = Depends(require_access("starter", "pro")),
+    tenant: TenantProfile = Depends(require_access_with_legal("starter", "pro")),
 ):
     from shared.firestore_client import get_doc
 

@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, DateTime, ForeignKey, String, func
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.db.base import Base
@@ -16,3 +16,4 @@ class Subscription(Base):
     plan = Column(String(32), default="free")
     status = Column(String(32), default="active")
     current_period_end = Column(DateTime(timezone=True), nullable=True)
+    last_stripe_event_created = Column(Integer, nullable=True)

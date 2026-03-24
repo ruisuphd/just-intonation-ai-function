@@ -4,7 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { apiFetch } from "@/lib/api";
 import LockedState from "@/components/ui/locked-state";
+import Notice from "@/components/ui/notice";
 import CopyButton from "@/components/ui/copy-button";
+import { useToast } from "@/components/ui/toast";
 import { hasTierAccess } from "@/lib/billing";
 import {
   ALL_PLATFORMS,
@@ -29,9 +31,10 @@ interface EditDraftFormProps {
     why_it_matters: string;
   }) => void;
   onCancel: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
-function EditDraftForm({ draft, enabledPlatforms, onSave, onCancel }: EditDraftFormProps) {
+function EditDraftForm({ draft, enabledPlatforms, onSave, onCancel, onDirtyChange }: EditDraftFormProps) {
   const [headline, setHeadline] = useState(draft.headline || "");
   const [contentByPlatform, setContentByPlatform] = useState<Record<string, string>>(() => {
     const init: Record<string, string> = {};
@@ -43,6 +46,24 @@ function EditDraftForm({ draft, enabledPlatforms, onSave, onCancel }: EditDraftF
   const [hashtags, setHashtags] = useState(draft.hashtags?.join(" ") || "");
   const [whyItMatters, setWhyItMatters] = useState(draft.why_it_matters || "");
 
+  const initialSnapshot = JSON.stringify({
+    headline: draft.headline || "",
+    ...Object.fromEntries(enabledPlatforms.map((p) => [p, getDraftText(draft, p)])),
+    hashtags: draft.hashtags?.join(" ") || "",
+    why_it_matters: draft.why_it_matters || "",
+  });
+  const currentSnapshot = JSON.stringify({
+    headline,
+    ...contentByPlatform,
+    hashtags,
+    why_it_matters: whyItMatters,
+  });
+  const isDirty = initialSnapshot !== currentSnapshot;
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const cp: Record<string, string> = {};
@@ -50,6 +71,7 @@ function EditDraftForm({ draft, enabledPlatforms, onSave, onCancel }: EditDraftF
       const v = contentByPlatform[p]?.trim();
       if (v) cp[p] = v;
     }
+    onDirtyChange?.(false);
     onSave({
       headline: headline.trim(),
       content_by_platform: cp,
@@ -147,8 +169,27 @@ export default function ContentDraftsSection({
   const [generating, setGenerating] = useState(false);
   const [editingDraft, setEditingDraft] = useState<DraftContent | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
+  const [votedThumbs, setVotedThumbs] = useState<Record<string, "up" | "down">>({});
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [editFormDirty, setEditFormDirty] = useState(false);
+  const [discardConfirmOpen, setDiscardConfirmOpen] = useState(false);
+  const [pendingDiscardAction, setPendingDiscardAction] = useState<(() => void) | null>(null);
+  const { toast } = useToast();
+
+  function requestDiscard(action: () => void) {
+    setPendingDiscardAction(() => action);
+    setDiscardConfirmOpen(true);
+  }
+
+  function confirmDiscard() {
+    pendingDiscardAction?.();
+    setPendingDiscardAction(null);
+    setDiscardConfirmOpen(false);
+    setEditFormDirty(false);
+    setEditingDraft(null);
+  }
 
   useEffect(() => {
     if (!enabledPlatforms.includes(platform)) {
@@ -163,8 +204,18 @@ export default function ContentDraftsSection({
       const data = await apiFetch<{ drafts?: DraftContent[]; next_cursor?: string }>(
         "/api/drafts?status=draft&limit=20"
       );
-      setDrafts(sortDrafts(data.drafts || []));
+      const draftList = sortDrafts(data.drafts || []);
+      setDrafts(draftList);
       setNextCursor(data.next_cursor || null);
+      setVotedThumbs((prev) => {
+        const next = { ...prev };
+        for (const d of draftList) {
+          if (d.id && d.feedback_thumbs) {
+            next[d.id] = d.feedback_thumbs;
+          }
+        }
+        return next;
+      });
     } catch (e: any) {
       setError(e.message === "Failed to fetch" ? "Unable to reach the server. Please try refreshing the page." : e.message);
     } finally {
@@ -252,6 +303,41 @@ export default function ContentDraftsSection({
     }
   }
 
+  async function handleRegenerate(draft: DraftContent) {
+    if (!draft.id) return;
+    setRegeneratingId(draft.id);
+    setError("");
+    try {
+      const result = await apiFetch<DraftContent>(`/api/drafts/${draft.id}/regenerate`, {
+        method: "POST",
+      });
+      setDrafts((prev) =>
+        sortDrafts(prev.map((d) => (d.id === draft.id ? result : d)))
+      );
+      window.dispatchEvent(new Event("drafts:changed"));
+      toast("Draft regenerated", "success");
+    } catch (e: any) {
+      setError(e.message);
+      toast("Couldn't regenerate — try again", "error");
+    } finally {
+      setRegeneratingId(null);
+    }
+  }
+
+  async function handleFeedback(draft: DraftContent, thumbs: "up" | "down") {
+    if (!draft.id || votedThumbs[draft.id]) return;
+    try {
+      await apiFetch(`/api/drafts/${draft.id}/feedback`, {
+        method: "POST",
+        body: JSON.stringify({ thumbs }),
+      });
+      setVotedThumbs((prev) => ({ ...prev, [draft.id!]: thumbs }));
+      toast("Thanks for your feedback", "success");
+    } catch {
+      toast("Feedback could not be saved", "error");
+    }
+  }
+
   async function handleEditSave(formData: {
     headline: string;
     content_by_platform: Record<string, string>;
@@ -298,12 +384,13 @@ export default function ContentDraftsSection({
   });
 
   return (
-    <section id="content" className="scroll-mt-28">
+    <section>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold">Content Drafts</h2>
           <p className="text-sm text-apple-secondary">
-            Each generated draft pack includes channel-specific copy for your enabled platforms.
+            Each pack includes channel-specific copy for your enabled platforms. Publishing may be manual or via
+            integrations as we ship them.
           </p>
         </div>
         {billing && hasTierAccess(billing, "starter") && (
@@ -326,6 +413,12 @@ export default function ContentDraftsSection({
 
       {billing && !hasTierAccess(billing, "starter") ? null : (
         <>
+          <div className="mb-4">
+            <Notice tone="neutral">
+              Drafts are production-ready text and assets. Auto-publish to all six channels is not guaranteed yet—copy
+              to your tools or use linked accounts where available.
+            </Notice>
+          </div>
           <div className="mb-4 flex gap-1 overflow-x-auto rounded-apple-sm bg-apple-card p-1 shadow-apple [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {ALL_PLATFORMS.filter((item) => enabledPlatforms.includes(item.id)).map((item) => (
               <button
@@ -352,7 +445,7 @@ export default function ContentDraftsSection({
                 No {PLATFORM_BY_ID[platform].label} drafts yet
               </p>
               <p className="mt-1 text-sm text-apple-secondary">
-                Click "Write a post" to generate a reusable draft pack for your enabled
+                Click &quot;Write a post&quot; to generate a reusable draft pack for your enabled
                 channels.
               </p>
             </div>
@@ -392,7 +485,7 @@ export default function ContentDraftsSection({
                         {draft.why_it_matters}
                       </p>
                     )}
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
                       <button
                         onClick={() => handleSchedule(draft)}
                         className="rounded-apple-sm bg-apple-blue px-4 py-1.5 text-xs font-medium text-white hover:bg-apple-blue-hover"
@@ -405,6 +498,32 @@ export default function ContentDraftsSection({
                       >
                         Edit
                       </button>
+                      <button
+                        onClick={() => handleRegenerate(draft)}
+                        disabled={regeneratingId === draft.id}
+                        className="rounded-apple-sm border border-apple-border px-4 py-1.5 text-xs font-medium text-apple-text hover:bg-apple-bg disabled:opacity-50"
+                      >
+                        {regeneratingId === draft.id ? "Regenerating..." : "Regenerate"}
+                      </button>
+                      <span className="mx-1 text-apple-border">|</span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => handleFeedback(draft, "up")}
+                          disabled={!!votedThumbs[draft.id || ""]}
+                          className={`rounded p-1 ${votedThumbs[draft.id || ""] ? "opacity-50 cursor-not-allowed" : "hover:bg-apple-bg"} ${(votedThumbs[draft.id || ""] || (draft as { feedback_thumbs?: string }).feedback_thumbs) === "up" ? "text-green-600 bg-green-50" : "text-apple-secondary hover:text-green-600"}`}
+                          aria-label="Good"
+                        >
+                          &#x1F44D;
+                        </button>
+                        <button
+                          onClick={() => handleFeedback(draft, "down")}
+                          disabled={!!votedThumbs[draft.id || ""]}
+                          className={`rounded p-1 ${votedThumbs[draft.id || ""] ? "opacity-50 cursor-not-allowed" : "hover:bg-apple-bg"} ${(votedThumbs[draft.id || ""] || (draft as { feedback_thumbs?: string }).feedback_thumbs) === "down" ? "text-red-500 bg-red-50" : "text-apple-secondary hover:text-red-500"}`}
+                          aria-label="Poor"
+                        >
+                          &#x1F44E;
+                        </button>
+                      </div>
                       {deleteConfirmId === draft.id ? (
                         <>
                           <button
@@ -452,18 +571,76 @@ export default function ContentDraftsSection({
         </>
       )}
 
-      <Dialog.Root open={!!editingDraft} onOpenChange={(o) => !o && setEditingDraft(null)}>
+      <Dialog.Root
+        open={!!editingDraft}
+        onOpenChange={(o) => {
+          if (!o) {
+            if (editFormDirty) {
+              requestDiscard(() => {});
+            } else {
+              setEditingDraft(null);
+            }
+          }
+        }}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50" />
-          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-apple bg-white p-6 shadow-apple">
+          <Dialog.Content
+            className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-apple bg-white p-6 shadow-apple"
+            onPointerDownOutside={(e) => {
+              if (editFormDirty) {
+                e.preventDefault();
+                requestDiscard(() => {});
+              }
+            }}
+            onEscapeKeyDown={(e) => {
+              if (editFormDirty) {
+                e.preventDefault();
+                requestDiscard(() => {});
+              }
+            }}
+          >
             {editingDraft && (
               <EditDraftForm
                 draft={editingDraft}
                 enabledPlatforms={enabledPlatforms}
                 onSave={handleEditSave}
-                onCancel={() => setEditingDraft(null)}
+                onCancel={() => {
+                  if (editFormDirty) {
+                    requestDiscard(() => {});
+                  } else {
+                    setEditingDraft(null);
+                  }
+                }}
+                onDirtyChange={setEditFormDirty}
               />
             )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      <Dialog.Root open={discardConfirmOpen} onOpenChange={setDiscardConfirmOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-[70] bg-black/50" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-[71] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-apple bg-white p-6 shadow-apple">
+            <Dialog.Title className="text-lg font-semibold">Discard unsaved changes?</Dialog.Title>
+            <p className="mt-2 text-sm text-apple-secondary">Your edits will not be saved.</p>
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => { setDiscardConfirmOpen(false); setPendingDiscardAction(null); }}
+                className="rounded-apple-sm border border-apple-border px-4 py-2 text-sm font-medium text-apple-text hover:bg-apple-bg"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDiscard}
+                className="rounded-apple-sm bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+              >
+                Discard
+              </button>
+            </div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

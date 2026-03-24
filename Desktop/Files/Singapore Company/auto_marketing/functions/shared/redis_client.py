@@ -141,7 +141,9 @@ def counter_increment(key: str, ttl_seconds: int = 172800) -> int:
             results = pipe.execute()
             return int(results[0])
         except Exception as exc:
-            logger.warning("redis.counter_increment_failed", extra={"key": key, "error": str(exc)})
+            logger.warning(
+                "redis.counter_increment_failed", extra={"key": key, "error": str(exc)}
+            )
     # In-memory fallback (resets on deploy — fail-open is acceptable)
     _in_memory_counters[key] = _in_memory_counters.get(key, 0) + 1
     return _in_memory_counters[key]
@@ -155,7 +157,9 @@ def counter_get(key: str) -> int:
             val = client.get(key)
             return int(val) if val is not None else 0
         except Exception as exc:
-            logger.warning("redis.counter_get_failed", extra={"key": key, "error": str(exc)})
+            logger.warning(
+                "redis.counter_get_failed", extra={"key": key, "error": str(exc)}
+            )
     return _in_memory_counters.get(key, 0)
 
 

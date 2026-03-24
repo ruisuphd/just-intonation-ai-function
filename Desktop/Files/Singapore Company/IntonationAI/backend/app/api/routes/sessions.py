@@ -3,8 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
+from app.core.config import settings
 from app.db.base import get_db
-from app.models import User, Session
+from app.models import Session, User
 from app.schemas.coach import CoachSessionResponse
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -26,8 +27,10 @@ async def list_sessions(
         CoachSessionResponse(
             id=str(s.id),
             coach_type=s.coach_type,
+            locale=s.locale or "en",
             started_at=s.started_at.isoformat(),
             ended_at=s.ended_at.isoformat() if s.ended_at else None,
+            prompt_version=settings.COACH_PROMPT_VERSION,
         )
         for s in sessions
     ]

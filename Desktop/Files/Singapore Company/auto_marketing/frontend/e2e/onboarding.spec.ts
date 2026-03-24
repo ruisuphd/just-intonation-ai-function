@@ -5,6 +5,6 @@ test.describe("Onboarding page", () => {
     await page.goto("/onboarding");
 
     await expect(page).toHaveURL(/\/(\?.*)?$/);
-    await expect(page.getByRole("heading", { name: "AutoMark" })).toBeVisible();
+    await expect(page.getByText("IntoMarketing").first()).toBeVisible();
   });
 });

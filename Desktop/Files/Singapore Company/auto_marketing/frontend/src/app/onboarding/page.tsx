@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Notice from "@/components/ui/notice";
 import { apiFetch } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { LEGAL_DOCS_VERSION } from "@/lib/legal-version";
 import { ALL_PLATFORMS, normalizePlatforms } from "@/lib/platforms";
 
 const STEP_COUNT = 5;
@@ -16,6 +17,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [completed, setCompleted] = useState(false);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -33,11 +35,12 @@ export default function Onboarding() {
     platformsEnabled: ["linkedin", "x_twitter"],
     linkedInConnected: false,
     xConnected: false,
+    acceptedTerms: false,
   });
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace("/");
+      router.replace("/login");
     }
   }, [authLoading, user, router]);
 
@@ -74,9 +77,17 @@ export default function Onboarding() {
   }
 
   async function handleSubmit() {
+    if (!formData.acceptedTerms) {
+      setError("Please agree to the Terms of Service and Privacy Policy to continue.");
+      return;
+    }
     setSaving(true);
     setError("");
     try {
+      await apiFetch("/api/legal/accept", {
+        method: "POST",
+        body: JSON.stringify({ version: LEGAL_DOCS_VERSION }),
+      });
       const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       await apiFetch("/onboarding/create-tenant", {
         method: "POST",
@@ -100,7 +111,7 @@ export default function Onboarding() {
         }),
       });
       await apiFetch("/onboarding/complete", { method: "POST" });
-      router.push("/dashboard");
+      setCompleted(true);
     } catch (err: any) {
       setError(err?.message || "Unable to complete onboarding.");
     } finally {
@@ -134,12 +145,52 @@ export default function Onboarding() {
     );
   }
 
+  if (completed) {
+    const digestTime = formData.notificationTime || "07:00";
+    return (
+      <div className="flex min-h-screen flex-col items-center bg-apple-bg px-4 py-20">
+        <div className="w-full max-w-xl rounded-apple bg-apple-card p-10 shadow-apple text-center">
+          <h1 className="mb-2 text-2xl font-semibold text-apple-text">You&apos;re all set!</h1>
+          <p className="mb-6 text-apple-secondary">
+            Your workspace is ready. Here&apos;s what happens next:
+          </p>
+          <div className="mb-8 space-y-4 rounded-apple-sm border border-apple-border bg-apple-bg p-5 text-left">
+            <p className="text-sm text-apple-text">
+              <strong>First intelligence run:</strong> Your daily AI pipeline runs at{" "}
+              {formData.notificationTime || "07:00"} in your timezone (
+              {typeof Intl !== "undefined"
+                ? (() => {
+                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? "";
+                    const parts = tz.split("/");
+                    return parts.length > 0 ? parts[parts.length - 1].replace(/_/g, " ") : tz.replace(/_/g, " ");
+                  })()
+                : "your timezone"}
+              ). Content drafts and market signals will appear in your dashboard after that run.
+            </p>
+            <p className="text-sm text-apple-text">
+              <strong>Email digest:</strong>{" "}
+              {formData.digestEnabled
+                ? `You&apos;ll receive a summary at ${digestTime} in your timezone.`
+                : "Enable the daily digest in Settings to receive summaries."}
+            </p>
+          </div>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="rounded-full bg-apple-blue px-8 py-3 text-[15px] font-medium text-white shadow-sm hover:bg-apple-blue-hover"
+          >
+            Go to dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-apple-bg px-4 py-20">
       <div className="w-full max-w-xl rounded-apple bg-apple-card p-10 shadow-apple">
         <div className="mb-8 text-center">
           <h1 className="mb-2 text-3xl font-semibold tracking-tight text-apple-text">
-            Welcome to AutoMark
+            Welcome to IntoMarketing
           </h1>
           <p className="text-apple-secondary">Let&apos;s set up your workspace.</p>
         </div>
@@ -404,6 +455,37 @@ export default function Onboarding() {
                 This enables direct publishing from IntoMarketing to your social profiles.
               </p>
             </div>
+            <label className="flex cursor-pointer items-start gap-3 rounded-apple-sm border border-apple-border bg-apple-bg p-4">
+              <input
+                type="checkbox"
+                checked={formData.acceptedTerms}
+                onChange={(e) =>
+                  setFormData({ ...formData, acceptedTerms: e.target.checked })
+                }
+                className="mt-1 h-4 w-4 rounded border-apple-border accent-apple-blue"
+              />
+              <span className="text-sm text-apple-text">
+                I agree to the{" "}
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-apple-blue hover:underline"
+                >
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-apple-blue hover:underline"
+                >
+                  Privacy Policy
+                </a>{" "}
+                (effective {LEGAL_DOCS_VERSION}).
+              </span>
+            </label>
           </div>
         )}
 
@@ -421,7 +503,11 @@ export default function Onboarding() {
           </button>
           <button
             onClick={handleNext}
-            disabled={saving || !formData.companyName.trim()}
+            disabled={
+              saving ||
+              !formData.companyName.trim() ||
+              (step === STEP_COUNT && !formData.acceptedTerms)
+            }
             className="rounded-full bg-apple-blue px-6 py-2.5 text-[15px] font-medium text-white shadow-sm hover:bg-apple-blue-hover disabled:opacity-50"
           >
             {saving ? "Saving…" : step === STEP_COUNT ? "Complete Setup" : "Continue"}

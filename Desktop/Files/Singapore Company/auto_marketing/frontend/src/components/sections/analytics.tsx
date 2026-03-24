@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import LockedState from "@/components/ui/locked-state";
+import Notice from "@/components/ui/notice";
 import { apiFetch } from "@/lib/api";
 import { hasTierAccess } from "@/lib/billing";
 import type { AnalyticsResponse, BillingSummary } from "@/types";
@@ -93,12 +94,12 @@ export default function AnalyticsSection({ billing, platforms }: AnalyticsSectio
   }
 
   return (
-    <section id="analytics" className="space-y-6 scroll-mt-28">
+    <section className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold">Analytics</h2>
           <p className="text-sm text-apple-secondary">
-            Performance metrics across your connected platforms.
+            Performance metrics when live provider data is available; otherwise values may be sample or partial.
           </p>
         </div>
         <button
@@ -125,9 +126,10 @@ export default function AnalyticsSection({ billing, platforms }: AnalyticsSectio
       ) : (
         <>
           {!data?.live_metrics_available && (
-            <div className="rounded-apple border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-apple">
-              Engagement metrics will appear after published posts and outreach snapshots are collected.
-            </div>
+            <Notice tone="warning">
+              Live engagement from connected platforms is not fully wired yet. Charts may use placeholder or historical
+              snapshots until OAuth and analytics sync are complete for your accounts.
+            </Notice>
           )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

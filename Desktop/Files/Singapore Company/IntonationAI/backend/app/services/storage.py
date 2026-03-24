@@ -44,7 +44,10 @@ class CloudStorageService:
                 method="GET",
             )
 
-        return await asyncio.to_thread(_upload)
+        return await asyncio.wait_for(
+            asyncio.to_thread(_upload),
+            timeout=settings.GCS_OPERATION_TIMEOUT_SEC,
+        )
 
     async def download(self, path: str) -> bytes:
         if not self._client or not self._bucket_name:
@@ -56,7 +59,10 @@ class CloudStorageService:
             blob = bucket.blob(path)
             return blob.download_as_bytes()
 
-        return await asyncio.to_thread(_download)
+        return await asyncio.wait_for(
+            asyncio.to_thread(_download),
+            timeout=settings.GCS_OPERATION_TIMEOUT_SEC,
+        )
 
     async def delete(self, path: str) -> None:
         if not self._client or not self._bucket_name:
@@ -68,7 +74,27 @@ class CloudStorageService:
             blob = bucket.blob(path)
             blob.delete()
 
-        await asyncio.to_thread(_delete)
+        await asyncio.wait_for(
+            asyncio.to_thread(_delete),
+            timeout=settings.GCS_OPERATION_TIMEOUT_SEC,
+        )
+
+    async def ping_bucket(self) -> bool:
+        if not self._client or not self._bucket_name:
+            return True
+
+        def _ping() -> bool:
+            b = self._client.bucket(self._bucket_name)
+            return b.exists()
+
+        try:
+            return await asyncio.wait_for(
+                asyncio.to_thread(_ping),
+                timeout=min(15.0, settings.GCS_OPERATION_TIMEOUT_SEC),
+            )
+        except Exception as e:
+            logger.warning("GCS bucket ping failed: %s", e)
+            return False
 
     @staticmethod
     def _data_uri_fallback(data: bytes, content_type: str) -> str:

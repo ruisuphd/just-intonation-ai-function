@@ -79,55 +79,80 @@ class Retriever:
         query_text: str,
         language: str = "en",
     ) -> tuple[list[dict], bool]:
-        embedding = self._embedder.embed_text(query_text, task_type="RETRIEVAL_QUERY")
-        raw = self._vector_search(embedding, language=language)
-        chunks = self._filter_and_dedup(raw)
+        try:
+            embedding = self._embedder.embed_text(
+                query_text, task_type="RETRIEVAL_QUERY"
+            )
+            raw = self._vector_search(embedding, language=language)
+            chunks = self._filter_and_dedup(raw)
 
-        logger.info(
-            "retriever.retrieve",
-            extra={
-                "tenant_id": self.tenant_id or "root",
-                "language": language,
-                "raw": len(raw),
-                "kept": len(chunks),
-            },
-        )
-        return chunks, False
+            logger.info(
+                "retriever.retrieve",
+                extra={
+                    "tenant_id": self.tenant_id or "root",
+                    "language": language,
+                    "raw": len(raw),
+                    "kept": len(chunks),
+                },
+            )
+            return chunks, False
+        except Exception as exc:
+            logger.warning(
+                "retriever.fallback_empty",
+                extra={
+                    "tenant_id": self.tenant_id or "root",
+                    "error": str(exc),
+                },
+            )
+            return [], False
 
     def retrieve_with_language_fallback(
         self,
         query_text: str,
     ) -> tuple[list[dict], bool]:
-        embedding = self._embedder.embed_text(query_text, task_type="RETRIEVAL_QUERY")
+        try:
+            embedding = self._embedder.embed_text(
+                query_text, task_type="RETRIEVAL_QUERY"
+            )
 
-        zh_raw = self._vector_search(embedding, language="zh")
-        zh_chunks = self._filter_and_dedup(zh_raw)
+            zh_raw = self._vector_search(embedding, language="zh")
+            zh_chunks = self._filter_and_dedup(zh_raw)
 
-        if len(zh_chunks) >= 3:
+            if len(zh_chunks) >= 3:
+                logger.info(
+                    "retriever.fallback",
+                    extra={
+                        "tenant_id": self.tenant_id or "root",
+                        "zh": len(zh_chunks),
+                        "fallback": False,
+                    },
+                )
+                return zh_chunks, False
+
+            all_raw = self._vector_search(embedding, language=None, top_k=self.top_k)
+            all_chunks = self._filter_and_dedup(all_raw)
+
+            zh_ids = {c["id"] for c in zh_chunks}
+            en_fill = [c for c in all_chunks if c["id"] not in zh_ids]
+            combined = zh_chunks + en_fill
+
             logger.info(
                 "retriever.fallback",
                 extra={
                     "tenant_id": self.tenant_id or "root",
                     "zh": len(zh_chunks),
-                    "fallback": False,
+                    "en_fill": len(en_fill),
+                    "fallback": True,
                 },
             )
-            return zh_chunks, False
-
-        all_raw = self._vector_search(embedding, language=None, top_k=self.top_k)
-        all_chunks = self._filter_and_dedup(all_raw)
-
-        zh_ids = {c["id"] for c in zh_chunks}
-        en_fill = [c for c in all_chunks if c["id"] not in zh_ids]
-        combined = zh_chunks + en_fill
-
-        logger.info(
-            "retriever.fallback",
-            extra={
-                "tenant_id": self.tenant_id or "root",
-                "zh": len(zh_chunks),
-                "en_fill": len(en_fill),
-                "fallback": True,
-            },
-        )
-        return combined, True
+            return combined, True
+        except Exception as exc:
+            logger.warning(
+                "retriever.fallback_empty",
+                extra={
+                    "tenant_id": self.tenant_id or "root",
+                    "method": "retrieve_with_language_fallback",
+                    "error": str(exc),
+                },
+            )
+            return [], False

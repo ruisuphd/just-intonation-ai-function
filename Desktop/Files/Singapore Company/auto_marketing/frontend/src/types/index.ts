@@ -1,6 +1,6 @@
 export type SubscriptionTier = "starter" | "pro";
 export type SubscriptionStatus = "trialing" | "active" | "past_due" | "canceled";
-export type AccessSource = "starter" | "paid_subscription" | "internal";
+export type AccessSource = "starter" | "paid_subscription";
 export type Tone = "professional" | "friendly" | "authoritative" | "casual";
 export type Language = "en" | "zh" | "bilingual";
 export type PlatformId =
@@ -28,12 +28,46 @@ export interface TenantProfile {
   daily_digest_enabled: boolean;
   daily_digest_email: string;
   notification_time: string;
-  is_internal: boolean;
   starter_access_expires_at?: string | null;
   tone_formal_casual?: number;
   tone_technical_accessible?: number;
   website_url?: string;
   onboarding_completed?: boolean;
+  legal_terms_version?: string | null;
+  legal_terms_accepted_at?: string | null;
+  legal_docs_current_version?: string;
+}
+
+/** GET /api/dashboard/bootstrap — parallel aggregate for dashboard shell */
+export interface DashboardBootstrapResponse {
+  settings: Partial<TenantProfile> & Record<string, unknown>;
+  billing: BillingSummary;
+  usage: {
+    tier?: string;
+    usage?: Record<string, { used?: number; limit?: number; percentage?: number }>;
+    labels?: Record<string, string>;
+  };
+  pipeline_status: {
+    last_run: {
+      completed_at?: string;
+      status?: string;
+      drafts_generated?: number;
+      signals_found?: number;
+      leads_qualified?: number;
+      date?: string;
+    } | null;
+    next_run?: string;
+    next_run_local?: string;
+    next_run_at?: string;
+    has_run_before?: boolean;
+    pipeline_days_per_week?: number[];
+  };
+  oauth_status: {
+    linkedin: boolean;
+    x_twitter: boolean;
+    linkedin_expires_at?: string | null;
+    x_twitter_expires_at?: string | null;
+  };
 }
 
 export interface BillingSummary {
@@ -48,7 +82,10 @@ export interface BillingSummary {
   can_manage_billing: boolean;
   can_start_checkout: boolean;
   stripe_customer_linked: boolean;
-  is_internal: boolean;
+  /** From Stripe Price (STRIPE_PRO_PRICE_ID), when configured */
+  pro_unit_amount?: number | null;
+  pro_currency?: string | null;
+  pro_interval?: string | null;
 }
 
 export interface IntelligenceItem {
@@ -71,6 +108,9 @@ export interface DraftContent {
   text: string;
   headline: string;
   hashtags: string[];
+  feedback_thumbs?: "up" | "down";
+  feedback_reason?: string | null;
+  feedback_at?: string | null;
   status: "draft" | "scheduled" | "published" | "copied" | "dismissed";
   batch_date: string;
   company_name?: string;
@@ -98,6 +138,7 @@ export interface QualifiedLead {
   company_name: string;
   icp_fit: "high" | "medium" | "low";
   icp_fit_score: number;
+  icp_reasoning?: string;
   suggested_outreach_angle: string;
   status: string;
   contact_email?: string;

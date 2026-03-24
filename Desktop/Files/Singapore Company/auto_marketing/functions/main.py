@@ -16,6 +16,7 @@ import functions_framework
 from flask import Request, jsonify
 
 from shared.logger import clear_trace_id, get_logger, set_trace_id
+from shared.sentry_util import capture_exception_tagged
 
 logger = get_logger("main")
 
@@ -47,9 +48,11 @@ def run_tenant_pipelines(request: Request):
                 "elapsed_ms": elapsed_ms,
                 "error": str(exc),
                 "traceback": traceback.format_exc(),
+                "trace_id": trace_id,
             },
         )
-        return jsonify({"ok": False, "error": str(exc)}), 500
+        capture_exception_tagged(exc, trace_id=trace_id, job="tenant_pipelines")
+        return jsonify({"ok": False, "error": str(exc), "trace_id": trace_id}), 500
     finally:
         clear_trace_id()
 
@@ -91,9 +94,11 @@ def run_scheduled_publisher(request: Request):
                 "elapsed_ms": elapsed_ms,
                 "error": str(exc),
                 "traceback": traceback.format_exc(),
+                "trace_id": trace_id,
             },
         )
-        return jsonify({"ok": False, "error": str(exc)}), 500
+        capture_exception_tagged(exc, trace_id=trace_id, job="scheduled_publisher")
+        return jsonify({"ok": False, "error": str(exc), "trace_id": trace_id}), 500
     finally:
         clear_trace_id()
 
@@ -121,8 +126,10 @@ def run_analytics_sync(request: Request):
                 "elapsed_ms": elapsed_ms,
                 "error": str(exc),
                 "traceback": traceback.format_exc(),
+                "trace_id": trace_id,
             },
         )
-        return jsonify({"ok": False, "error": str(exc)}), 500
+        capture_exception_tagged(exc, trace_id=trace_id, job="analytics_sync")
+        return jsonify({"ok": False, "error": str(exc), "trace_id": trace_id}), 500
     finally:
         clear_trace_id()

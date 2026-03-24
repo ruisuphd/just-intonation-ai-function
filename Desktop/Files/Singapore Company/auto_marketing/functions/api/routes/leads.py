@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from api.middleware.auth import require_subscription
+from api.middleware.legal import require_subscription_with_legal
 from engines.linkedin_enrichment import enrich_lead
 from shared.firestore_client import (
     delete_doc,
@@ -24,6 +25,15 @@ from shared.storage_client import delete_blob
 logger = get_logger("api.leads")
 
 router = APIRouter(prefix="/api/leads", tags=["leads"])
+
+
+def _ts_to_iso(ts) -> str | None:
+    """Safely convert Firestore timestamp (or datetime) to ISO string."""
+    if ts is None:
+        return None
+    if hasattr(ts, "isoformat"):
+        return ts.isoformat()
+    return str(ts)
 
 
 def _draft_body(draft_doc: dict) -> str:
@@ -99,11 +109,87 @@ async def get_lead(
     return doc
 
 
+@router.get("/{lead_id}/timeline")
+async def get_lead_timeline(
+    lead_id: str,
+    tenant: TenantProfile = Depends(require_subscription("pro")),
+):
+    """Assemble activity timeline from lead doc and outreach_drafts subcollection."""
+    doc = get_doc("qualified_leads", lead_id, tenant_id=tenant.tenant_id)
+    if not doc:
+        raise HTTPException(status_code=404, detail="Lead not found")
+
+    events: list[dict] = []
+
+    qualified_at = doc.get("qualified_at") or doc.get("created_at")
+    if qualified_at:
+        at = _ts_to_iso(qualified_at)
+        score = doc.get("icp_fit_score")
+        score_str = (
+            f"{round((score or 0) * 100)}%"
+            if isinstance(score, (int, float))
+            else "N/A"
+        )
+        events.append(
+            {
+                "event": "qualified",
+                "at": at,
+                "detail": f"ICP score {score_str}",
+            }
+        )
+
+    outreach_drafts = query_docs(
+        "outreach_drafts",
+        filters=[("lead_id", "==", lead_id)],
+        order_by="-generated_at",
+        limit=10,
+        tenant_id=tenant.tenant_id,
+    )
+    for od in outreach_drafts:
+        gen_at = od.get("generated_at")
+        if gen_at:
+            at = _ts_to_iso(gen_at)
+            events.append(
+                {
+                    "event": "outreach_drafted",
+                    "at": at,
+                    "detail": od.get("draft_type", "Outreach") or "Outreach drafted",
+                }
+            )
+
+    outreach_sent_at = doc.get("outreach_sent_at")
+    if outreach_sent_at:
+        at = _ts_to_iso(outreach_sent_at)
+        events.append(
+            {
+                "event": "outreach_sent",
+                "at": at,
+                "detail": "Outreach sent",
+            }
+        )
+
+    stage_updated_at = doc.get("stage_updated_at")
+    status = doc.get("status", "")
+    if stage_updated_at and status:
+        at = _ts_to_iso(stage_updated_at)
+        label = status.replace("_", " ").title()
+        events.append(
+            {
+                "event": "stage_changed",
+                "at": at,
+                "detail": f"Stage changed to {label}",
+            }
+        )
+
+    events.sort(key=lambda e: e.get("at", ""), reverse=True)
+    return {"events": events}
+
+
 @router.patch("/{lead_id}")
 async def update_lead(
     lead_id: str,
     update_data: LeadUpdate,
-    tenant: TenantProfile = Depends(require_subscription("pro")),
+    tenant: TenantProfile = Depends(require_subscription_with_legal("pro")),
 ):
     doc = get_doc("qualified_leads", lead_id, tenant_id=tenant.tenant_id)
     if not doc:
@@ -135,7 +221,7 @@ async def update_lead(
 @router.post("/{lead_id}/enrich")
 async def enrich_lead_endpoint(
     lead_id: str,
-    tenant: TenantProfile = Depends(require_subscription("pro")),
+    tenant: TenantProfile = Depends(require_subscription_with_legal("pro")),
 ):
     doc = get_doc("qualified_leads", lead_id, tenant_id=tenant.tenant_id)
     if not doc:
@@ -152,7 +238,7 @@ async def enrich_lead_endpoint(
 @router.delete("/{lead_id}")
 async def delete_lead(
     lead_id: str,
-    tenant: TenantProfile = Depends(require_subscription("pro")),
+    tenant: TenantProfile = Depends(require_subscription_with_legal("pro")),
 ):
     doc = get_doc("qualified_leads", lead_id, tenant_id=tenant.tenant_id)
     if not doc:

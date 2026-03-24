@@ -1,15 +1,28 @@
 steps:
+  - name: 'python:3.12-slim'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        apt-get update -qq && apt-get install -y --no-install-recommends libsndfile1 ffmpeg \
+          && rm -rf /var/lib/apt/lists/*
+        pip install --no-cache-dir -r backend/requirements-dev.txt
+        # ecdsa (transitive via python-jose): CVE-2024-23342 has no fixed PyPI release yet
+        pip-audit -r backend/requirements.txt --desc on --ignore-vuln CVE-2024-23342
+        cd backend && ruff format --check . && ruff check . && python -m pytest tests -q
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/intonation-ai-backend'
+      - 'gcr.io/${PROJECT_ID}/intonation-ai-backend'
       - './backend'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/intonation-ai-backend'
+      - 'gcr.io/${PROJECT_ID}/intonation-ai-backend'
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -18,30 +31,57 @@ steps:
       - 'deploy'
       - 'intonation-ai-backend'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/intonation-ai-backend'
+      - 'gcr.io/${PROJECT_ID}/intonation-ai-backend'
       - '--region'
       - 'us-central1'
       - '--platform'
       - 'managed'
+      - '--service-account'
+      - 'intonationai-backend-sa@intonationai.iam.gserviceaccount.com'
+      - '--port'
+      - '8000'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - 'FIREBASE_PROJECT_ID=$PROJECT_ID,GOOGLE_CLOUD_PROJECT=$PROJECT_ID'
+      - 'ENVIRONMENT=production,DATABASE_AUTO_CREATE=false,FIREBASE_PROJECT_ID=${PROJECT_ID},GOOGLE_CLOUD_PROJECT=${PROJECT_ID},FRONTEND_URL=${_FRONTEND_URL},GCS_BUCKET=${_GCS_BUCKET},STRIPE_PRICE_ID_MONTHLY=${_STRIPE_PRICE_ID_MONTHLY},STRIPE_PRICE_ID_YEARLY=${_STRIPE_PRICE_ID_YEARLY},STRIPE_PRICE_ID_PRO_MONTHLY=${_STRIPE_PRICE_ID_PRO_MONTHLY},STRIPE_PRICE_ID_PRO_YEARLY=${_STRIPE_PRICE_ID_PRO_YEARLY},ENABLE_CLOUD_TRACE=${_ENABLE_CLOUD_TRACE},COACH_PROMPT_VERSION=${_COACH_PROMPT_VERSION},COACH_LLM_HISTORY_MESSAGES=${_COACH_LLM_HISTORY_MESSAGES},LOG_JSON=true,APP_RELEASE=${_APP_RELEASE}'
+      - '--startup-probe'
+      - 'httpGet.path=/health,httpGet.port=8000,initialDelaySeconds=5,timeoutSeconds=10,periodSeconds=10,failureThreshold=6'
+      - '--liveness-probe'
+      - 'httpGet.path=/health,httpGet.port=8000,initialDelaySeconds=30,timeoutSeconds=5,periodSeconds=60,failureThreshold=3'
+      - '--update-secrets'
+      - 'DATABASE_URL=${_DATABASE_URL_SECRET}:latest,STRIPE_SECRET_KEY=${_STRIPE_SECRET_KEY_SECRET}:latest,STRIPE_WEBHOOK_SECRET=${_STRIPE_WEBHOOK_SECRET_SECRET}:latest'
       - '--add-cloudsql-instances'
       - '${_CLOUD_SQL_INSTANCE}'
       - '--min-instances'
-      - '0'
+      - '${_MIN_INSTANCES}'
       - '--max-instances'
       - '10'
       - '--memory'
-      - '1Gi'
+      - '2Gi'
       - '--cpu'
       - '1'
       - '--timeout'
       - '3600'
       - '--session-affinity'
 
+# Override on submit/trigger: _CLOUD_SQL_INSTANCE, _GCS_BUCKET, Stripe price IDs, _APP_RELEASE (e.g. git SHA).
+# Match frontend build: NEXT_PUBLIC_APP_RELEASE ~ _APP_RELEASE, NEXT_PUBLIC_COACH_PROMPT_VERSION ~ _COACH_PROMPT_VERSION.
+# _MIN_INSTANCES: use 1+ to avoid cold starts on coach traffic (adds baseline Cloud Run cost).
 substitutions:
   _CLOUD_SQL_INSTANCE: ''
+  _FRONTEND_URL: 'https://intonationai.web.app'
+  _GCS_BUCKET: ''
+  _ENABLE_CLOUD_TRACE: 'false'
+  _COACH_PROMPT_VERSION: '1'
+  _COACH_LLM_HISTORY_MESSAGES: '30'
+  _MIN_INSTANCES: '0'
+  _APP_RELEASE: ''
+  _DATABASE_URL_SECRET: 'intonationai-database-url'
+  _STRIPE_SECRET_KEY_SECRET: 'intonationai-stripe-secret-key'
+  _STRIPE_WEBHOOK_SECRET_SECRET: 'intonationai-stripe-webhook-secret'
+  _STRIPE_PRICE_ID_MONTHLY: ''
+  _STRIPE_PRICE_ID_YEARLY: ''
+  _STRIPE_PRICE_ID_PRO_MONTHLY: ''
+  _STRIPE_PRICE_ID_PRO_YEARLY: ''
 
 images:
-  - 'gcr.io/$PROJECT_ID/intonation-ai-backend'
+  - 'gcr.io/${PROJECT_ID}/intonation-ai-backend'

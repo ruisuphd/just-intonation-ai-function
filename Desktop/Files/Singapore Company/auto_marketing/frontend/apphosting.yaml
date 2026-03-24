@@ -41,3 +41,18 @@ env:
     availability:
       - BUILD
       - RUNTIME
+  - variable: NEXT_PUBLIC_SITE_URL
+    value: "https://automark-web--intonation-labs-marketing.asia-southeast1.hosted.app"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    value: "pk_live_51TA7GZE6eNlRVcoBFs7XIF4P5SMZTEYw8Vg68gOGpC2qRSjhe8dwKlrG3FWLr4keAgN84FkXH0slrNr9Vc7oWnKG00CDiEluHT"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID
+    value: "prctbl_1TDy46E6eNlRVcoB9E4pa94S"
+    availability:
+      - BUILD
+      - RUNTIME

@@ -1,5 +1,11 @@
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import {
+  getToken,
+  initializeAppCheck,
+  ReCaptchaV3Provider,
+  type AppCheck,
+} from "firebase/app-check";
+import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -14,19 +20,45 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 let authInstance: Auth | null = null;
+let appCheckInstance: AppCheck | null = null;
+
+function ensureAppCheckInitialized(app: FirebaseApp): void {
+  if (typeof window === "undefined") return;
+  if (appCheckInstance) return;
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim();
+  if (!siteKey) return;
+  const debugToken = process.env.NEXT_PUBLIC_APP_CHECK_DEBUG_TOKEN?.trim();
+  if (debugToken) {
+    (
+      globalThis as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: string }
+    ).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
+  }
+  appCheckInstance = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(siteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+}
 
 function getFirebaseApp(): FirebaseApp | null {
   const key = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-  if (!key || !projectId) return null;
+  if (!key || !projectId) {
+    if (process.env.NODE_ENV === "production")
+      throw new Error("NEXT_PUBLIC_FIREBASE_API_KEY and NEXT_PUBLIC_FIREBASE_PROJECT_ID are required for production.");
+    return null;
+  }
   if (getApps().length === 0) {
-    return initializeApp({
+    const app = initializeApp({
       apiKey: key,
       projectId,
       authDomain: `${projectId}.firebaseapp.com`,
     });
+    ensureAppCheckInitialized(app);
+    return app;
   }
-  return getApps()[0] as FirebaseApp;
+  const existing = getApps()[0] as FirebaseApp;
+  ensureAppCheckInitialized(existing);
+  return existing;
 }
 
 export function getFirestoreDb() {
@@ -43,7 +75,11 @@ function initAuth(): Auth | null {
   if (authInstance !== null) return authInstance;
   const key = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-  if (!key || !projectId) return null;
+  if (!key || !projectId) {
+    if (process.env.NODE_ENV === "production")
+      throw new Error("NEXT_PUBLIC_FIREBASE_API_KEY and NEXT_PUBLIC_FIREBASE_PROJECT_ID are required for production.");
+    return null;
+  }
   try {
     const app: FirebaseApp =
       getApps().length === 0
@@ -53,6 +89,7 @@ function initAuth(): Auth | null {
             authDomain: `${projectId}.firebaseapp.com`,
           })
         : (getApps()[0] as FirebaseApp);
+    ensureAppCheckInitialized(app);
     authInstance = getAuth(app);
   } catch {
     return null;
@@ -107,4 +144,17 @@ export async function getIdToken(): Promise<string | null> {
   const user = a.currentUser;
   if (!user) return null;
   return user.getIdToken();
+}
+
+/** Token for ``X-Firebase-AppCheck`` when App Check is initialized (requires ``NEXT_PUBLIC_RECAPTCHA_SITE_KEY``). */
+export async function getAppCheckTokenForApi(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  getFirebaseApp();
+  if (!appCheckInstance) return null;
+  try {
+    const { token } = await getToken(appCheckInstance, false);
+    return token;
+  } catch {
+    return null;
+  }
 }

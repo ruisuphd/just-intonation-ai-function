@@ -31,6 +31,17 @@ export interface AudioAnalysis {
   timingAccuracy?: number;
   strummingPattern?: string;
   barreDetected?: boolean;
+  schemaVersion?: number;
+  analysisTier?: string;
+  dynamicRangeDb?: number;
+  dynamicsFlatnessScore?: number;
+  phraseCount?: number;
+  phrasingShapeScore?: number;
+  articulationHint?: string;
+  noteDurationEvenness?: number;
+  tempoStability?: number;
+  tempoCurveBpm?: number[];
+  techniqueScore?: number;
 }
 
 export interface PitchData {
@@ -112,21 +123,46 @@ export function mapWarmupSession(raw: WarmupSessionRaw): WarmupSession {
 export interface CoachSession {
   id: string;
   coachType: CoachType;
+  locale: string;
   messages: ChatMessage[];
   startedAt: string;
   endedAt?: string;
+  promptVersion?: string;
+}
+
+export interface CoachSessionRaw {
+  id: string;
+  coach_type: CoachType;
+  locale?: string;
+  started_at: string;
+  ended_at?: string | null;
+  prompt_version?: string;
+}
+
+export function mapCoachSession(raw: CoachSessionRaw): CoachSession {
+  return {
+    id: raw.id,
+    coachType: raw.coach_type,
+    locale: raw.locale ?? "en",
+    messages: [],
+    startedAt: raw.started_at,
+    endedAt: raw.ended_at ?? undefined,
+    promptVersion: raw.prompt_version,
+  };
 }
 
 export interface UserProfile {
   id: string;
   email: string;
   displayName: string;
+  preferredLocale?: string;
   voiceProfile?: Record<string, unknown>;
   skillProfile?: Record<string, unknown>;
+  badges?: string[];
 }
 
 export interface SubscriptionInfo {
-  plan: "free" | "essential" | "pro";
+  plan: "free" | "pro";
   status: "active" | "cancelled" | "past_due";
   currentPeriodEnd?: string;
 }

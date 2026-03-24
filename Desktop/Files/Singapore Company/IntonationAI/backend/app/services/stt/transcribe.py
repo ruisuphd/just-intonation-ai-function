@@ -16,9 +16,7 @@ class CloudSTTClient:
         if not project_id:
             raise ValueError("GOOGLE_CLOUD_PROJECT or FIREBASE_PROJECT_ID must be set")
         self._client = SpeechClient()
-        self._recognizer = (
-            f"projects/{project_id}/locations/{settings.GCP_REGION}/recognizers/_"
-        )
+        self._recognizer = f"projects/{project_id}/locations/{settings.GCP_REGION}/recognizers/_"
 
     async def transcribe(
         self,

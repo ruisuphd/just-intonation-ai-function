@@ -13,12 +13,14 @@ class CloudTTSClient:
     async def synthesize(
         self,
         text: str,
+        *,
+        language_code: str = "en-US",
         voice_name: str = "en-US-Chirp3-HD-Charon",
         output_format: str = "mp3",
     ) -> bytes:
         synthesis_input = texttospeech.SynthesisInput(text=text)
         voice = texttospeech.VoiceSelectionParams(
-            language_code="en-US",
+            language_code=language_code,
             name=voice_name,
         )
         if output_format.lower() == "wav":

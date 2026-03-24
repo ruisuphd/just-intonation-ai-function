@@ -1,4 +1,4 @@
-.PHONY: help dev deploy deploy-pipeline deploy-publisher deploy-analytics deploy-api deploy-rules deploy-frontend infra-plan infra-apply lint-py test-py run-pipeline sync-brand-context frontend-install frontend-build qa-backend qa-frontend qa dev-api dev-frontend qa-e2e qa-local-full
+.PHONY: help dev deploy deploy-pipeline deploy-publisher deploy-analytics deploy-api deploy-rules deploy-frontend infra-plan infra-apply lint-py test-py run-pipeline sync-brand-context frontend-install frontend-build qa-backend qa-frontend qa dev-api dev-frontend qa-e2e qa-local-full audit-py audit-js security-audit
 
 -include .env
 
@@ -10,6 +10,9 @@ PIPELINE_FUNCTION_NAME := fn-tenant-pipelines
 PUBLISHER_FUNCTION_NAME := fn-scheduled-publisher
 ANALYTICS_FUNCTION_NAME := fn-analytics-sync
 API_SERVICE_NAME := automark-api
+# Warm instances reduce first-request latency after idle (adds baseline Cloud Run cost).
+CLOUD_RUN_MIN_INSTANCES ?= 1
+CLOUD_RUN_CONCURRENCY ?= 80
 APPHOSTING_BACKEND_ID ?= automark-web
 SERVICE_ACCOUNT ?= sa-cloud-functions@$(PROJECT_ID).iam.gserviceaccount.com
 BRAND_DOCS_BUCKET ?= brand-documents-$(PROJECT_ID)
@@ -103,7 +106,7 @@ deploy-analytics: ## Deploy the analytics sync Cloud Function
 		--set-env-vars="$(WORKER_VARS)"
 	@echo "Done. Update infra/terraform.tfvars with the deployed function URL before running infra-apply."
 
-deploy-api: ## Deploy the FastAPI backend to Cloud Run
+deploy-api: ## Deploy the FastAPI backend to Cloud Run (CLOUD_RUN_MIN_INSTANCES=1 default; set 0 for scale-to-zero)
 	@echo "Deploying $(API_SERVICE_NAME)..."
 	gcloud run deploy $(API_SERVICE_NAME) \
 		--project=$(PROJECT_ID) \
@@ -111,11 +114,14 @@ deploy-api: ## Deploy the FastAPI backend to Cloud Run
 		--source=$(FUNCTIONS_SRC) \
 		--service-account=$(SERVICE_ACCOUNT) \
 		--allow-unauthenticated \
+		--min-instances=$(CLOUD_RUN_MIN_INSTANCES) \
+		--concurrency=$(CLOUD_RUN_CONCURRENCY) \
+		--cpu-boost \
 		--set-env-vars="$(API_VARS)" \
 		$(API_SECRET_FLAGS)
 
-deploy-rules: ## Deploy Firestore security rules
-	firebase deploy --only firestore:rules
+deploy-rules: ## Deploy Firestore security rules and indexes
+	firebase deploy --only firestore:rules,firestore:indexes
 
 deploy-frontend: ## Deploy the Next.js frontend to Firebase App Hosting
 	firebase deploy --only apphosting:$(APPHOSTING_BACKEND_ID)
@@ -131,6 +137,14 @@ lint-py: ## Lint Python code
 
 test-py: ## Run Python tests
 	cd $(FUNCTIONS_SRC) && python3 -m pytest tests/ -v
+
+audit-py: ## Scan Python deps with pip-audit (uses requirements-lock.txt)
+	cd $(FUNCTIONS_SRC) && python3 -m pip install -q pip-audit && python3 -m pip_audit -r requirements-lock.txt
+
+audit-js: ## Scan frontend npm deps (fails on high+ severity)
+	cd frontend && npm audit --audit-level=high
+
+security-audit: audit-py audit-js ## Dependency scans; align with .github/workflows/dependency-hygiene.yml
 
 frontend-install: ## Install frontend dependencies
 	cd frontend && npm install

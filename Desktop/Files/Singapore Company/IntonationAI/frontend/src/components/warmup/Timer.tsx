@@ -25,20 +25,25 @@ export function Timer({
   const [seconds, setSeconds] = useState(initial);
   const [running, setRunning] = useState(autoStart);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  const firedCompleteRef = useRef(false);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   const tick = useCallback(() => {
     setSeconds((prev) => {
       if (isCountdown) {
         if (prev <= 1) {
           setRunning(false);
-          onComplete?.();
           return 0;
         }
         return prev - 1;
       }
       return prev + 1;
     });
-  }, [isCountdown, onComplete]);
+  }, [isCountdown]);
 
   useEffect(() => {
     if (running) {
@@ -53,6 +58,21 @@ export function Timer({
   }, [running, tick]);
 
   useEffect(() => {
+    if (
+      isCountdown &&
+      seconds === 0 &&
+      !running &&
+      !firedCompleteRef.current
+    ) {
+      firedCompleteRef.current = true;
+      onCompleteRef.current?.();
+    }
+    if (isCountdown && seconds > 0) {
+      firedCompleteRef.current = false;
+    }
+  }, [isCountdown, seconds, running]);
+
+  useEffect(() => {
     onTick?.(seconds, running);
   }, [seconds, running, onTick]);
 
@@ -64,6 +84,7 @@ export function Timer({
   const handlePause = () => setRunning(false);
   const handleReset = () => {
     setRunning(false);
+    firedCompleteRef.current = false;
     setSeconds(initial);
   };
 
@@ -71,8 +92,8 @@ export function Timer({
     <div className="flex flex-col items-center gap-4">
       <div
         className={`
-          font-mono text-5xl tabular-nums text-white
-          ${running ? "animate-pulse" : ""}
+          font-mono text-5xl tabular-nums text-[#1d1d1f]
+          ${running ? "motion-safe:animate-pulse" : ""}
         `}
         role="timer"
         aria-live="polite"

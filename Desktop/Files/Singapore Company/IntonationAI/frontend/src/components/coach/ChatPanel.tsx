@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { TypingIndicator } from "./TypingIndicator";
 import { PromptSuggestions } from "./PromptSuggestions";
 import { InlineFeedbackScores } from "./InlineFeedbackScores";
-import type { ChatMessage } from "@/types";
+import type { ChatMessage, CoachType } from "@/types";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -12,8 +12,14 @@ interface ChatPanelProps {
   onToggleVoice: () => void;
   isRecording: boolean;
   isLoading: boolean;
+  /** Partial coach reply while SSE stream is in progress */
+  streamingCoachContent?: string;
   pendingRetry?: { text: string } | null;
   onRetry?: () => void;
+  coachType?: CoachType;
+  coachVoiceEnabled?: boolean;
+  onCoachVoiceChange?: (enabled: boolean) => void;
+  onCoachFeedback?: (messageId: string, vote: "up" | "down") => void;
 }
 
 function formatRelativeTime(ts: number): string {
@@ -30,12 +36,19 @@ export function ChatPanel({
   onToggleVoice,
   isRecording,
   isLoading,
+  streamingCoachContent = "",
   pendingRetry,
   onRetry,
+  coachType = "vocal",
+  coachVoiceEnabled = false,
+  onCoachVoiceChange,
+  onCoachFeedback,
 }: ChatPanelProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [feedbackGiven, setFeedbackGiven] = useState<Record<string, "up" | "down">>({});
+  const [, setTick] = useState(0);
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const showSuggestions = userMessageCount === 0 && !isLoading;
@@ -45,12 +58,30 @@ export function ChatPanel({
       top: listRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, streamingCoachContent]);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setTick((t) => t + 1), 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const submitFeedback = useCallback(
+    (messageId: string, vote: "up" | "down") => {
+      if (feedbackGiven[messageId] || !onCoachFeedback) return;
+      setFeedbackGiven((prev) => ({ ...prev, [messageId]: vote }));
+      onCoachFeedback(messageId, vote);
+    },
+    [feedbackGiven, onCoachFeedback]
+  );
 
   const handleCopy = useCallback(async (content: string, id: string) => {
-    await navigator.clipboard.writeText(content);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 1500);
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 1500);
+    } catch {
+      /* clipboard unavailable (non-HTTPS, denied, etc.) */
+    }
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -120,25 +151,65 @@ export function ChatPanel({
                   {m.role === "coach" && m.analysis && (
                     <InlineFeedbackScores analysis={m.analysis} />
                   )}
-                  <div className="mt-1 flex items-center justify-between gap-2">
+                  <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-xs text-[#6e6e73]">
                       {formatRelativeTime(m.timestamp)}
                     </span>
                     {m.role === "coach" && (
-                      <button
-                        type="button"
-                        onClick={() => handleCopy(m.content, m.id)}
-                        className="rounded p-1 text-xs text-[#6e6e73] transition hover:bg-[#e5e5e7]"
-                        aria-label="Copy"
-                      >
-                        {copiedId === m.id ? "Copied" : "Copy"}
-                      </button>
+                      <div className="flex items-center gap-1">
+                        {onCoachFeedback && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => submitFeedback(m.id, "up")}
+                              disabled={!!feedbackGiven[m.id]}
+                              className={`rounded px-2 py-0.5 text-xs font-medium transition ${
+                                feedbackGiven[m.id] === "up"
+                                  ? "bg-[#34c759]/20 text-[#1d1d1f]"
+                                  : "text-[#6e6e73] hover:bg-[#e5e5e7]"
+                              } disabled:opacity-40`}
+                              aria-label="Helpful"
+                            >
+                              Helpful
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => submitFeedback(m.id, "down")}
+                              disabled={!!feedbackGiven[m.id]}
+                              className={`rounded px-2 py-0.5 text-xs font-medium transition ${
+                                feedbackGiven[m.id] === "down"
+                                  ? "bg-[#ff3b30]/15 text-[#1d1d1f]"
+                                  : "text-[#6e6e73] hover:bg-[#e5e5e7]"
+                              } disabled:opacity-40`}
+                              aria-label="Not helpful"
+                            >
+                              Not helpful
+                            </button>
+                          </>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(m.content, m.id)}
+                          className="rounded p-1 text-xs text-[#6e6e73] transition hover:bg-[#e5e5e7]"
+                          aria-label="Copy"
+                        >
+                          {copiedId === m.id ? "Copied" : "Copy"}
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
             ))}
-            {isLoading && <TypingIndicator />}
+            {isLoading && streamingCoachContent ? (
+              <div className="flex flex-col items-start">
+                <div className="max-w-[85%] rounded-xl bg-[#f5f5f7] px-3 py-2 text-[#1d1d1f]">
+                  <p className="whitespace-pre-wrap text-sm">{streamingCoachContent}</p>
+                  <span className="mt-1 inline-block h-2 w-2 animate-pulse rounded-full bg-[#0071e3]" />
+                </div>
+              </div>
+            ) : null}
+            {isLoading && !streamingCoachContent ? <TypingIndicator /> : null}
           </>
         )}
       </div>
@@ -147,6 +218,9 @@ export function ChatPanel({
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 border-t border-[#d2d2d7] p-3"
       >
+        <p className="text-[11px] leading-snug text-[#6e6e73]">
+          AI-generated responses — may be inaccurate; use your judgment.
+        </p>
         {pendingRetry && onRetry && (
           <div className="flex items-center justify-between gap-2 rounded-lg bg-[#f5f5f7] px-3 py-2 text-sm text-[#1d1d1f]">
             <span>Something went wrong. Try again?</span>
@@ -160,7 +234,18 @@ export function ChatPanel({
           </div>
         )}
         {showSuggestions && (
-          <PromptSuggestions onSelect={handleSuggestionSelect} />
+          <PromptSuggestions coachType={coachType} onSelect={handleSuggestionSelect} />
+        )}
+        {onCoachVoiceChange && (
+          <label className="flex cursor-pointer items-center gap-2 text-xs text-[#6e6e73]">
+            <input
+              type="checkbox"
+              checked={coachVoiceEnabled}
+              onChange={(e) => onCoachVoiceChange(e.target.checked)}
+              className="h-4 w-4 rounded border-[#d2d2d7]"
+            />
+            Spoken coach replies (slower, uses cloud TTS)
+          </label>
         )}
         <div className="flex gap-2" style={{ paddingBottom: "var(--safe-bottom, 0)" }}>
           <textarea

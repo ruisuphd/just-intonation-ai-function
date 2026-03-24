@@ -66,11 +66,12 @@ class TenantProfile(_Base):
     competitor_names: list[str] = Field(default_factory=list)
     industry_keywords: list[str] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    is_internal: bool = False
     stripe_customer_id: str | None = None
     stripe_subscription_id: str | None = None
     starter_access_expires_at: datetime | None = None
-    subscription_status: Literal["active", "trialing", "past_due", "canceled"] = "active"
+    subscription_status: Literal["active", "trialing", "past_due", "canceled"] = (
+        "active"
+    )
 
     @field_validator("subscription_tier", mode="before")
     @classmethod
@@ -89,6 +90,7 @@ class TenantProfile(_Base):
         if raw in ("active", "trialing", "past_due", "canceled"):
             return raw
         return "active"  # "free", empty, anything else → active
+
     platforms_enabled: list[str] = Field(
         default_factory=lambda: list(DEFAULT_ENABLED_PLATFORMS)
     )
@@ -97,6 +99,8 @@ class TenantProfile(_Base):
     daily_digest_email: str = ""
     notification_time: str = "07:00"
     onboarding_completed: bool = False
+    legal_terms_version: str | None = None
+    legal_terms_accepted_at: datetime | None = None
     onboarding_state: Optional[OnboardingState] = None
     agency_id: Optional[str] = None
 

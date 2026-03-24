@@ -7,8 +7,7 @@ interface AudioVisualizerProps {
   analyserNode: AnalyserNode | null;
 }
 
-const FFT_SIZE = 2048;
-const BUFFER_LENGTH = 512;
+const DEFAULT_FFT = 2048;
 
 export function AudioVisualizer({ analyserNode }: AudioVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,8 +21,9 @@ export function AudioVisualizer({ analyserNode }: AudioVisualizerProps) {
     if (!ctx) return;
 
     const analyser = analyserNode;
-    const dataArray = new Uint8Array(BUFFER_LENGTH);
-    const timeData = new Float32Array(analyser.fftSize || FFT_SIZE);
+    const n = analyser.fftSize || DEFAULT_FFT;
+    const dataArray = new Uint8Array(n);
+    const timeData = new Float32Array(n);
 
     const draw = () => {
       animationRef.current = requestAnimationFrame(draw);
@@ -44,10 +44,10 @@ export function AudioVisualizer({ analyserNode }: AudioVisualizerProps) {
       ctx.strokeStyle = "rgb(74, 222, 128)";
       ctx.beginPath();
 
-      const sliceWidth = w / BUFFER_LENGTH;
+      const sliceWidth = w / n;
       let x = 0;
 
-      for (let i = 0; i < BUFFER_LENGTH; i++) {
+      for (let i = 0; i < n; i++) {
         const v = dataArray[i] / 128;
         const y = (v * h) / 2 + h / 2;
 

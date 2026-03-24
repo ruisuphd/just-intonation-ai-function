@@ -1,4 +1,7 @@
-# Multi-tenant orchestrator — runs pipeline for all active tenants daily at 07:00 SGT.
+# Multi-tenant orchestrator — runs pipeline for all active tenants daily at 07:00 in
+# scheduler_timezone (default Asia/Singapore). Tenant `notification_time` in Firestore
+# is for dashboard UX only until per-tenant schedules exist; the app API documents this
+# in GET /api/pipeline/status helpers.
 # Falls back to single-tenant endpoint if multi-tenant URL is not set.
 
 locals {

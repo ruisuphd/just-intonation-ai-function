@@ -25,6 +25,7 @@ locals {
     "roles/logging.logWriter",
     "roles/errorreporting.writer",
     "roles/secretmanager.secretAccessor",
+    "roles/serviceusage.serviceUsageConsumer",
   ]
 }
 

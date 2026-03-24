@@ -4,6 +4,7 @@ import logging
 import librosa
 import numpy as np
 
+from app.services.audio.audio_advanced import vocal_advanced_bundle
 from app.services.audio.audio_utils import (
     bytes_to_array,
     calculate_rms_db,
@@ -36,9 +37,7 @@ class AudioAnalyser:
         ratio = above / len(energies)
         return float(np.clip(ratio, 0, 1))
 
-    def _vibrato_and_stability(
-        self, f0: np.ndarray, sample_rate: int
-    ) -> tuple[bool, float]:
+    def _vibrato_and_stability(self, f0: np.ndarray, sample_rate: int) -> tuple[bool, float]:
         voiced = f0[np.isfinite(f0)]
         if len(voiced) < 32:
             return False, 0.5
@@ -52,64 +51,78 @@ class AudioAnalyser:
         stability = 1 - min(1, std_cents / 60)
         return bool(vibrato), float(np.clip(stability, 0, 1))
 
-    async def analyse(self, audio_bytes: bytes, sample_rate: int = 44100) -> dict:
-        def _run() -> dict:
-            y = bytes_to_array(audio_bytes, sample_rate)
-            if len(y) < 512:
-                rms_early = calculate_rms_db(y)
-                return {
-                    "pitch_hz": None,
-                    "note_name": None,
-                    "cents_deviation": 0.0,
-                    "rms_db": rms_early,
-                    "onset_detected": False,
-                    "tempo": None,
-                    "breath_support_score": 0.5,
-                    "vibrato_present": False,
-                    "pitch_stability": 0.5,
-                    "rhythm_score": 0.5,
-                }
-
-            pitch_hz, f0 = detect_pitch_yin(y, sample_rate, fmin=80, fmax=400)
-
-            note_name, cents_deviation = "?", 0.0
-            if pitch_hz:
-                note_name, cents_deviation = frequency_to_note(pitch_hz)
-
-            rms_db = calculate_rms_db(y)
-
-            onset_frames = detect_onset_frames(y, sample_rate)
-            onset_detected = len(onset_frames) > 0
-
-            tempo = None
-            if onset_detected:
-                tempo_est, _ = librosa.beat.beat_track(y=y, sr=sample_rate)
-                tempo = float(tempo_est) if np.isfinite(tempo_est) else None
-
-            breath_support_score = self._breath_support(y, rms_db)
-            vibrato_present, pitch_stability = self._vibrato_and_stability(
-                f0, sample_rate
-            )
-
-            rhythm_score = 0.6
-            if onset_detected:
-                rhythm_score += 0.2
-            if tempo is not None and 60 <= tempo <= 180:
-                rhythm_score += 0.2
-            rhythm_score = float(np.clip(rhythm_score, 0, 1))
-
+    def _analyse_sync(self, audio_bytes: bytes, sample_rate: int, *, full_analysis: bool) -> dict:
+        y = bytes_to_array(audio_bytes, sample_rate)
+        if len(y) < 512:
+            rms_early = calculate_rms_db(y)
             return {
-                "pitch_hz": pitch_hz,
-                "note_name": note_name if pitch_hz else None,
-                "cents_deviation": cents_deviation,
-                "rms_db": rms_db,
-                "onset_detected": onset_detected,
-                "tempo": tempo,
-                "breath_support_score": breath_support_score,
-                "vibrato_present": vibrato_present,
-                "pitch_stability": pitch_stability,
-                "rhythm_score": rhythm_score,
+                "pitch_hz": None,
+                "note_name": None,
+                "cents_deviation": 0.0,
+                "rms_db": rms_early,
+                "onset_detected": False,
+                "tempo": None,
+                "breath_support_score": 0.5,
+                "vibrato_present": False,
+                "pitch_stability": 0.5,
+                "rhythm_score": 0.5,
+                "schema_version": 2,
+                "analysis_tier": "full" if full_analysis else "basic",
             }
+
+        pitch_hz, f0 = detect_pitch_yin(y, sample_rate, fmin=80, fmax=400)
+
+        note_name, cents_deviation = "?", 0.0
+        if pitch_hz:
+            note_name, cents_deviation = frequency_to_note(pitch_hz)
+
+        rms_db = calculate_rms_db(y)
+
+        onset_frames = detect_onset_frames(y, sample_rate)
+        onset_detected = len(onset_frames) > 0
+
+        tempo = None
+        if onset_detected:
+            tempo_est, _ = librosa.beat.beat_track(y=y, sr=sample_rate)
+            tempo = float(tempo_est) if np.isfinite(tempo_est) else None
+
+        breath_support_score = self._breath_support(y, rms_db)
+        vibrato_present, pitch_stability = self._vibrato_and_stability(f0, sample_rate)
+
+        rhythm_score = 0.6
+        if onset_detected:
+            rhythm_score += 0.2
+        if tempo is not None and 60 <= tempo <= 180:
+            rhythm_score += 0.2
+        rhythm_score = float(np.clip(rhythm_score, 0, 1))
+
+        out = {
+            "pitch_hz": pitch_hz,
+            "note_name": note_name if pitch_hz else None,
+            "cents_deviation": cents_deviation,
+            "rms_db": rms_db,
+            "onset_detected": onset_detected,
+            "tempo": tempo,
+            "breath_support_score": breath_support_score,
+            "vibrato_present": vibrato_present,
+            "pitch_stability": pitch_stability,
+            "rhythm_score": rhythm_score,
+            "schema_version": 2,
+            "analysis_tier": "full" if full_analysis else "basic",
+        }
+        if full_analysis:
+            out.update(vocal_advanced_bundle(y, sample_rate))
+        return out
+
+    async def analyse(
+        self,
+        audio_bytes: bytes,
+        sample_rate: int = 44100,
+        *,
+        full_analysis: bool = False,
+    ) -> dict:
+        def _run() -> dict:
+            return self._analyse_sync(audio_bytes, sample_rate, full_analysis=full_analysis)
 
         try:
             return await asyncio.to_thread(_run)

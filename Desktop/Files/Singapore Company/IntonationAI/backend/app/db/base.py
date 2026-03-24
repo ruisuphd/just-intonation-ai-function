@@ -14,6 +14,12 @@ class Base(DeclarativeBase):
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Yield a session and commit when the request handler returns successfully.
+
+    Many routes also call ``await db.commit()`` before returning; that is redundant
+    but harmless (second commit is effectively a no-op on an already-committed session).
+    Prefer explicit commits in multi-step flows; rely on this auto-commit for simple reads.
+    """
     async with async_session_maker() as session:
         try:
             yield session
@@ -24,7 +30,9 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db() -> None:
-    import app.models
-
+    if settings.is_production:
+        return
+    if not settings.DATABASE_AUTO_CREATE:
+        return
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

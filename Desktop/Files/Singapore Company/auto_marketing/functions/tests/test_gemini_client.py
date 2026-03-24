@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,6 +13,7 @@ from shared.gemini_client import (
     _extract_json,
     _resolve_model,
 )
+from shared.chat_schema import ChatStructuredReply
 from shared.models import IntelligenceScoreResult
 
 
@@ -55,6 +57,8 @@ def test_task_model_map_completeness():
         "email_newsletter",
         "outreach",
         "quick_generate",
+        "marketing_chat",
+        "json_repair",
     }
     assert set(TASK_MODEL_MAP.keys()) == expected_tasks
 
@@ -161,3 +165,75 @@ def test_generate_raises_on_non_retryable(mock_get_model):
     with pytest.raises(ValueError, match="bad request"):
         asyncio.run(client.generate("sys", "user", task_name="intelligence_scorer"))
     assert mock_model.generate_content.call_count == 1
+
+
+@patch.dict(os.environ, {"GEMINI_ENABLE_MODEL_FALLBACK": "1"}, clear=False)
+@patch("shared.gemini_client.GeminiClient._get_model")
+def test_generate_fallback_model_after_primary_failure(mock_get_model):
+    bad = MagicMock()
+    bad.generate_content.side_effect = RuntimeError("primary hard fail")
+
+    ok_payload = {
+        "reply": "hello",
+        "settings_to_update": {},
+        "suggested_questions": ["Q1?"],
+    }
+    good = MagicMock()
+    good_response = MagicMock()
+    good_response.text = json.dumps(ok_payload)
+    good_response.usage_metadata = None
+    good.generate_content.return_value = good_response
+
+    def get_model(model_id: str, _sp: str):
+        if model_id == "gemini-3-flash":
+            return good
+        return bad
+
+    mock_get_model.side_effect = get_model
+
+    client = GeminiClient()
+    result = asyncio.run(
+        client.generate(
+            "sys",
+            "user",
+            response_model=ChatStructuredReply,
+            task_name="marketing_chat",
+            enable_json_repair=False,
+        )
+    )
+    assert isinstance(result, ChatStructuredReply)
+    assert result.reply == "hello"
+    assert bad.generate_content.call_count >= 1
+    assert good.generate_content.call_count == 1
+
+
+@patch("shared.gemini_client.GeminiClient._get_model")
+def test_generate_json_repair_after_malformed(mock_get_model):
+    payload = {
+        "reply": "fixed",
+        "settings_to_update": {},
+        "suggested_questions": [],
+    }
+    bad_resp = MagicMock()
+    bad_resp.text = "```json\nnot valid\n```"
+    bad_resp.usage_metadata = None
+    good_resp = MagicMock()
+    good_resp.text = json.dumps(payload)
+    good_resp.usage_metadata = None
+
+    mock_model = MagicMock()
+    mock_model.generate_content.side_effect = [bad_resp, good_resp]
+    mock_get_model.return_value = mock_model
+
+    client = GeminiClient()
+    result = asyncio.run(
+        client.generate(
+            "sys",
+            "user",
+            response_model=ChatStructuredReply,
+            task_name="marketing_chat",
+        )
+    )
+    assert isinstance(result, ChatStructuredReply)
+    assert result.reply == "fixed"
+    assert mock_model.generate_content.call_count == 2

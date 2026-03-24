@@ -1,4 +1,5 @@
 """Tests for the GeminiClient service."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -176,7 +177,7 @@ class TestGeminiClientAudioBytes:
             await gemini_client_instance.invoke(
                 system_prompt="sys",
                 messages=messages,
-                audio_bytes=b"\xFF\xFE",
+                audio_bytes=b"\xff\xfe",
             )
 
         # The last content (assistant/model) should only have 1 part (text only)

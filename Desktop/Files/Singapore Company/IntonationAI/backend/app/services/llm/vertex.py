@@ -51,7 +51,13 @@ class VertexClient:
             return "".join(text_parts)
 
         try:
-            return await asyncio.to_thread(_invoke)
+            return await asyncio.wait_for(
+                asyncio.to_thread(_invoke),
+                timeout=settings.COACH_LLM_TIMEOUT_SEC,
+            )
+        except TimeoutError:
+            logger.warning("Vertex invoke timed out after %ss", settings.COACH_LLM_TIMEOUT_SEC)
+            raise
         except Exception as e:
             logger.exception("Vertex invoke failed: %s", e)
             raise

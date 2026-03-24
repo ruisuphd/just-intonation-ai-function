@@ -12,13 +12,16 @@ export function usePitchDetection(analyserNode: AnalyserNode | null) {
 
   useEffect(() => {
     if (!analyserNode) return;
+    const node: AnalyserNode = analyserNode;
 
-    const detector = PitchDetector.forFloat32Array(analyserNode.fftSize);
-    const buf = new Float32Array(analyserNode.fftSize);
+    let cancelled = false;
+    const detector = PitchDetector.forFloat32Array(node.fftSize);
+    const buf = new Float32Array(node.fftSize);
 
     function tick() {
-      analyserNode!.getFloatTimeDomainData(buf);
-      const [freq, clarity] = detector.findPitch(buf, analyserNode!.context.sampleRate);
+      if (cancelled) return;
+      node.getFloatTimeDomainData(buf);
+      const [freq, clarity] = detector.findPitch(buf, node.context.sampleRate);
 
       if (clarity > 0.9 && freq >= PITCH_MIN_HZ && freq <= PITCH_MAX_HZ) {
         const { name, cents } = frequencyToNote(freq);
@@ -31,7 +34,10 @@ export function usePitchDetection(analyserNode: AnalyserNode | null) {
     }
 
     rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafRef.current);
+    };
   }, [analyserNode]);
 
   return analyserNode ? pitch : null;

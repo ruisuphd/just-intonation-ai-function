@@ -11,7 +11,7 @@ interface LockedStateProps {
 export default function LockedState({
   description,
   ctaLabel,
-  href = "/settings?tab=billing",
+  href = "/billing",
 }: LockedStateProps) {
   return (
     <div className="rounded-apple bg-apple-card p-8 text-center shadow-apple">
