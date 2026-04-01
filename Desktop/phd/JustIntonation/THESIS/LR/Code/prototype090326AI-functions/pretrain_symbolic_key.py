@@ -509,17 +509,30 @@ def pretrain(args: argparse.Namespace) -> None:
             out_A = model(batch_A)
             out_B = model(batch_B)
 
-            # Compute loss for each item's transposition c, then average
-            # (simplified: use mean c for the batch loss)
-            mean_c = int(round(sum(c_values) / len(c_values)))
-            loss, details = self_supervised_loss(
-                out_A, out_B,
-                pcp_A=batch_A['pcp'],
-                transposition_c=mean_c,
-                lambda_equiv=args.lambda_equiv,
-                lambda_mode=args.lambda_mode,
-                lambda_batch=args.lambda_batch,
-            )
+            # Compute loss per item (each has its own transposition c),
+            # then average. Using a single mean_c would create a systematic
+            # mismatch between actual and target phase rotations.
+            batch_size_actual = out_A['ksp_logits'].shape[0]
+            item_losses = []
+            item_details = defaultdict(float)
+            for idx in range(batch_size_actual):
+                out_A_i = {k: v[idx:idx+1] for k, v in out_A.items()}
+                out_B_i = {k: v[idx:idx+1] for k, v in out_B.items()}
+                pcp_A_i = batch_A['pcp'][idx:idx+1]
+                c_i = c_values[idx]
+                loss_i, det_i = self_supervised_loss(
+                    out_A_i, out_B_i,
+                    pcp_A=pcp_A_i,
+                    transposition_c=c_i,
+                    lambda_equiv=args.lambda_equiv,
+                    lambda_mode=args.lambda_mode,
+                    lambda_batch=args.lambda_batch,
+                )
+                item_losses.append(loss_i)
+                for k, v in det_i.items():
+                    item_details[k] += v
+            loss = sum(item_losses) / len(item_losses)
+            details = {k: v / batch_size_actual for k, v in item_details.items()}
 
             optimizer.zero_grad()
             loss.backward()

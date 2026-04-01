@@ -29,8 +29,8 @@ def get_midi_files(path):
 
 
 def _interval_hash(intervals: tuple) -> str:
-    """Deterministic SHA-256 hash of an interval tuple."""
-    return hashlib.sha256(str(intervals).encode('ascii')).hexdigest()[:16]
+    """Deterministic SHA-256 hash of an interval tuple (full 256-bit digest)."""
+    return hashlib.sha256(str(intervals).encode('ascii')).hexdigest()
 
 
 class SimpleNGramFingerprinter:

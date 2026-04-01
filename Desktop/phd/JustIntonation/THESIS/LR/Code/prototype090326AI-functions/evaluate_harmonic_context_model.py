@@ -37,7 +37,7 @@ def _find_composer_ids(
     """Find composition IDs in the test set matching target composers.
 
     Reads the label JSON files to check for composer metadata.
-    Falls back to filename heuristics if metadata is absent.
+    Logs warnings for malformed or missing files.
     """
     matching = []
     for cid in test_ids:
@@ -47,10 +47,16 @@ def _find_composer_ids(
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            composer = data.get('composer', '').lower()
-            if any(c in composer for c in composers):
+            if not isinstance(data, dict):
+                print(f'[WARN] {path}: expected JSON object, got {type(data).__name__}')
+                continue
+            composer = data.get('composer')
+            if not composer or not isinstance(composer, str):
+                continue
+            if any(c in composer.lower() for c in composers):
                 matching.append(cid)
-        except (json.JSONDecodeError, KeyError):
+        except (json.JSONDecodeError, IOError) as exc:
+            print(f'[WARN] {path}: {exc}')
             continue
     return matching
 

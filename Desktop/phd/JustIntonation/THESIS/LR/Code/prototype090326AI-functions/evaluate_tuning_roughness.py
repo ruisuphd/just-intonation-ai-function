@@ -86,11 +86,17 @@ def midi_to_freq(midi_pitch: int) -> float:
     return 440.0 * (2.0 ** ((midi_pitch - 69) / 12.0))
 
 
-def piano_partials(fundamental: float, n_partials: int = NUM_PARTIALS) -> Tuple[np.ndarray, np.ndarray]:
+def piano_partials(
+    fundamental: float,
+    n_partials: int = NUM_PARTIALS,
+    inharmonicity: float = 0.0005,
+) -> Tuple[np.ndarray, np.ndarray]:
     """Return arrays of (frequencies, amplitudes) for a piano-like tone.
 
-    Piano strings produce nearly-harmonic partials at integer multiples of the
-    fundamental.  Amplitudes decay approximately as 1/n for the nth partial.
+    Real piano strings are slightly inharmonic due to stiffness — the nth
+    partial is higher than the ideal n*f0 by a factor of sqrt(1 + B*n^2),
+    where B is the inharmonicity coefficient.  Typical values: B ~ 0.0003
+    for bass strings, B ~ 0.001 for treble strings (Gough 1997).
 
     Parameters
     ----------
@@ -98,29 +104,46 @@ def piano_partials(fundamental: float, n_partials: int = NUM_PARTIALS) -> Tuple[
         Fundamental frequency in Hz.
     n_partials : int
         Number of harmonic partials to include.
+    inharmonicity : float
+        Inharmonicity coefficient B (default 0.0005, mid-range piano).
+        Set to 0.0 for ideal harmonics.
 
     Returns
     -------
     freqs : ndarray, shape (n_partials,)
     amps : ndarray, shape (n_partials,)
+
+    References
+    ----------
+    Gough, C. E. (1997). "The Theory of Piano String Vibration."
+    J. Sound and Vibration, 200(5), 519-539.
     """
     ns = np.arange(1, n_partials + 1, dtype=float)
-    freqs = fundamental * ns
+    freqs = fundamental * ns * np.sqrt(1.0 + inharmonicity * ns ** 2)
     amps = 1.0 / ns
     return freqs, amps
 
 
 # ---------------------------------------------------------------------------
-# Sethares (1993) roughness model
+# Roughness models
 # ---------------------------------------------------------------------------
 
 def sethares_roughness(freqs: np.ndarray, amps: np.ndarray) -> float:
-    """Compute sensory roughness for a set of partials.
+    """Compute sensory roughness using the Vassilakis (2001) refinement.
 
-    Implements the pairwise roughness model from Sethares (1993) [1]:
+    The original Sethares (1993) model weights roughness by a_i * a_j,
+    which overweights the fundamental pair relative to upper-partial
+    coincidences.  Vassilakis (2001) [2] refines the amplitude weighting to
 
-        R = sum_{i<j} a_i * a_j * [exp(-b1 * s * |f_i - f_j|)
-                                  - exp(-b2 * s * |f_i - f_j|)]
+        w = min(a_i, a_j)^0.606 * (a_i * a_j)^0.0606
+
+    which better captures the perceptual reality that partial coincidences
+    at different amplitude levels contribute meaningfully to consonance.
+
+    The frequency-dependent kernel is unchanged from Sethares (1993):
+
+        R = sum_{i<j} w * [exp(-b1 * s * |f_i - f_j|)
+                          - exp(-b2 * s * |f_i - f_j|)]
 
     where  s = 0.24 / (0.0207 * min(f_i, f_j) + 18.96).
 
@@ -135,6 +158,11 @@ def sethares_roughness(freqs: np.ndarray, amps: np.ndarray) -> float:
     -------
     float
         Total roughness (non-negative).
+
+    References
+    ----------
+    .. [1] Sethares (1993), JASA 94(3), 1218-1228.
+    .. [2] Vassilakis (2001), PhD thesis, UCLA.
     """
     n = len(freqs)
     roughness = 0.0
@@ -143,9 +171,12 @@ def sethares_roughness(freqs: np.ndarray, amps: np.ndarray) -> float:
             f_min = min(freqs[i], freqs[j])
             delta_f = abs(freqs[i] - freqs[j])
             s = 0.24 / (0.0207 * f_min + 18.96)
+            # Vassilakis amplitude weighting
+            a_min = min(amps[i], amps[j])
+            a_prod = amps[i] * amps[j]
+            w = (a_min ** 0.606) * (a_prod ** 0.0606)
             roughness += (
-                amps[i] * amps[j]
-                * (np.exp(-B1 * s * delta_f) - np.exp(-B2 * s * delta_f))
+                w * (np.exp(-B1 * s * delta_f) - np.exp(-B2 * s * delta_f))
             )
     return float(roughness)
 

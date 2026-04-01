@@ -311,51 +311,6 @@ class HarmonicContextGRU(nn.Module):
         return logits[batch_indices, last_indices]
 
 
-class RotaryPositionalEncoding(nn.Module):
-    """Rotary Position Embedding (RoPE) for unbounded sequence lengths.
-
-    Applies rotation matrices to pairs of dimensions in the input, encoding
-    relative position through phase angles. Extends naturally to any sequence
-    length without retraining — critical for real-time note streams where
-    performance length is unknown at training time.
-
-    Reference: Su et al., "RoFormer: Enhanced Transformer with Rotary
-    Position Embedding" (arXiv:2104.09864).
-    """
-
-    def __init__(self, d_model: int, base: float = 10000.0):
-        super().__init__()
-        assert d_model % 2 == 0, 'd_model must be even for RoPE'
-        self.d_model = d_model
-        inv_freq = 1.0 / (base ** (torch.arange(0, d_model, 2).float() / d_model))
-        self.register_buffer('inv_freq', inv_freq)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Apply RoPE to input tensor.
-
-        Args:
-            x: (B, T, d_model)
-
-        Returns:
-            (B, T, d_model) with rotary position encoding applied.
-        """
-        T = x.shape[1]
-        t = torch.arange(T, device=x.device, dtype=self.inv_freq.dtype)
-        freqs = torch.outer(t, self.inv_freq)  # (T, d_model/2)
-        cos_freqs = freqs.cos()  # (T, d_model/2)
-        sin_freqs = freqs.sin()  # (T, d_model/2)
-
-        x1 = x[..., 0::2]  # (B, T, d_model/2) — even dims
-        x2 = x[..., 1::2]  # (B, T, d_model/2) — odd dims
-
-        rotated = torch.stack(
-            [x1 * cos_freqs - x2 * sin_freqs,
-             x1 * sin_freqs + x2 * cos_freqs],
-            dim=-1,
-        )  # (B, T, d_model/2, 2)
-        return rotated.flatten(-2)  # (B, T, d_model)
-
-
 class SymbolicKeyTransformer(nn.Module):
     """Two-branch causal Transformer for local key estimation.
 
@@ -366,9 +321,19 @@ class SymbolicKeyTransformer(nn.Module):
     Branch 2 (Raw): per-note features with octave info  -> d_model
     Fusion:  concat + project -> causal Transformer -> output heads
 
-    Uses Rotary Positional Encoding (RoPE) for unbounded sequence length
-    support — critical for real-time inference where performances can
-    exceed the training window size.
+    Positional encoding: learnable embeddings up to max_seq_len, with a
+    sliding-window inference policy for sequences exceeding this limit.
+    At inference time, only the most recent max_seq_len notes are used,
+    which is acceptable because key detection is a local property —
+    harmonic context beyond ~500 notes contributes negligible information.
+
+    Note on RoPE: Rotary Position Embedding (Su et al., arXiv:2104.09864)
+    would be the ideal choice for unbounded sequences, but requires custom
+    attention layers (RoPE rotates Q and K inside attention, not the input).
+    Since nn.TransformerEncoderLayer does not expose Q/K hooks, and the
+    overhead of a custom attention implementation is not justified for a
+    2-layer model with a naturally local task, we use learnable embeddings
+    with the sliding-window policy described above.
 
     Output heads:
       key_logits  (B, T, 24) — 12 major + 12 minor key classes
@@ -383,10 +348,11 @@ class SymbolicKeyTransformer(nn.Module):
         n_layers: int = 2,
         ff_dim: int = 256,
         dropout: float = 0.1,
-        max_seq_len: int = 512,  # kept for API compat; ignored by RoPE
+        max_seq_len: int = 512,
     ):
         super().__init__()
         self.d_model = d_model
+        self.max_seq_len = max_seq_len
 
         # --- Branch 1: Pitch-Class Profile (octave-folded) ---
         self.pcp_projection = nn.Linear(12, d_model)
@@ -404,8 +370,8 @@ class SymbolicKeyTransformer(nn.Module):
         # --- Fusion ---
         self.fusion = nn.Linear(2 * d_model, d_model)
 
-        # --- Rotary Positional Encoding (replaces learnable nn.Embedding) ---
-        self.rope = RotaryPositionalEncoding(d_model)
+        # --- Positional encoding (learnable) ---
+        self.pos_embedding = nn.Embedding(max_seq_len, d_model)
 
         # --- Causal Transformer encoder ---
         encoder_layer = nn.TransformerEncoderLayer(
@@ -440,6 +406,18 @@ class SymbolicKeyTransformer(nn.Module):
         """
         B, T = batch['pitch_class'].shape
 
+        # Sliding-window policy: if sequence exceeds max_seq_len, use only
+        # the most recent max_seq_len notes. Key detection is local — context
+        # beyond ~500 notes contributes negligible harmonic information.
+        if T > self.max_seq_len:
+            offset = T - self.max_seq_len
+            batch = {
+                k: v[:, offset:] if isinstance(v, torch.Tensor) and v.dim() >= 2
+                else v
+                for k, v in batch.items()
+            }
+            T = self.max_seq_len
+
         # Branch 1: PCP -> d_model
         branch1 = self.pcp_projection(batch['pcp'])  # (B, T, d_model)
 
@@ -460,8 +438,9 @@ class SymbolicKeyTransformer(nn.Module):
         # Fuse the two branches
         fused = self.fusion(torch.cat([branch1, branch2], dim=-1))  # (B, T, d_model)
 
-        # Apply Rotary Positional Encoding (extends to any sequence length)
-        fused = self.rope(fused)
+        # Add learnable positional encoding
+        positions = torch.arange(T, device=fused.device).unsqueeze(0)  # (1, T)
+        fused = fused + self.pos_embedding(positions)
 
         # Causal mask: prevent attending to future positions
         causal_mask = torch.triu(

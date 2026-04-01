@@ -190,7 +190,7 @@ export class CommaDriftTracker {
         let driftCorrected = false;
 
         // Check if cumulative drift exceeds threshold
-        if (Math.abs(this.cumulativeDrift[pc]) > this.thresholdCents) {
+        if (Math.abs(this.cumulativeDrift[pc]) >= this.thresholdCents) {
             // Reset: snap back to 12-TET for this pitch class
             this.cumulativeDrift[pc] = 0.0;
             this.resetCount++;
@@ -206,6 +206,7 @@ export class CommaDriftTracker {
      */
     reset() {
         this.cumulativeDrift.fill(0.0);
+        this.resetCount = 0;
     }
 
     /**
