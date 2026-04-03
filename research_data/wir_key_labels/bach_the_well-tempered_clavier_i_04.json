@@ -1,0 +1,734 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/Keyboard_Other/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/04/analysis.txt",
+  "piece_id": "bach_the_well-tempered_clavier_i_04",
+  "global_key": "c#",
+  "global_key_class": 13,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 1,
+      "beat": 2.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 2,
+      "beat": 2.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V65"
+    },
+    {
+      "measure": 3,
+      "beat": 2.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V7"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "bVI42"
+    },
+    {
+      "measure": 5,
+      "beat": 2.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "viio6"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "iii42"
+    },
+    {
+      "measure": 6,
+      "beat": 2.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "vi6"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "ii42"
+    },
+    {
+      "measure": 7,
+      "beat": 2.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "V6"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 8,
+      "beat": 2.67,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V43"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "viio7"
+    },
+    {
+      "measure": 10,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 10,
+      "beat": 2.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "iio64"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "V654"
+    },
+    {
+      "measure": 11,
+      "beat": 1.5,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "i6"
+    },
+    {
+      "measure": 11,
+      "beat": 1.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "ii"
+    },
+    {
+      "measure": 11,
+      "beat": 2.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "III+654"
+    },
+    {
+      "measure": 11,
+      "beat": 2.5,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "bviio6/vii"
+    },
+    {
+      "measure": 11,
+      "beat": 2.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "vii"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "V42"
+    },
+    {
+      "measure": 12,
+      "beat": 2.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "V42"
+    },
+    {
+      "measure": 12,
+      "beat": 2.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "I64"
+    },
+    {
+      "measure": 13,
+      "beat": 1.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "iv"
+    },
+    {
+      "measure": 13,
+      "beat": 2.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "i64"
+    },
+    {
+      "measure": 13,
+      "beat": 2.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "V"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 14,
+      "beat": 2.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 14,
+      "beat": 2.67,
+      "key": "B",
+      "key_class": 11,
+      "numeral": "I6"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "B",
+      "key_class": 11,
+      "numeral": "V65"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "B",
+      "key_class": 11,
+      "numeral": "I"
+    },
+    {
+      "measure": 16,
+      "beat": 2.0,
+      "key": "B",
+      "key_class": 11,
+      "numeral": "vi7"
+    },
+    {
+      "measure": 16,
+      "beat": 2.67,
+      "key": "B",
+      "key_class": 11,
+      "numeral": "v"
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V7"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "f#",
+      "key_class": 18,
+      "numeral": "viio7"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "key": "f#",
+      "key_class": 18,
+      "numeral": "i"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "key": "A",
+      "key_class": 9,
+      "numeral": "V6"
+    },
+    {
+      "measure": 21,
+      "beat": 1.5,
+      "key": "A",
+      "key_class": 9,
+      "numeral": "I"
+    },
+    {
+      "measure": 21,
+      "beat": 1.67,
+      "key": "A",
+      "key_class": 9,
+      "numeral": "V7[no5]/V"
+    },
+    {
+      "measure": 21,
+      "beat": 2.0,
+      "key": "A",
+      "key_class": 9,
+      "numeral": "V"
+    },
+    {
+      "measure": 22,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 22,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V7"
+    },
+    {
+      "measure": 23,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i64"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv"
+    },
+    {
+      "measure": 24,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "bII6"
+    },
+    {
+      "measure": 25,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 25,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V43"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "bVI7"
+    },
+    {
+      "measure": 27,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 27,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V65"
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 28,
+      "beat": 1.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv7"
+    },
+    {
+      "measure": 28,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv7"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V65"
+    },
+    {
+      "measure": 29,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V7"
+    },
+    {
+      "measure": 30,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iio64"
+    },
+    {
+      "measure": 30,
+      "beat": 1.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V"
+    },
+    {
+      "measure": 30,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V43"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V6543"
+    },
+    {
+      "measure": 31,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V65"
+    },
+    {
+      "measure": 31,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V65"
+    },
+    {
+      "measure": 32,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "III"
+    },
+    {
+      "measure": 32,
+      "beat": 1.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 32,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "viio7"
+    },
+    {
+      "measure": 33,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V9"
+    },
+    {
+      "measure": 34,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 34,
+      "beat": 1.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv7"
+    },
+    {
+      "measure": 34,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i64"
+    },
+    {
+      "measure": 34,
+      "beat": 2.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V"
+    },
+    {
+      "measure": 35,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 35,
+      "beat": 1.67,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "V43"
+    },
+    {
+      "measure": 35,
+      "beat": 2.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 36,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "viio7"
+    },
+    {
+      "measure": 37,
+      "beat": 1.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "V9"
+    },
+    {
+      "measure": 37,
+      "beat": 2.0,
+      "key": "g#",
+      "key_class": 20,
+      "numeral": "viio7"
+    },
+    {
+      "measure": 37,
+      "beat": 2.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V43"
+    },
+    {
+      "measure": 38,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "bVI"
+    },
+    {
+      "measure": 38,
+      "beat": 1.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv"
+    },
+    {
+      "measure": 38,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i"
+    },
+    {
+      "measure": 38,
+      "beat": 2.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "V"
+    },
+    {
+      "measure": 39,
+      "beat": 1.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "i5"
+    },
+    {
+      "measure": 39,
+      "beat": 1.33,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 39,
+      "beat": 1.67,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "viio42"
+    },
+    {
+      "measure": 39,
+      "beat": 2.0,
+      "key": "c#",
+      "key_class": 13,
+      "numeral": "I"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 4,
+      "key": "c#",
+      "key_class": 13
+    },
+    {
+      "start_measure": 5,
+      "end_measure": 8,
+      "key": "E",
+      "key_class": 4
+    },
+    {
+      "start_measure": 9,
+      "end_measure": 9,
+      "key": "c#",
+      "key_class": 13
+    },
+    {
+      "start_measure": 10,
+      "end_measure": 13,
+      "key": "g#",
+      "key_class": 20
+    },
+    {
+      "start_measure": 14,
+      "end_measure": 16,
+      "key": "B",
+      "key_class": 11
+    },
+    {
+      "start_measure": 17,
+      "end_measure": 18,
+      "key": "c#",
+      "key_class": 13
+    },
+    {
+      "start_measure": 19,
+      "end_measure": 20,
+      "key": "f#",
+      "key_class": 18
+    },
+    {
+      "start_measure": 21,
+      "end_measure": 21,
+      "key": "A",
+      "key_class": 9
+    },
+    {
+      "start_measure": 22,
+      "end_measure": 34,
+      "key": "c#",
+      "key_class": 13
+    },
+    {
+      "start_measure": 35,
+      "end_measure": 36,
+      "key": "g#",
+      "key_class": 20
+    },
+    {
+      "start_measure": 37,
+      "end_measure": 39,
+      "key": "c#",
+      "key_class": 13
+    }
+  ],
+  "statistics": {
+    "total_annotations": 93,
+    "unique_keys": 6,
+    "major_annotations": 16,
+    "minor_annotations": 77
+  }
+}

@@ -1,0 +1,363 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Hensel,_Fanny_(Mendelssohn)/3_Lieder/3_Die_Nonne/analysis.txt",
+  "piece_id": "hensel_3_lieder_3_die_nonne",
+  "global_key": "a",
+  "global_key_class": 21,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 1,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 2,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 3,
+      "beat": 2.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 3,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 4,
+      "beat": 2.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 4,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V7"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "iv"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "C",
+      "key_class": 0,
+      "numeral": "V"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "C",
+      "key_class": 0,
+      "numeral": "I"
+    },
+    {
+      "measure": 11,
+      "beat": 3.0,
+      "key": "C",
+      "key_class": 0,
+      "numeral": "#iio2[no5]"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "e",
+      "key_class": 16,
+      "numeral": "VI"
+    },
+    {
+      "measure": 13,
+      "beat": 3.0,
+      "key": "e",
+      "key_class": 16,
+      "numeral": "viio2[no5]"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "e",
+      "key_class": 16,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "key": "e",
+      "key_class": 16,
+      "numeral": "V74"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "e",
+      "key_class": 16,
+      "numeral": "V7"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "e",
+      "key_class": 16,
+      "numeral": "i"
+    },
+    {
+      "measure": 19,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V7/VI"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "VI"
+    },
+    {
+      "measure": 20,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "viio2[no5]"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "VI"
+    },
+    {
+      "measure": 21,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "iio64"
+    },
+    {
+      "measure": 22,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 22,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 23,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 24,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V"
+    },
+    {
+      "measure": 25,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 25,
+      "beat": 2.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 25,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 26,
+      "beat": 2.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    },
+    {
+      "measure": 26,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V7"
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V7[no3]"
+    },
+    {
+      "measure": 28,
+      "beat": 2.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 28,
+      "beat": 3.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V7"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "V"
+    },
+    {
+      "measure": 30,
+      "beat": 1.0,
+      "key": "a",
+      "key_class": 21,
+      "numeral": "i"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 9,
+      "key": "a",
+      "key_class": 21
+    },
+    {
+      "start_measure": 10,
+      "end_measure": 12,
+      "key": "C",
+      "key_class": 0
+    },
+    {
+      "start_measure": 13,
+      "end_measure": 18,
+      "key": "e",
+      "key_class": 16
+    },
+    {
+      "start_measure": 19,
+      "end_measure": 30,
+      "key": "a",
+      "key_class": 21
+    }
+  ],
+  "statistics": {
+    "total_annotations": 46,
+    "unique_keys": 3,
+    "major_annotations": 3,
+    "minor_annotations": 43
+  }
+}

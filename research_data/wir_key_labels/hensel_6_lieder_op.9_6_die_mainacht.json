@@ -1,0 +1,276 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Hensel,_Fanny_(Mendelssohn)/6_Lieder,_Op.9/6_Die_Mainacht/analysis.txt",
+  "piece_id": "hensel_6_lieder_op.9_6_die_mainacht",
+  "global_key": "Eb",
+  "global_key_class": 3,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "I"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "I"
+    },
+    {
+      "measure": 4,
+      "beat": 2.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "V6"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "vi"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 6,
+      "beat": 2.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "viiø65"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "V42"
+    },
+    {
+      "measure": 7,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "i6"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "VI7"
+    },
+    {
+      "measure": 8,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "It6"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "V7"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "i"
+    },
+    {
+      "measure": 10,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "III+"
+    },
+    {
+      "measure": 10,
+      "beat": 2.67,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "i"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V43"
+    },
+    {
+      "measure": 11,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V42"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V6"
+    },
+    {
+      "measure": 12,
+      "beat": 2.33,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 12,
+      "beat": 2.67,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V+6"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 13,
+      "beat": 1.67,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "V65"
+    },
+    {
+      "measure": 13,
+      "beat": 2.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "I"
+    },
+    {
+      "measure": 13,
+      "beat": 2.67,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "V65/ii"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "ii"
+    },
+    {
+      "measure": 14,
+      "beat": 1.67,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 14,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "V7"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "i"
+    },
+    {
+      "measure": 15,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "VI7"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "viio7/v"
+    },
+    {
+      "measure": 16,
+      "beat": 2.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "V7"
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "key": "Eb",
+      "key_class": 3,
+      "numeral": "I"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 6,
+      "key": "Eb",
+      "key_class": 3
+    },
+    {
+      "start_measure": 7,
+      "end_measure": 10,
+      "key": "c",
+      "key_class": 12
+    },
+    {
+      "start_measure": 11,
+      "end_measure": 11,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 12,
+      "end_measure": 12,
+      "key": "Db",
+      "key_class": 1
+    },
+    {
+      "start_measure": 13,
+      "end_measure": 13,
+      "key": "Eb",
+      "key_class": 3
+    },
+    {
+      "start_measure": 14,
+      "end_measure": 15,
+      "key": "c",
+      "key_class": 12
+    },
+    {
+      "start_measure": 16,
+      "end_measure": 17,
+      "key": "Eb",
+      "key_class": 3
+    }
+  ],
+  "statistics": {
+    "total_annotations": 31,
+    "unique_keys": 4,
+    "major_annotations": 19,
+    "minor_annotations": 12
+  }
+}

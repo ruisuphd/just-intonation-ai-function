@@ -1,0 +1,660 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Hensel,_Fanny_(Mendelssohn)/6_Lieder,_Op.1/1_Schwanenlied/analysis.txt",
+  "piece_id": "hensel_6_lieder_op.1_1_schwanenlied",
+  "global_key": "g",
+  "global_key_class": 19,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 2,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø42"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 3,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "v6"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 4,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 5,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "VI64"
+    },
+    {
+      "measure": 6,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "Ger42"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "III"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64/V"
+    },
+    {
+      "measure": 8,
+      "beat": 2.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V/V"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 10,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 12,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V65/VII"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "VII"
+    },
+    {
+      "measure": 13,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V65"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 14,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv43"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 15,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "v6"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 16,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42/IV"
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "IV6"
+    },
+    {
+      "measure": 17,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "Ger65"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 19,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 19,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 20,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 21,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 22,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V65/IV"
+    },
+    {
+      "measure": 22,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "IV"
+    },
+    {
+      "measure": 22,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "Ger65"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 23,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "I"
+    },
+    {
+      "measure": 24,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø42"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "I"
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 28,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø42"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 29,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "v6"
+    },
+    {
+      "measure": 30,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 30,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 31,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 32,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "VI64"
+    },
+    {
+      "measure": 32,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "Ger42"
+    },
+    {
+      "measure": 33,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "III"
+    },
+    {
+      "measure": 34,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64/V"
+    },
+    {
+      "measure": 34,
+      "beat": 2.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V/V"
+    },
+    {
+      "measure": 35,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 37,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 37,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 38,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 39,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 39,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V65/VII"
+    },
+    {
+      "measure": 40,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "VII"
+    },
+    {
+      "measure": 40,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V65"
+    },
+    {
+      "measure": 41,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 41,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv43"
+    },
+    {
+      "measure": 42,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 42,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "v6"
+    },
+    {
+      "measure": 43,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 43,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42/IV"
+    },
+    {
+      "measure": 44,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "IV6"
+    },
+    {
+      "measure": 44,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "Ger65"
+    },
+    {
+      "measure": 45,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 46,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 46,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 46,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 47,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 47,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 48,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 48,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 49,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V65/IV"
+    },
+    {
+      "measure": 49,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "IV"
+    },
+    {
+      "measure": 49,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "Ger65"
+    },
+    {
+      "measure": 50,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 50,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 51,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "I"
+    },
+    {
+      "measure": 51,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iiø42"
+    },
+    {
+      "measure": 53,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "I"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 53,
+      "key": "g",
+      "key_class": 19
+    }
+  ],
+  "statistics": {
+    "total_annotations": 91,
+    "unique_keys": 1,
+    "major_annotations": 0,
+    "minor_annotations": 91
+  }
+}

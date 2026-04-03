@@ -1,0 +1,789 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Schumann,_Clara/6_Lieder,_Op.13/6_Die_stille_Lotosblume/analysis.txt",
+  "piece_id": "schumann_6_lieder_op.13_6_die_stille_lotosblume",
+  "global_key": "Ab",
+  "global_key_class": 8,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 1,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "ii42"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 3,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V6"
+    },
+    {
+      "measure": 3,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "viio6/vii"
+    },
+    {
+      "measure": 4,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V43"
+    },
+    {
+      "measure": 4,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "viio42/iii"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 5,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 5,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "v"
+    },
+    {
+      "measure": 7,
+      "beat": 3.0,
+      "key": "bb",
+      "key_class": 22,
+      "numeral": "i6"
+    },
+    {
+      "measure": 7,
+      "beat": 3.5,
+      "key": "bb",
+      "key_class": 22,
+      "numeral": "V43"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "bb",
+      "key_class": 22,
+      "numeral": "i"
+    },
+    {
+      "measure": 8,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 9,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "viio6/vii"
+    },
+    {
+      "measure": 12,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V43"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "#iio2"
+    },
+    {
+      "measure": 13,
+      "beat": 2.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 13,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 13,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "v"
+    },
+    {
+      "measure": 15,
+      "beat": 3.0,
+      "key": "bb",
+      "key_class": 22,
+      "numeral": "i6"
+    },
+    {
+      "measure": 15,
+      "beat": 3.5,
+      "key": "bb",
+      "key_class": 22,
+      "numeral": "V43"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "bb",
+      "key_class": 22,
+      "numeral": "i"
+    },
+    {
+      "measure": 16,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "iv"
+    },
+    {
+      "measure": 17,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 19,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 20,
+      "beat": 2.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 20,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 20,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 21,
+      "beat": 1.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I64"
+    },
+    {
+      "measure": 21,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "iii6"
+    },
+    {
+      "measure": 21,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "viio6/vii"
+    },
+    {
+      "measure": 23,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V43"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "#iio2"
+    },
+    {
+      "measure": 24,
+      "beat": 2.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 24,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 24,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 25,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "key": "Gb",
+      "key_class": 6,
+      "numeral": "vi"
+    },
+    {
+      "measure": 26,
+      "beat": 3.0,
+      "key": "Gb",
+      "key_class": 6,
+      "numeral": "I"
+    },
+    {
+      "measure": 27,
+      "beat": 1.0,
+      "key": "Gb",
+      "key_class": 6,
+      "numeral": "V54"
+    },
+    {
+      "measure": 27,
+      "beat": 3.0,
+      "key": "Gb",
+      "key_class": 6,
+      "numeral": "V"
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "key": "Fb",
+      "key_class": 4,
+      "numeral": "vi"
+    },
+    {
+      "measure": 28,
+      "beat": 3.0,
+      "key": "Fb",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "key": "Fb",
+      "key_class": 4,
+      "numeral": "V54"
+    },
+    {
+      "measure": 29,
+      "beat": 3.0,
+      "key": "Fb",
+      "key_class": 4,
+      "numeral": "V"
+    },
+    {
+      "measure": 30,
+      "beat": 1.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "I"
+    },
+    {
+      "measure": 30,
+      "beat": 3.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "V6[add9]"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "I"
+    },
+    {
+      "measure": 31,
+      "beat": 3.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "V43"
+    },
+    {
+      "measure": 32,
+      "beat": 1.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "I"
+    },
+    {
+      "measure": 32,
+      "beat": 3.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "V43"
+    },
+    {
+      "measure": 32,
+      "beat": 3.5,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "I"
+    },
+    {
+      "measure": 33,
+      "beat": 1.0,
+      "key": "Cb",
+      "key_class": 11,
+      "numeral": "V"
+    },
+    {
+      "measure": 33,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V65"
+    },
+    {
+      "measure": 34,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "i"
+    },
+    {
+      "measure": 34,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V65"
+    },
+    {
+      "measure": 34,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "II43"
+    },
+    {
+      "measure": 35,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 35,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV6"
+    },
+    {
+      "measure": 35,
+      "beat": 3.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I64"
+    },
+    {
+      "measure": 36,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I64"
+    },
+    {
+      "measure": 36,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 36,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV43"
+    },
+    {
+      "measure": 37,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I64"
+    },
+    {
+      "measure": 37,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 37,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 38,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V"
+    },
+    {
+      "measure": 38,
+      "beat": 1.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 38,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V"
+    },
+    {
+      "measure": 38,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I64"
+    },
+    {
+      "measure": 39,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "iiø7"
+    },
+    {
+      "measure": 40,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 40,
+      "beat": 3.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 41,
+      "beat": 1.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 41,
+      "beat": 3.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "V7"
+    },
+    {
+      "measure": 42,
+      "beat": 1.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "i"
+    },
+    {
+      "measure": 42,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "iiø7"
+    },
+    {
+      "measure": 43,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 43,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV65"
+    },
+    {
+      "measure": 44,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 44,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV43"
+    },
+    {
+      "measure": 45,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 45,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV6"
+    },
+    {
+      "measure": 46,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 46,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "ii42"
+    },
+    {
+      "measure": 47,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 6,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 7,
+      "end_measure": 7,
+      "key": "bb",
+      "key_class": 22
+    },
+    {
+      "start_measure": 8,
+      "end_measure": 14,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 15,
+      "end_measure": 15,
+      "key": "bb",
+      "key_class": 22
+    },
+    {
+      "start_measure": 16,
+      "end_measure": 25,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 26,
+      "end_measure": 27,
+      "key": "Gb",
+      "key_class": 6
+    },
+    {
+      "start_measure": 28,
+      "end_measure": 29,
+      "key": "Fb",
+      "key_class": 4
+    },
+    {
+      "start_measure": 30,
+      "end_measure": 32,
+      "key": "Cb",
+      "key_class": 11
+    },
+    {
+      "start_measure": 33,
+      "end_measure": 38,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 39,
+      "end_measure": 40,
+      "key": "Db",
+      "key_class": 1
+    },
+    {
+      "start_measure": 41,
+      "end_measure": 41,
+      "key": "f",
+      "key_class": 17
+    },
+    {
+      "start_measure": 42,
+      "end_measure": 47,
+      "key": "Ab",
+      "key_class": 8
+    }
+  ],
+  "statistics": {
+    "total_annotations": 100,
+    "unique_keys": 7,
+    "major_annotations": 91,
+    "minor_annotations": 9
+  }
+}

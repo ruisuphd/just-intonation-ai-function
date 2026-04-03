@@ -1,0 +1,1527 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/Piano_Sonatas/Beethoven,_Ludwig_van/Op057(Appassionata)/2/analysis.txt",
+  "piece_id": "beethoven_op057(appassionata)_2",
+  "global_key": "Db",
+  "global_key_class": 1,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 1,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 2,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii65"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V[no3][add4]"
+    },
+    {
+      "measure": 3,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 5,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 6,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Ger6"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 7,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 8,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 9,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 9,
+      "beat": 2.88,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 10,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 10,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 10,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 11,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 11,
+      "beat": 2.88,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 12,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 12,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65[no5][add6]"
+    },
+    {
+      "measure": 12,
+      "beat": 2.25,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 12,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 13,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 13,
+      "beat": 2.88,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 14,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 14,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 14,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii6"
+    },
+    {
+      "measure": 15,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 16,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 17,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 18,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65/V"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V[no3][add4]"
+    },
+    {
+      "measure": 19,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 20,
+      "beat": 1.25,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 20,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio6"
+    },
+    {
+      "measure": 20,
+      "beat": 2.25,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 21,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 22,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 22,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Ger6"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 23,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 24,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 25,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 25,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 26,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio6"
+    },
+    {
+      "measure": 26,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 27,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 27,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 28,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 28,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio6"
+    },
+    {
+      "measure": 28,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 29,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio64"
+    },
+    {
+      "measure": 30,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 30,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 30,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio6"
+    },
+    {
+      "measure": 30,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 31,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V"
+    },
+    {
+      "measure": 32,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 32,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 33,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 34,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 34,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii65"
+    },
+    {
+      "measure": 35,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V[no3][add4]"
+    },
+    {
+      "measure": 35,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V"
+    },
+    {
+      "measure": 36,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 36,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 37,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 38,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 38,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Ger6"
+    },
+    {
+      "measure": 39,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 39,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 40,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 40,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 40,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 40,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 41,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 41,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 42,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 42,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 42,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 43,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 43,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 44,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 44,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 44,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 45,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 45,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 46,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 46,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 46,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 47,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii6"
+    },
+    {
+      "measure": 47,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 48,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 48,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 48,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 48,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 49,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 50,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 50,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii65"
+    },
+    {
+      "measure": 51,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 51,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 52,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 53,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 53,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 54,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 54,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio2/V"
+    },
+    {
+      "measure": 55,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "iiø7"
+    },
+    {
+      "measure": 55,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 56,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 57,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV64"
+    },
+    {
+      "measure": 58,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 58,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii65"
+    },
+    {
+      "measure": 59,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 59,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 60,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 61,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 61,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV6"
+    },
+    {
+      "measure": 62,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 62,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Ger6"
+    },
+    {
+      "measure": 63,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 63,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 64,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 64,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 65,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 66,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 66,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 66,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 67,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 68,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 68,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 68,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 69,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 69,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 70,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 70,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio64"
+    },
+    {
+      "measure": 70,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 71,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 71,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 72,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 73,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 74,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 74,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 74,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 75,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 75,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 76,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 76,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 76,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 77,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "viio64"
+    },
+    {
+      "measure": 77,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 77,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 78,
+      "beat": 1.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 78,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 78,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 79,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 79,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 80,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 81,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 82,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 82,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii65"
+    },
+    {
+      "measure": 83,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V[no3][add4]"
+    },
+    {
+      "measure": 83,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V"
+    },
+    {
+      "measure": 84,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 85,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "IV"
+    },
+    {
+      "measure": 86,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 86,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "Ger6"
+    },
+    {
+      "measure": 87,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7[no3][add4]"
+    },
+    {
+      "measure": 87,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V7"
+    },
+    {
+      "measure": 88,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I64"
+    },
+    {
+      "measure": 88,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 89,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 89,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 89,
+      "beat": 2.88,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 90,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 90,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 90,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 90,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 91,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 91,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 91,
+      "beat": 2.88,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 92,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 92,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 92,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65[no5][add6]"
+    },
+    {
+      "measure": 92,
+      "beat": 2.25,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V65"
+    },
+    {
+      "measure": 92,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 93,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 93,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 93,
+      "beat": 2.88,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V2"
+    },
+    {
+      "measure": 94,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 94,
+      "beat": 1.75,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I"
+    },
+    {
+      "measure": 94,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V43"
+    },
+    {
+      "measure": 94,
+      "beat": 2.5,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "I6"
+    },
+    {
+      "measure": 95,
+      "beat": 1.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "ii6"
+    },
+    {
+      "measure": 95,
+      "beat": 2.0,
+      "key": "Db",
+      "key_class": 1,
+      "numeral": "V"
+    },
+    {
+      "measure": 96,
+      "beat": 1.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "#viio43"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 95,
+      "key": "Db",
+      "key_class": 1
+    },
+    {
+      "start_measure": 96,
+      "end_measure": 96,
+      "key": "f",
+      "key_class": 17
+    }
+  ],
+  "statistics": {
+    "total_annotations": 214,
+    "unique_keys": 2,
+    "major_annotations": 213,
+    "minor_annotations": 1
+  }
+}

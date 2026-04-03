@@ -1,0 +1,329 @@
+{
+  "source": "dcml",
+  "corpus": "ABC",
+  "piece_id": "n14op131_03",
+  "global_key": "b",
+  "global_key_class": 23,
+  "annotations": [
+    {
+      "measure": 0,
+      "beat": 2.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 0,
+      "beat": 3.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 1,
+      "beat": 1.5,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 1,
+      "beat": 3.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "ii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 2,
+      "beat": 3.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "ii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 3,
+      "beat": 2.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 3,
+      "beat": 3.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 3,
+      "beat": 4.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 4,
+      "beat": 3.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 5,
+      "beat": 3.0,
+      "localkey": "b",
+      "localkey_class": 23,
+      "numeral": "#vi",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 6,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 6,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 6,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 7,
+      "beat": 1.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 7,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 8,
+      "beat": 3.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 8,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 9,
+      "beat": 1.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 9,
+      "beat": 3.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 9,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 10,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "iii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "2"
+    },
+    {
+      "measure": 10,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 0,
+      "end_measure": 6,
+      "localkey": "b",
+      "localkey_class": 23
+    },
+    {
+      "start_measure": 6,
+      "end_measure": 10,
+      "localkey": "E",
+      "localkey_class": 4
+    }
+  ],
+  "statistics": {
+    "total_annotations": 30,
+    "unique_local_keys": 2,
+    "major_annotations": 16,
+    "minor_annotations": 14
+  }
+}

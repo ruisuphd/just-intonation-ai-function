@@ -1,0 +1,461 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Zumsteeg,_Emilie/6_Lieder,_Op.4/1_Die_Kapelle/analysis.txt",
+  "piece_id": "zumsteeg_6_lieder_op.4_1_die_kapelle",
+  "global_key": "Ab",
+  "global_key_class": 8,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 1,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I[no3][add2][add4]"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 2,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V64"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 3,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "It6"
+    },
+    {
+      "measure": 4,
+      "beat": 2.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "V[add6]"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "f",
+      "key_class": 17,
+      "numeral": "i"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "vi"
+    },
+    {
+      "measure": 5,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V/V"
+    },
+    {
+      "measure": 5,
+      "beat": 4.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V"
+    },
+    {
+      "measure": 5,
+      "beat": 4.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 6,
+      "beat": 2.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7/IV"
+    },
+    {
+      "measure": 6,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "viio42/vi"
+    },
+    {
+      "measure": 7,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V42"
+    },
+    {
+      "measure": 7,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I6"
+    },
+    {
+      "measure": 7,
+      "beat": 4.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "vi"
+    },
+    {
+      "measure": 7,
+      "beat": 4.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 8,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V65/V"
+    },
+    {
+      "measure": 8,
+      "beat": 2.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V7"
+    },
+    {
+      "measure": 8,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "vi6"
+    },
+    {
+      "measure": 9,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 9,
+      "beat": 4.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "vi"
+    },
+    {
+      "measure": 9,
+      "beat": 4.5,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "IV"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 10,
+      "beat": 2.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "V42"
+    },
+    {
+      "measure": 10,
+      "beat": 3.0,
+      "key": "Ab",
+      "key_class": 8,
+      "numeral": "I"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 12,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i[no3][add2][add4]"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 13,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i[no3][no5][add2][add4][add6]"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 14,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "iv"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V65/V"
+    },
+    {
+      "measure": 15,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "Fr43"
+    },
+    {
+      "measure": 16,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V"
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "Fr43"
+    },
+    {
+      "measure": 17,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "viio43"
+    },
+    {
+      "measure": 18,
+      "beat": 2.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i6"
+    },
+    {
+      "measure": 18,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V65"
+    },
+    {
+      "measure": 18,
+      "beat": 4.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 18,
+      "beat": 4.5,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "VI"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 19,
+      "beat": 2.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V7"
+    },
+    {
+      "measure": 19,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "VI6"
+    },
+    {
+      "measure": 20,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "i"
+    },
+    {
+      "measure": 20,
+      "beat": 4.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "VI"
+    },
+    {
+      "measure": 20,
+      "beat": 4.5,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 21,
+      "beat": 2.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "V7"
+    },
+    {
+      "measure": 21,
+      "beat": 3.0,
+      "key": "ab",
+      "key_class": 20,
+      "numeral": "I"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 3,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 4,
+      "end_measure": 4,
+      "key": "f",
+      "key_class": 17
+    },
+    {
+      "start_measure": 5,
+      "end_measure": 10,
+      "key": "Ab",
+      "key_class": 8
+    },
+    {
+      "start_measure": 11,
+      "end_measure": 21,
+      "key": "ab",
+      "key_class": 20
+    }
+  ],
+  "statistics": {
+    "total_annotations": 60,
+    "unique_keys": 3,
+    "major_annotations": 29,
+    "minor_annotations": 31
+  }
+}

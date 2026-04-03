@@ -1,0 +1,567 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Schumann,_Clara/6_Lieder,_Op.13/2_Sie_liebten_sich_beide/analysis.txt",
+  "piece_id": "schumann_6_lieder_op.13_2_sie_liebten_sich_beide",
+  "global_key": "g",
+  "global_key_class": 19,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 1,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 2,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 2,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 3,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio7/iv"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 4,
+      "beat": 1.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iio"
+    },
+    {
+      "measure": 4,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 5,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 6,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 6,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 7,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio7/iv"
+    },
+    {
+      "measure": 7,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 8,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 8,
+      "beat": 1.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio7/V"
+    },
+    {
+      "measure": 8,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 9,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 12,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 13,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 13,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 15,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 16,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 16,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 17,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio7/iv"
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 18,
+      "beat": 1.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iio"
+    },
+    {
+      "measure": 18,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 19,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 20,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 20,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 21,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio7/iv"
+    },
+    {
+      "measure": 21,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv"
+    },
+    {
+      "measure": 22,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 22,
+      "beat": 1.33,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 22,
+      "beat": 1.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "viio7/V"
+    },
+    {
+      "measure": 22,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i64"
+    },
+    {
+      "measure": 23,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 25,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iio6"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V42"
+    },
+    {
+      "measure": 26,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 27,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "ii7"
+    },
+    {
+      "measure": 27,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i6"
+    },
+    {
+      "measure": 27,
+      "beat": 2.67,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    },
+    {
+      "measure": 29,
+      "beat": 1.33,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "V6"
+    },
+    {
+      "measure": 29,
+      "beat": 1.67,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "VI6"
+    },
+    {
+      "measure": 29,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "i6"
+    },
+    {
+      "measure": 29,
+      "beat": 2.67,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "V43"
+    },
+    {
+      "measure": 30,
+      "beat": 1.33,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 30,
+      "beat": 1.67,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 30,
+      "beat": 2.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "VI6"
+    },
+    {
+      "measure": 30,
+      "beat": 2.67,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "viio7"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "V"
+    },
+    {
+      "measure": 31,
+      "beat": 1.33,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "viio65"
+    },
+    {
+      "measure": 32,
+      "beat": 1.0,
+      "key": "c",
+      "key_class": 12,
+      "numeral": "i"
+    },
+    {
+      "measure": 32,
+      "beat": 2.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "V7"
+    },
+    {
+      "measure": 33,
+      "beat": 1.0,
+      "key": "g",
+      "key_class": 19,
+      "numeral": "i"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 28,
+      "key": "g",
+      "key_class": 19
+    },
+    {
+      "start_measure": 29,
+      "end_measure": 31,
+      "key": "c",
+      "key_class": 12
+    },
+    {
+      "start_measure": 32,
+      "end_measure": 33,
+      "key": "g",
+      "key_class": 19
+    }
+  ],
+  "statistics": {
+    "total_annotations": 76,
+    "unique_keys": 2,
+    "major_annotations": 0,
+    "minor_annotations": 76
+  }
+}

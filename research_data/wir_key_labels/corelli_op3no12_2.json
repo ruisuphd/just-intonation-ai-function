@@ -1,0 +1,72 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/Chamber_Other/Corelli,_Arcangelo/Op3No12/2/analysis.txt",
+  "piece_id": "corelli_op3no12_2",
+  "global_key": "E",
+  "global_key_class": 4,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 12,
+      "beat": 3.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "viio"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 13,
+      "beat": 3.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "viio"
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 14,
+      "beat": 3.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "viio"
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 15,
+      "key": "E",
+      "key_class": 4
+    }
+  ],
+  "statistics": {
+    "total_annotations": 7,
+    "unique_keys": 1,
+    "major_annotations": 7,
+    "minor_annotations": 0
+  }
+}

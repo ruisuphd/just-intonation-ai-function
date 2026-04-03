@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Data (large files, symlinks)
+ATEPP_JI_Dataset/ATEPP-1.2
+research_data/atepp_midi_cache.jsonl
+research_data/score_key_labels_major_only_backup/
+*.pkl
+
+# Cloned external repositories (re-clone from source)
+research_data/AugmentedNet/
+research_data/dcml_corpora/
+research_data/when_in_rome/
+
+# Claude Code worktrees
+.claude/worktrees/
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Build
+dist/
+node_modules/

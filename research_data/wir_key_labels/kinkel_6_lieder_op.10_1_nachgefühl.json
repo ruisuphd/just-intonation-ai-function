@@ -1,0 +1,114 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/OpenScore-LiederCorpus/Kinkel,_Johanna/6_Lieder,_Op.10/1_Nachgefühl/analysis.txt",
+  "piece_id": "kinkel_6_lieder_op.10_1_nachgefühl",
+  "global_key": "E",
+  "global_key_class": 4,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 1,
+      "beat": 3.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I6"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 2,
+      "beat": 3.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I6"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "V"
+    },
+    {
+      "measure": 3,
+      "beat": 4.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "iiø65"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "V"
+    },
+    {
+      "measure": 4,
+      "beat": 3.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "V7"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "Cad64"
+    },
+    {
+      "measure": 7,
+      "beat": 2.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "V7"
+    },
+    {
+      "measure": 8,
+      "beat": 1.0,
+      "key": "E",
+      "key_class": 4,
+      "numeral": "I"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 8,
+      "key": "E",
+      "key_class": 4
+    }
+  ],
+  "statistics": {
+    "total_annotations": 13,
+    "unique_keys": 1,
+    "major_annotations": 13,
+    "minor_annotations": 0
+  }
+}

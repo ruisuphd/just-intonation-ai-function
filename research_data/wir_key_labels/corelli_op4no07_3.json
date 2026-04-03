@@ -1,0 +1,107 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/Chamber_Other/Corelli,_Arcangelo/Op4No07/3/analysis.txt",
+  "piece_id": "corelli_op4no07_3",
+  "global_key": "d",
+  "global_key_class": 14,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "i"
+    },
+    {
+      "measure": 1,
+      "beat": 4.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "iv64"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "V65"
+    },
+    {
+      "measure": 2,
+      "beat": 4.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "i"
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "V2/iv"
+    },
+    {
+      "measure": 3,
+      "beat": 4.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "V65/iv"
+    },
+    {
+      "measure": 4,
+      "beat": 4.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "iv"
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "V65"
+    },
+    {
+      "measure": 5,
+      "beat": 3.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "i"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "iv6"
+    },
+    {
+      "measure": 6,
+      "beat": 3.0,
+      "key": "d",
+      "key_class": 14,
+      "numeral": "V"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 6,
+      "key": "d",
+      "key_class": 14
+    }
+  ],
+  "statistics": {
+    "total_annotations": 12,
+    "unique_keys": 1,
+    "major_annotations": 0,
+    "minor_annotations": 12
+  }
+}

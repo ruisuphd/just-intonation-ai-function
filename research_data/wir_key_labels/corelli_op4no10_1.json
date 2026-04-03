@@ -1,0 +1,51 @@
+{
+  "source": "when_in_rome",
+  "file_path": "Corpus/Chamber_Other/Corelli,_Arcangelo/Op4No10/1/analysis.txt",
+  "piece_id": "corelli_op4no10_1",
+  "global_key": "G",
+  "global_key_class": 7,
+  "annotations": [
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "key": "G",
+      "key_class": 7,
+      "numeral": "I"
+    },
+    {
+      "measure": 1,
+      "beat": 3.0,
+      "key": "G",
+      "key_class": 7,
+      "numeral": "I6"
+    },
+    {
+      "measure": 2,
+      "beat": 1.0,
+      "key": "G",
+      "key_class": 7,
+      "numeral": "viio6/V"
+    },
+    {
+      "measure": 2,
+      "beat": 3.0,
+      "key": "G",
+      "key_class": 7,
+      "numeral": "V"
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 1,
+      "end_measure": 2,
+      "key": "G",
+      "key_class": 7
+    }
+  ],
+  "statistics": {
+    "total_annotations": 4,
+    "unique_keys": 1,
+    "major_annotations": 4,
+    "minor_annotations": 0
+  }
+}

@@ -1,0 +1,2305 @@
+{
+  "seed": 20260309,
+  "split_by": "composition_id",
+  "ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "summary": {
+    "train": {
+      "compositions": 217,
+      "performances": 3453,
+      "composer_distribution": {
+        "Alexander Scriabin": 1,
+        "Claude Debussy": 16,
+        "Domenico Scarlatti": 1,
+        "Franz Joseph Haydn": 2,
+        "Franz Liszt": 11,
+        "Franz Schubert": 15,
+        "Johann Sebastian Bach": 43,
+        "Johannes Brahms": 1,
+        "Ludwig van Beethoven": 67,
+        "Maurice Ravel": 7,
+        "Robert Schumann": 7,
+        "Sergei Rachmaninoff": 11,
+        "Wolfgang Amadeus Mozart": 35
+      }
+    },
+    "validation": {
+      "compositions": 44,
+      "performances": 733,
+      "composer_distribution": {
+        "Alexander Scriabin": 1,
+        "Claude Debussy": 3,
+        "Franz Joseph Haydn": 1,
+        "Franz Liszt": 2,
+        "Franz Schubert": 3,
+        "Johann Sebastian Bach": 9,
+        "Ludwig van Beethoven": 14,
+        "Maurice Ravel": 1,
+        "Robert Schumann": 1,
+        "Sergei Rachmaninoff": 2,
+        "Wolfgang Amadeus Mozart": 7
+      }
+    },
+    "test": {
+      "compositions": 58,
+      "performances": 905,
+      "composer_distribution": {
+        "Alexander Scriabin": 1,
+        "Claude Debussy": 5,
+        "Franz Joseph Haydn": 2,
+        "Franz Liszt": 3,
+        "Franz Schubert": 4,
+        "Johann Sebastian Bach": 10,
+        "Ludwig van Beethoven": 16,
+        "Maurice Ravel": 3,
+        "Robert Schumann": 3,
+        "Sergei Rachmaninoff": 3,
+        "Wolfgang Amadeus Mozart": 8
+      }
+    }
+  },
+  "splits": {
+    "train": [
+      {
+        "composition_id": 7,
+        "composer": "Sergei Rachmaninoff",
+        "track": "13 Preludes, Op. 32 (Excerpts): No. 12 in G-Sharp Minor [Live]",
+        "score_path": "Sergei_Rachmaninoff/13_Preludes,_Op._32/No._12_in_G-Sharp_Minor/Rachmaninoff_-_Preludes_Op._32_No._12_in_G-sharp_minor.mxl",
+        "performances": 19
+      },
+      {
+        "composition_id": 10,
+        "composer": "Sergei Rachmaninoff",
+        "track": "13 Preludes, Op. 32: No. 5 in G Major: Moderato",
+        "score_path": "Sergei_Rachmaninoff/13_Preludes,_Op._32/No._5_in_G_Major:_Moderato/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 52,
+        "composer": "Sergei Rachmaninoff",
+        "track": "\u00c9tudes-tableaux, Op. 39: No. 5 in E-Flat Minor",
+        "score_path": "Sergei_Rachmaninoff/Etudes-Tableaux,_Op.39/No._5_in_E-Flat_Minor/Etude-Tableaux_No._5_Opus_39_No._5.mxl",
+        "performances": 11
+      },
+      {
+        "composition_id": 57,
+        "composer": "Sergei Rachmaninoff",
+        "track": "Etudes-Tableaux, Op.39: No.6 in A Minor",
+        "score_path": "Sergei_Rachmaninoff/Etudes-Tableaux,_Op.39/No.6_in_A_Minor/Rachmaninov_Etude-Tableau_op._39_no._6.mxl",
+        "performances": 6
+      },
+      {
+        "composition_id": 65,
+        "composer": "Sergei Rachmaninoff",
+        "track": "6 Moments musicaux, Op.16: No. 6 in C, Maestoso",
+        "score_path": "Sergei_Rachmaninoff/6_Moments_musicaux,_Op._16/No._6_in_C,_Maestoso/Sergei_Rachmaninoff_Moment_Musicaux_Op._16_No._6_in_C_major.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 66,
+        "composer": "Sergei Rachmaninoff",
+        "track": "6 Moments musicaux, Op.16: No. 1 in B flat minor, Andantino",
+        "score_path": "Sergei_Rachmaninoff/6_Moments_musicaux,_Op._16/No._1_in_B_flat_minor,_Andantino/Rachmaninoff_-_Moment_Musical_No_1_in_Bb_Minor.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 67,
+        "composer": "Sergei Rachmaninoff",
+        "track": "6 Moments musicaux, Op.16: No. 4 in E minor, Presto",
+        "score_path": "Sergei_Rachmaninoff/6_Moments_musicaux,_Op._16/No._4_in_E_minor,_Presto/Sergei_Rachmaninoff_Moment_Musicaux_Op._16_No._4_in_E_minor.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 68,
+        "composer": "Sergei Rachmaninoff",
+        "track": "6 Moments musicaux, Op.16: No. 2 in E flat minor, Allegretto",
+        "score_path": "Sergei_Rachmaninoff/6_Moments_musicaux,_Op._16/No._2_in_E_flat_minor,_Allegretto/Rachmaninoff_-_Moment_Musical_No_2_in_Eb_Minor.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 70,
+        "composer": "Sergei Rachmaninoff",
+        "track": "6 Moments musicaux, Op.16: No. 3 in B minor, Andante cantabile",
+        "score_path": "Sergei_Rachmaninoff/6_Moments_musicaux,_Op._16/No._3_in_B_minor,_Andante_cantabile/Rachmaninoff_-_Moment_Musical_No_3_in_B_Minor.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 77,
+        "composer": "Sergei Rachmaninoff",
+        "track": "10 Preludes, Op. 23: No. 6 in E-Flat Major: Andante",
+        "score_path": "Sergei_Rachmaninoff/10_Preludes,_Op._23/No._6_in_E-Flat_Major:_Andante/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 94,
+        "composer": "Sergei Rachmaninoff",
+        "track": "9 Etudes-Tableaux, Op.33: No.3 (Op.posth.) in C Minor",
+        "score_path": "Sergei_Rachmaninoff/9_Etudes-Tableaux,_Op.33/No.3_(Op.posth.)_in_C_Minor/Etudes_Tableaux_-_Opus_33_No._3.mxl",
+        "performances": 3
+      },
+      {
+        "composition_id": 98,
+        "composer": "Franz Liszt",
+        "track": "3 Etudes de Concert, S.144: No. 3 in D Flat \"Un sospiro\"",
+        "score_path": "Franz_Liszt/3_Etudes_de_concert,_S._144/No._3_in_D_Flat_\"Un_sospiro\"/Liszt_-_Trois_Etudes_de_Concert_No._3_Un_Sospiro.mxl",
+        "performances": 5
+      },
+      {
+        "composition_id": 99,
+        "composer": "Franz Liszt",
+        "track": "3 Etudes de concert, S144/R5: No. 2 in F Minor, \"La Leggierezza\"",
+        "score_path": "Franz_Liszt/3_Etudes_de_concert,_S._144/No._2_in_F_Minor/Liszt_-_Trois_Etudes_de_Concert_No._2_La_Leggierezza.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 104,
+        "composer": "Franz Liszt",
+        "track": "Ann\u00e9es de p\u00e8lerinage, 2nd Year, S. 162 \"Italy Supplement\": No. 3. Tarantella",
+        "score_path": "Franz_Liszt/Ann\u00e9es_de_p\u00e8lerinage,_2nd_Year,_S._162_\"Italy_Supplement\"/No._3._Tarantella/Liszt_-_Tarantella_Annes_de_plerinage_II_Venezia_e_Napoli.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 116,
+        "composer": "Franz Liszt",
+        "track": "2 Etudes de Concert, S.145: No.2 Gnomenreigen",
+        "score_path": "Franz_Liszt/2_Etudes_de_Concert,_S.145/No.2_Gnomenreigen/musicxml_cleaned.musicxml",
+        "performances": 6
+      },
+      {
+        "composition_id": 117,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.11 Harmonies du soir (Andantino)",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.11_Harmonies_du_soir_(Andantino)/musicxml_cleaned.musicxml",
+        "performances": 9
+      },
+      {
+        "composition_id": 118,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.2 Molto vivace",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.2_Molto_vivace/musicxml_cleaned.musicxml",
+        "performances": 7
+      },
+      {
+        "composition_id": 120,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.8 Wilde Jagd (Presto furioso)",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.8_Wilde_Jagd_(Presto_furioso)/musicxml_cleaned.musicxml",
+        "performances": 6
+      },
+      {
+        "composition_id": 121,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.10 Allegro agitato molto",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.10_Allegro_agitato_molto/musicxml_cleaned.musicxml",
+        "performances": 9
+      },
+      {
+        "composition_id": 123,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.5 Feux follets (Allegretto)",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No._5_Feux_follets_(Allegretto)/musicxml_cleaned.musicxml",
+        "performances": 9
+      },
+      {
+        "composition_id": 124,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.3 Paysage (Poco adagio)",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.3_Paysage_(Poco_adagio)/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 214,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op.16: 6. Sehr langsam",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/VI._Sehr_langsam/musicxml_cleaned.musicxml",
+        "performances": 25
+      },
+      {
+        "composition_id": 215,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op. 16 (Instrumental): 2. Sehr innig und nicht zu rasch",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/II._Sehr_innig_und_nicht_zu_rasch/musicxml_cleaned.musicxml",
+        "performances": 28
+      },
+      {
+        "composition_id": 218,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op.16: 3. Sehr aufgeregt",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/III._Sehr_aufgeregt/musicxml_cleaned.musicxml",
+        "performances": 25
+      },
+      {
+        "composition_id": 221,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op.16: 7. Sehr rasch",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/VII._Sehr_rasch/musicxml_cleaned.musicxml",
+        "performances": 25
+      },
+      {
+        "composition_id": 363,
+        "composer": "Johann Sebastian Bach",
+        "track": "French Suite No. 5 In G, Bwv 816: VII. Gigue",
+        "score_path": "Johann_Sebastian_Bach/French_Suite_No._5_in_G,_BWV_816/7._Gigue/J._S._Bach_French_Suite_V_Gigue_BWV_816.7.mxl",
+        "performances": 4
+      },
+      {
+        "composition_id": 450,
+        "composer": "Johann Sebastian Bach",
+        "track": "English Suite No. 1 in A Major, BWV 806: I. Pr\u00e9lude",
+        "score_path": "Johann_Sebastian_Bach/English_Suite_No.1_in_A_major_BWV_806/1._Pr\u00e9lude/BWV_806_-_English_Suite_in_A_major_-_Prelude.mxl",
+        "performances": 7
+      },
+      {
+        "composition_id": 494,
+        "composer": "Johann Sebastian Bach",
+        "track": "English Suite No. 3 in G Minor, BWV 808: I. Prelude",
+        "score_path": "Johann_Sebastian_Bach/English_Suite_No.3_in_G_minor,_BWV_808/1._Pr\u00e9lude/BWV_808_The_English_suite_III_Prelude_as_inspired_by_Ivo_Pogorelich.mscz.mxl",
+        "performances": 14
+      },
+      {
+        "composition_id": 515,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 9 in E Major, BWV 854: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._9_in_E_Major,_BWV_854:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 517,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 12 in F Minor, BWV 857: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._12_in_F_Minor,_BWV_857:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 518,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 17 in A-Flat Major, BWV 862: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._17_in_A-Flat_Major,_BWV_862:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 521,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 11 in F Major, BWV 856: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._11_in_F_Major,_BWV_856:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 525,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 15 in G Major, BWV 860: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._15_in_G_Major,_BWV_860:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 527,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 18 in G-Sharp minor, BWV 863: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._18_in_G-Sharp_minor,_BWV_863:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 533,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 22 in B-Flat Minor, BWV 867: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._22_in_B-Flat_Minor,_BWV_867:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 535,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 19 in A Major, BWV 864: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._19_in_A_Major,_BWV_864:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 541,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 20 in A Minor, BWV 865: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._20_in_A_Minor,_BWV_865:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 544,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 21 in B-Flat Major, BWV 866: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._21_in_B-Flat_Major,_BWV_866:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 545,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 9 in E Major, BWV 854: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._9_in_E_Major,_BWV_854:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 546,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 1 in C Major, BWV 846: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._1_in_C_Major,_BWV_846:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 547,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 21 in B-Flat Major, BWV 866: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._21_in_B-Flat_Major,_BWV_866:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 6
+      },
+      {
+        "composition_id": 550,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 12 in F Minor, BWV 857: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._12_in_F_Minor,_BWV_857:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 551,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 18 in G-Sharp minor, BWV 863: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._18_in_G-Sharp_minor,_BWV_863:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 552,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 3 in C-Sharp Major, BWV 848: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._3_in_C-Sharp_Major,_BWV_848:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 558,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 3 in C-Sharp Major, BWV 848: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._3_in_C-Sharp_Major,_BWV_848:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 560,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 20 in A Minor, BWV 865: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._20_in_A_Minor,_BWV_865:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 597,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in C major BWV 870",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_C_major_BWV_870/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 599,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in C sharp minor BWV 873",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_C_sharp_minor_BWV_873/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 600,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in G major BWV 884",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_G_major_BWV_884/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 601,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in A minor BWV 889",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_A_minor_BWV_889/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 602,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in D minor BWV 875",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_D_minor_BWV_875/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 603,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in A major BWV 888",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_A_major_BWV_888/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 606,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in G minor BWV 885",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_G_minor_BWV_885/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 610,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in G sharp minor BWV 887",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_G_Sharp_Minor,_BWV_887/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 614,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in E flat major BWV 876",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_E_flat_major_BWV_876/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 616,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in B flat minor BWV 891",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_B_flat_minor_BWV_891/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 618,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in D major BWV 874",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_D_major_BWV_874/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 620,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in C sharp minor BWV 873",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_C_sharp_minor_BWV_873/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 621,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in F sharp minor BWV 883",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_F_sharp_minor_BWV_883/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 624,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in A major BWV 888",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_A_major_BWV_888/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 633,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in B major BWV 892",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_B_major_BWV_892/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 636,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in C major BWV 870",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_C_major_BWV_870/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 637,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in D major BWV 874",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_D_major_BWV_874/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 639,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in E flat major BWV 876",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_E_flat_major_BWV_876/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 640,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in B major BWV 892",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_B_major_BWV_892/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 643,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in F major BWV 880",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_F_major_BWV_880/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 644,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in A minor BWV 889",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_A_minor_BWV_889/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 645,
+        "composer": "Claude Debussy",
+        "track": "Images, Book 1, L. 110: No. 3, Mouvement (Live)",
+        "score_path": "Claude_Debussy/Images,_Book_1,_L._110/No._3,_Mouvement/Mouvement_Images_Nr._III_C._Debussy.mxl",
+        "performances": 6
+      },
+      {
+        "composition_id": 646,
+        "composer": "Claude Debussy",
+        "track": "Images, Book 1, L. 110: No. 1, Reflets dans l'eau (Live)",
+        "score_path": "Claude_Debussy/Images,_Book_1,_L._110/No._1,_Reflets_dans_l'eau/musicxml_cleaned.musicxml",
+        "performances": 22
+      },
+      {
+        "composition_id": 647,
+        "composer": "Claude Debussy",
+        "track": "Images, Book 1, L. 110: No. 2, Hommage \u00e0 Rameau (Live)",
+        "score_path": "Claude_Debussy/Images,_Book_1,_L._110/No._2,_Hommage_\u00e0_Rameau/Hommage__Rameau_de_Images_2_Claude_Debussy.mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 648,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 1, L. 117: No. 5, Les collines d'Anacapri (Live)",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_1,_L._117/No._5,_Les_collines_d'Anacapri/Les_collines_dAnacapri.mxl",
+        "performances": 18
+      },
+      {
+        "composition_id": 650,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 1, L. 117: No. 3, Le vent dans la plaine (Live)",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_1,_L._117/No._3,_Le_vent_dans_la_plaine/Debussy_Prelude_Bk_1_No_3_Le_Vent_dans_la_plaine.mxl",
+        "performances": 15
+      },
+      {
+        "composition_id": 652,
+        "composer": "Claude Debussy",
+        "track": "Suite bergamasque, L. 75: II. Menuet (Live)",
+        "score_path": "Claude_Debussy/Suite_bergamasque,_L._75/II._Menuet/Debussy_-_Suite_Bergamasque_-_II._Menuet.mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 653,
+        "composer": "Claude Debussy",
+        "track": "Suite bergamasque, L. 75: I. Pr\u00e9lude (Live)",
+        "score_path": "Claude_Debussy/Suite_bergamasque,_L._75/I._Pr\u00e9lude/Debussy_-_Suite_Bergamasque_-_I._Prelude.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 657,
+        "composer": "Claude Debussy",
+        "track": "12 Etudes, Book 1, L. 136: No. 2, Pour les tierces (Live)",
+        "score_path": "Claude_Debussy/12_Etudes,_Book_1,_L._136/No._2,_Pour_les_tierces/tude_2_-_Pour_les_Tierces_-_Claude_Debussy.mxl",
+        "performances": 3
+      },
+      {
+        "composition_id": 658,
+        "composer": "Claude Debussy",
+        "track": "12 Etudes, Book 1, L. 136: No. 4, Pour les sixtes (Live)",
+        "score_path": "Claude_Debussy/12_Etudes,_Book_1,_L._136/No._4,_Pour_les_sixtes/tude_4_-_Pour_les_Sixtes___Claude_Debussy.mxl",
+        "performances": 3
+      },
+      {
+        "composition_id": 660,
+        "composer": "Claude Debussy",
+        "track": "12 Etudes, Book 1, L. 136: No. 3, Pour les quartes (Live)",
+        "score_path": "Claude_Debussy/12_Etudes,_Book_1,_L._136/No._3,_Pour_les_quartes/tude_3_-_Pour_les_Quartes__Claude_Debussy.mxl",
+        "performances": 3
+      },
+      {
+        "composition_id": 664,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 2, L. 123: No. 6, G\u00e9n\u00e9ral Lavine - Eccentric (Live)",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_2,_L._123/No._6,_G\u00e9n\u00e9ral_Lavine_-_Eccentric/Debussy_Prelude_Book_2_No_6_General_Lavine_-_excentric.mxl",
+        "performances": 8
+      },
+      {
+        "composition_id": 665,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 2, L. 123: No. 12, Feux d'artifice (Live)",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_2,_L._123/No._12,_Feux_d'artifice/Debussy_Prelude_Book_2_No_12_Feux_dartifice.mxl",
+        "performances": 14
+      },
+      {
+        "composition_id": 667,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 2, L. 123: No. 5, Bruy\u00e8res",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_2,_L._123/No._5,_Bruy\u00e8res/Debussy_Prelude_Book_2_No_5_Bruyres.mxl",
+        "performances": 6
+      },
+      {
+        "composition_id": 669,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 2, L. 123: No. 3, La puerta del vino",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_2,_L._123/No._3,_La_puerta_del_vino/Debussy_Prelude_Book_2_No_3_La_puerta_del_vino.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 672,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 2, L. 123: No. 10, Canope",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_2,_L._123/No._10,_Canope/Debussy_Prelude_Book_2_No_10_Canope.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 673,
+        "composer": "Claude Debussy",
+        "track": "Estampes, L. 100: 1. Pagodes",
+        "score_path": "Claude_Debussy/Estampes,_L._100/1._Pagodes/Estampes_I_Pagodes_--_Debussy.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 716,
+        "composer": "Maurice Ravel",
+        "track": "Miroirs, M. 43: No. 4, Alborada del gracioso (Live)",
+        "score_path": "Maurice_Ravel/Miroirs,_M._43/No._4,_Alborada_del_gracioso/musicxml_cleaned.musicxml",
+        "performances": 16
+      },
+      {
+        "composition_id": 722,
+        "composer": "Maurice Ravel",
+        "track": "Gaspard de la nuit, M. 55: No. 2, Le gibet (Live)",
+        "score_path": "Maurice_Ravel/Gaspard_de_la_nuit,_M.55/Le_gibet/Le_Gibet_-_No.2_from_Gaspard_de_la_Nuit_-_Maurice_Ravel.mxl",
+        "performances": 22
+      },
+      {
+        "composition_id": 723,
+        "composer": "Maurice Ravel",
+        "track": "Gaspard de la nuit, M.55: Scarbo",
+        "score_path": "Maurice_Ravel/Gaspard_de_la_nuit,_M.55/Scarbo/Scarbo_-_No.3_from_Gaspard_de_la_Nuit_-_Maurice_Ravel.mxl",
+        "performances": 29
+      },
+      {
+        "composition_id": 728,
+        "composer": "Maurice Ravel",
+        "track": "Ravel: Le Tombeau de Couperin, M. 68: VI. Toccata",
+        "score_path": "Maurice_Ravel/Le_Tombeau_de_Couperin,_M.68/No._6._Toccata/Toccata_-_Ravel.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 861,
+        "composer": "Franz Schubert",
+        "track": "6 Moments musicaux, Op. 94, D. 780: No. 3 in F Minor, Allegro moderato",
+        "score_path": "Franz_Schubert/6_Moments_musicaux,_Op.94_D.780/No.3_in_F_minor_(Allegro_moderato)/musicxml_cleaned.musicxml",
+        "performances": 14
+      },
+      {
+        "composition_id": 862,
+        "composer": "Franz Schubert",
+        "track": "6 Moments musicaux, Op. 94, D. 780: No. 4 in C-Sharp Minor, Moderato",
+        "score_path": "Franz_Schubert/6_Moments_musicaux,_Op.94_D.780/No.4_in_C_sharp_minor_(Moderato)/Moment_Musical_op._94_d._780_no._4_in_C-sharp_Minor_-_Franz_Schubert.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 872,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No.13 in A, D.664: 2. Andante",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.13_in_A,_D.664/2._Andante/musicxml_cleaned.musicxml",
+        "performances": 14
+      },
+      {
+        "composition_id": 876,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No.20 in A, D.959: 3. Scherzo (Allegro vivace)",
+        "score_path": "Franz_Schubert/Piano_Sonata_No._20_in_A_Major,_D._959/3._Scherzo_(Allegro_vivace)/Sonata_No_20_D959_3.Scherzo.mxl",
+        "performances": 21
+      },
+      {
+        "composition_id": 878,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No.20 in A, D.959: 2. Andantino",
+        "score_path": "Franz_Schubert/Piano_Sonata_No._20_in_A_Major,_D._959/2._Andantino/Schubert_Sonata_D959_Andantino.mxl",
+        "performances": 19
+      },
+      {
+        "composition_id": 885,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 18 in G Major, D. 894: 2. Andante",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.18_in_G,_D.894/2._Andante/musicxml_cleaned.musicxml",
+        "performances": 8
+      },
+      {
+        "composition_id": 886,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 18 in G Major, D. 894: 4. Allegretto",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.18_in_G,_D.894/4._Allegretto/musicxml_cleaned.musicxml",
+        "performances": 11
+      },
+      {
+        "composition_id": 887,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No.18 in G, D.894: 1. Molto moderato e cantabile",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.18_in_G,_D.894/1._Molto_moderato_e_cantabile/musicxml_cleaned.musicxml",
+        "performances": 10
+      },
+      {
+        "composition_id": 907,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata in C Major, D. 840: 1. Moderato",
+        "score_path": "Franz_Schubert/Piano_Sonata_in_C,_D.840/1._Moderato/Piano_Sonata_in_C_major_D_840_Relique_I._Moderato.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 910,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus, Op.90, D.899: No.1 in C minor: Allegro molto moderato",
+        "score_path": "Franz_Schubert/4_Impromptus,_Op._90,_D._899/1._Allegro_molto_moderato/musicxml_cleaned.musicxml",
+        "performances": 15
+      },
+      {
+        "composition_id": 911,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus, Op. 90, D. 899: No. 2 in E-Flat Major. Allegro",
+        "score_path": "Franz_Schubert/4_Impromptus,_Op._90,_D._899/2._Allegro/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 913,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus, Op. 90, D. 899: 3. Andante",
+        "score_path": "Franz_Schubert/4_Impromptus,_Op._90,_D._899/3._Andante/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 917,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus Op.142, D.935: No.3 in B flat: Theme (Andante) with Variations",
+        "score_path": "Franz_Schubert/4_Impromptus_Op.142,_D.935/No.3_in_B_flat:_Theme_(Andante)_with_Variations/musicxml_cleaned.musicxml",
+        "performances": 10
+      },
+      {
+        "composition_id": 918,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus Op.142, D.935: No.1 in F minor: Allegro moderato",
+        "score_path": "Franz_Schubert/4_Impromptus_Op.142,_D.935/No.1_in_F_minor:_Allegro_moderato/musicxml_cleaned.musicxml",
+        "performances": 15
+      },
+      {
+        "composition_id": 920,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus Op.142, D.935: No.4 in F minor: Allegro scherzando",
+        "score_path": "Franz_Schubert/4_Impromptus_Op.142,_D.935/No.4_in_F_minor:_Allegro_scherzando/Impromptu_op._142_d._935_no._4_in_F_Minor_-_Franz_Schubert.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 1067,
+        "composer": "Franz Joseph Haydn",
+        "track": "Sonata No. 58 in C Major, Hob. XVI:48: I. Andante con espressione",
+        "score_path": "Franz_Joseph_Haydn/Piano_Sonata_in_C_Major,_Hob.XVI:48/48:_1._Andante_con_espressione/musicxml_cleaned.musicxml",
+        "performances": 7
+      },
+      {
+        "composition_id": 1068,
+        "composer": "Franz Joseph Haydn",
+        "track": "Piano Sonata in C Major, Hob.XVI: 48: 2. Rondo (Presto)",
+        "score_path": "Franz_Joseph_Haydn/Piano_Sonata_in_C_Major,_Hob.XVI:48/48:_2._Rondo_(Presto)/musicxml_cleaned.musicxml",
+        "performances": 8
+      },
+      {
+        "composition_id": 1082,
+        "composer": "Johannes Brahms",
+        "track": "6 Piano Pieces, Op. 118: No. 6, Intermezzo in E-Flat Minor",
+        "score_path": "Johannes_Brahms/6_Piano_Pieces,_Op._118/No._6,_Intermezzo_in_E-Flat_Minor/Brahms_Intermezzo_in_E-flat_minor.mxl",
+        "performances": 6
+      },
+      {
+        "composition_id": 1116,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.12 in F, K.332: 3. Allegro assai",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.12_in_F,_K.332/3._Allegro_assai/musicxml_cleaned.musicxml",
+        "performances": 11
+      },
+      {
+        "composition_id": 1117,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 12 in F Major, K. 332: II. Adagio",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.12_in_F,_K.332/2._Adagio/musicxml_cleaned.musicxml",
+        "performances": 22
+      },
+      {
+        "composition_id": 1118,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 12 in F Major, K. 332: I. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.12_in_F,_K.332/1._Allegro/musicxml_cleaned.musicxml",
+        "performances": 12
+      },
+      {
+        "composition_id": 1119,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 3 in B flat, K.281: 2. Andante amoroso",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._3_in_B_flat,_K.281/2._Andante_amoroso/Piano_Sonata_No.3_in_B-flat_major_K.281189f__Wolfgang_Amadeus_Mozart.mxl",
+        "performances": 4
+      },
+      {
+        "composition_id": 1120,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.3 In B Flat, K.281: 3. Rondeau (Allegro) - Live",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._3_in_B_flat,_K.281/3._Rondeau_(Allegro)/Sonata_No._3_3rd_Movement_K._281_Rondo.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 1121,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 3 in B flat, K.281: 3. Rondeau (Allegro)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._3_in_B_flat,_K.281/1._Allegro/Sonata_No._3_1st_Movement_K._281.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 1123,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.13 in B flat, K.333: 2. Andante cantabile",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.13_in_B_flat,_K.333/2._Andante_cantabile/Sonata_No._13_2nd_Movement_K._333.mxl",
+        "performances": 5
+      },
+      {
+        "composition_id": 1124,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 13 in B flat, K.333: 1. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.13_in_B_flat,_K.333/1._Allegro/Sonata_No._13_Mvt_1_Mozart.mxl",
+        "performances": 5
+      },
+      {
+        "composition_id": 1125,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 5 in G Major, K. 283: I. Allegro (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._5_in_G_Major,_K._283/I._Allegro/Sonata_No._5_1st_Movement_K._283.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 1126,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 5 in G Major, K. 283: III. Presto (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._5_in_G_Major,_K._283/III._Presto/Sonata_No._5_3rd_Movement_K._283.mxl",
+        "performances": 6
+      },
+      {
+        "composition_id": 1127,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 5 in G Major, K. 283: II. Andante (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._5_in_G_Major,_K._283/II._Andante/Sonata_No._5_2nd_Movement_K._283.mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 1128,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 9 in D, K.311: 1. Allegro con spirito",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.9_in_D,_K.311/1._Allegro_con_spirito/Mozart_-_Sonata_in_D_K_311_Movement_I.mxl",
+        "performances": 11
+      },
+      {
+        "composition_id": 1129,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 9 in D, K.311: 3. Rondeau (Allegro)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.9_in_D,_K.311/3._Rondeau_(Allegro)/Sonata_No._9_3rd_Movement_K._311.mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 1130,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 9 in D, K.311: 2. Andantino con espressione",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.9_in_D,_K.311/2._Andantino_con_espressione/Sonata_No._9_2nd_Movement_K._311.mxl",
+        "performances": 17
+      },
+      {
+        "composition_id": 1133,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 14 in C Minor, K. 457: II. Adagio (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._14_in_C_Minor,_K._457/II._Adagio/Sonata_No._14_2nd_Movement_K._457.mxl",
+        "performances": 27
+      },
+      {
+        "composition_id": 1137,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 1 in C, K.279: 3. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._1_in_C,_K.279/3._Allegro/Sonata_No._1_3rd_Movement_K._279.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 1139,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Mozart: Piano Sonata No. 1 in C Major, K. 279: I. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._1_in_C,_K.279/1._Allegro/Sonata_No._1_1st_Movement_K._279.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 1140,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 17 in B-Flat Major, K. 570: I. Allegro (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._17_in_B-Flat_Major,_K._570/I._Allegro/Mozart_-_Sonata_in_Bb_K_570_Movement_I.mxl",
+        "performances": 5
+      },
+      {
+        "composition_id": 1141,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 17 in B-Flat Major, K. 570: II. Adagio (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._17_in_B-Flat_Major,_K._570/II._Adagio/Sonata_No._17_2nd_Movement_K._570.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 1143,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.4 in E flat, K.282: 3. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.4_in_E_flat,_K.282/3._Allegro/Sonata_No._4_3rd_Movement_K._282.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1144,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.4 in E flat, K.282: 1. Adagio",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.4_in_E_flat,_K.282/1._Adagio/Sonata_No._4_1st_Movement_K._282.mxl",
+        "performances": 8
+      },
+      {
+        "composition_id": 1146,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 11 in A Major, K. 331: II. Menuetto",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._11_in_A_Major,_K._331/2._Menuetto/Sonata_No._11_2nd_Movement_K._331.mxl",
+        "performances": 15
+      },
+      {
+        "composition_id": 1147,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.11 in A, K.331 -\"Alla Turca\": 1. Tema (Andante grazioso) con variazioni",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._11_in_A_Major,_K._331/1._Tema_(Andante_grazioso)_con_variazioni/Sonata_No._11_1st_Movement_K._331.mxl",
+        "performances": 8
+      },
+      {
+        "composition_id": 1150,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 10 In C Major, K.330: 3. Allegretto - Live",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._10_In_C_Major,_K.330/3._Allegretto/Sonata_No._10_3rd_Movement_K._330.mxl",
+        "performances": 18
+      },
+      {
+        "composition_id": 1151,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 10 in C Major, K. 330: II. Andante cantabile",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._10_In_C_Major,_K.330/2._Andante_cantabile/Sonata_No._10_2nd_Movement_K._330.mxl",
+        "performances": 21
+      },
+      {
+        "composition_id": 1152,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.8 in A minor, K.310: 3. Presto",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.8_in_A_minor,_K.310/3._Presto/Sonata_No._8_3rd_Movement_K._310.mxl",
+        "performances": 33
+      },
+      {
+        "composition_id": 1154,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.8 in A minor, K.310: 1. Allegro maestoso",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.8_in_A_minor,_K.310/1._Allegro_maestoso/musicxml_cleaned.musicxml",
+        "performances": 15
+      },
+      {
+        "composition_id": 1155,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 2 in F Major, K. 280: II. Adagio (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._2_in_F_Major,_K._280/II._Adagio/Sonata_No._2_2nd_Movement_K._280.mxl",
+        "performances": 7
+      },
+      {
+        "composition_id": 1156,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 2 in F Major, K. 280: III. Presto (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._2_in_F_Major,_K._280/III._Presto/Sonata_No._2_2nd_Movement_K._280.mxl",
+        "performances": 4
+      },
+      {
+        "composition_id": 1157,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 2 in F Major, K. 280: I. Allegro assai (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._2_in_F_Major,_K._280/I._Allegro_assai/Sonata_No._2_1st_Movement_K._280.mxl",
+        "performances": 5
+      },
+      {
+        "composition_id": 1158,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 6 in D, K.284 \"D\u00fcrnitz\": 3. Tema con variazione",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._6_in_D,_K.284_\"D\u00fcrnitz\"/3._Tema_con_variazione/Sonata_No._6Drnitz_3rd_Movement_K._284.mxl",
+        "performances": 7
+      },
+      {
+        "composition_id": 1161,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 18 in D, K.576: 2. Adagio",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._18_in_D,_K.576/2._Adagio/Sonata_No._18_Mvt_2_Mozart.mxl",
+        "performances": 25
+      },
+      {
+        "composition_id": 1163,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.16 in C, K.545 \"Sonata facile\": 3. Rondo (Allegro)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.16_in_C,_K.545_\"Sonata_facile\"/3._Rondo_(Allegro)/Sonata_No._16_3rd_Movement_K._545.mxl",
+        "performances": 7
+      },
+      {
+        "composition_id": 1164,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.16 in C, K.545 \"Sonata facile\": 1. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.16_in_C,_K.545_\"Sonata_facile\"/1._Allegro/Sonata_No._16_1st_Movement_K._545.mxl",
+        "performances": 7
+      },
+      {
+        "composition_id": 1165,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 7 in D Major, Op. 10 No. 3: III. Menuetto. Allegro (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._7_in_D_Major,_Op._10_No._3/III._Menuetto._Allegro/musicxml_cleaned.musicxml",
+        "performances": 32
+      },
+      {
+        "composition_id": 1166,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 7 in D Major, Op. 10 No. 3: IV. Rondo. Allegro (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._7_in_D_Major,_Op._10_No._3/IV._Rondo._Allegro/musicxml_cleaned.musicxml",
+        "performances": 47
+      },
+      {
+        "composition_id": 1167,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 7 in D Major, Op. 10 No. 3: II. Largo e mesto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._7_in_D_Major,_Op._10_No._3/II._Largo_e_mesto/musicxml_cleaned.musicxml",
+        "performances": 49
+      },
+      {
+        "composition_id": 1175,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 20 in G Major, Op. 49 No. 2: II. Tempo di menuetto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._20_in_G_Major,_Op._49_No._2/II._Tempo_di_menuetto/Sonate_No._20_2nd_Movement.mxl",
+        "performances": 32
+      },
+      {
+        "composition_id": 1176,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 20 in G Major, Op. 49 No. 2: I. Allegro ma non troppo",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._20_in_G_Major,_Op._49_No._2/I._Allegro_ma_non_troppo/Sonate_No._20_1st_Movement.mxl",
+        "performances": 28
+      },
+      {
+        "composition_id": 1178,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 3 in C Major, Op. 2 No. 3: III. Scherzo. Allegro (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._3_in_C_Major,_Op._2_No._3/III._Scherzo._Allegro/Sonate_No._3_3rd_Movement.mxl",
+        "performances": 32
+      },
+      {
+        "composition_id": 1179,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 3 in C Major, Op. 2 No. 3: II. Adagio (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._3_in_C_Major,_Op._2_No._3/II._Adagio/musicxml_cleaned.musicxml",
+        "performances": 43
+      },
+      {
+        "composition_id": 1180,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 3 in C Major, Op. 2 No. 3: IV. Allegro assai (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._3_in_C_Major,_Op._2_No._3/IV._Allegro_assai/Sonate_No._3_4th_Movement.mxl",
+        "performances": 47
+      },
+      {
+        "composition_id": 1181,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.1 in F minor, Op.2 No.1: 3. Menuetto (Allegretto)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._1_in_F_Minor,_Op._2_No._1/III._Menuetto._Allegretto/Beethoven_-_Piano_Sonata_No._1_in_F_Minor_Op._2_3rd_Movement.mxl",
+        "performances": 18
+      },
+      {
+        "composition_id": 1182,
+        "composer": "Ludwig van Beethoven",
+        "track": "Beethoven: Piano Sonata No. 1 in F Minor, Op. 2 No. 1: IV. Prestissimo",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._1_in_F_Minor,_Op._2_No._1/IV._Prestissimo/Beethoven_-_Piano_Sonata_No._1_in_F_Minor_Op._2_4th_Movement.mxl",
+        "performances": 25
+      },
+      {
+        "composition_id": 1183,
+        "composer": "Ludwig van Beethoven",
+        "track": "Beethoven: Piano Sonata No. 1 in F Minor, Op. 2 No. 1: I. Allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._1_in_F_Minor,_Op._2_No._1/I._Allegro/musicxml_cleaned.musicxml",
+        "performances": 17
+      },
+      {
+        "composition_id": 1186,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 9 in E Major, Op. 14, No. 1: I. Allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._9_in_E_Major,_Op._14,_No._1/I._Allegro/musicxml_cleaned.musicxml",
+        "performances": 30
+      },
+      {
+        "composition_id": 1189,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 19 in G Minor, Op. 49, No. 1: II. Rondo. Allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._19_in_G_Minor,_Op._49,_No._1/II._Rondo._Allegro/Sonate_No._19_2nd_Movement.mxl",
+        "performances": 30
+      },
+      {
+        "composition_id": 1190,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 31 in A-Flat Major, Op. 110: I. Moderato cantabile molto espressivo (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._31_in_A-Flat_Major,_Op._110/I._Moderato_cantabile_molto_espressivo/musicxml_cleaned.musicxml",
+        "performances": 53
+      },
+      {
+        "composition_id": 1194,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 31 in A-Flat Major, Op. 110: II. Scherzo. Allegro molto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._31_in_A-Flat_Major,_Op._110/II._Allegro_molto/musicxml_cleaned.musicxml",
+        "performances": 44
+      },
+      {
+        "composition_id": 1196,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 26 in E Flat Major, Op. 81a -\"Les Adieux\": II. Abwesenheit (Andante espressivo)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.26_in_E_flat,_Op.81a_-\"Les_adieux\"/2._Abwesendheit_(Andante_espressivo)/musicxml_cleaned.musicxml",
+        "performances": 11
+      },
+      {
+        "composition_id": 1198,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 26 in E Flat Major, Op. 81a -\"Les Adieux\": III. Das Wiedersehen (Vivacissimamente)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.26_in_E_flat,_Op.81a_-\"Les_adieux\"/3._Das_Wiedersehn_(Vivacissimamente)/musicxml_cleaned.musicxml",
+        "performances": 11
+      },
+      {
+        "composition_id": 1200,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.6 In F, Op.10 No.2: 1. Allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.6_in_F,_Op.10_No.2/1._Allegro/musicxml_cleaned.musicxml",
+        "performances": 21
+      },
+      {
+        "composition_id": 1203,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 4 in E-Flat Major, Op. 7 \"Grand\": II. Largo, con gran espressione (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._4_in_E-Flat_Major,_Op._7_\"Grand\"/II._Largo,_con_gran_espressione/Sonate_No._4_2nd_Movement.mxl",
+        "performances": 19
+      },
+      {
+        "composition_id": 1205,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 4 in E-Flat Major, Op. 7 \"Grand\": IV. Rondo. Poco allegretto e grazioso (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._4_in_E-Flat_Major,_Op._7_\"Grand\"/IV._Rondo._Poco_allegretto_e_grazioso/Sonate_No._4_4th_Movement.mxl",
+        "performances": 15
+      },
+      {
+        "composition_id": 1206,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 30 in E Major, Op. 109: I. Vivace ma non troppo, sempre legato - Adagio espressivo (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._30_in_E_Major,_Op._109/I._Vivace_ma_non_troppo,_sempre_legato_-_Adagio_espressivo/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 1207,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 30 in E Major, Op. 109: II. Prestissimo (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._30_in_E_Major,_Op._109/II._Prestissimo/Sonate_No._30_2nd_Movement.mxl",
+        "performances": 46
+      },
+      {
+        "composition_id": 1208,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 30 in E Major, Op. 109: III. Theme: Andante molto cantabile ed espressivo - Variations 1-6",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._30_in_E_Major,_Op._109/III._Andante_molto_cantabile_ed_espressivo/Sonate_No._30_3rd_Movement.mxl",
+        "performances": 43
+      },
+      {
+        "composition_id": 1211,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.2 In A, Op.2 No.2: 4. Rondo (Grazioso)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.2_in_A,_Op.2_No.2/4._Rondo_(Grazioso)/Sonate_No._2_4th_Movement.mxl",
+        "performances": 29
+      },
+      {
+        "composition_id": 1212,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.2 In A, Op.2 No.2: 2. Largo appassionato",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.2_in_A,_Op.2_No.2/2._Largo_appassionato/Sonate_No._2_2nd_Movement.mxl",
+        "performances": 28
+      },
+      {
+        "composition_id": 1213,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.21 In C Major, Op.53 -\"Waldstein\": 1. Allegro con brio",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._21_in_C_major,_Op._53,_\"Waldstein\"/I._Allegro_con_brio/musicxml_cleaned.musicxml",
+        "performances": 43
+      },
+      {
+        "composition_id": 1214,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.21 In C Major, Op.53 -\"Waldstein\": 3. Rondo (Allegretto moderato - Prestissimo)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._21_in_C_major,_Op._53,_\"Waldstein\"/III._Rondo:_Allegretto_moderato/musicxml_cleaned.musicxml",
+        "performances": 53
+      },
+      {
+        "composition_id": 1217,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 25 in G Major, Op. 79: II. Andante",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.25_in_G,_Op.79/2._Andante/Sonate_No._25_2nd_Movement.mxl",
+        "performances": 25
+      },
+      {
+        "composition_id": 1218,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 25 in G Major, Op. 79: III. Vivace",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.25_in_G,_Op.79/3._Vivace/Sonate_No._25_3rd_Movement.mxl",
+        "performances": 29
+      },
+      {
+        "composition_id": 1223,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 23 in F Minor, Op. 57 \"Appassionata\": I. Allegro assai (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._23_in_F_Minor,_Op._57_\"Appassionata\"/I._Allegro_assai/musicxml_cleaned.musicxml",
+        "performances": 93
+      },
+      {
+        "composition_id": 1225,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 10 in G Major, Op. 14 No. 2: I. Allegro (Recorded 1947)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._10_in_G_Major,_Op._14_No._2/I._Allegro/musicxml_cleaned.musicxml",
+        "performances": 30
+      },
+      {
+        "composition_id": 1226,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 10 in G Major, Op. 14 No. 2: II. Andante (Recorded 1947)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._10_in_G_Major,_Op._14_No._2/II._Andante/Sonate_No._10_2nd_Movement.mxl",
+        "performances": 23
+      },
+      {
+        "composition_id": 1229,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 \"The Hunt\": II. Scherzo. Allegretto vivace (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._18_in_E-Flat_Major,_Op._31_No._3_\"The_Hunt\"/II._Scherzo._Allegretto_vivace/musicxml_cleaned.musicxml",
+        "performances": 22
+      },
+      {
+        "composition_id": 1230,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 \"The Hunt\": III. Menuetto. Moderato e grazioso (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._18_in_E-Flat_Major,_Op._31_No._3_\"The_Hunt\"/III._Menuetto._Moderato_e_grazioso/musicxml_cleaned.musicxml",
+        "performances": 19
+      },
+      {
+        "composition_id": 1231,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 29 in B-Flat Major, Op. 106 \"Hammerklavier\": III. Adagio sostenuto, appassionato e con molto sentimento (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._29_in_B-Flat_Major,_Op._106_\"Hammerklavier\"/III._Adagio_sostenuto,_appassionato_e_con_molto_sentimento/musicxml_cleaned.musicxml",
+        "performances": 13
+      },
+      {
+        "composition_id": 1234,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 29 in B-Flat Major, Op. 106 \"Hammerklavier\": IV. Largo - Allegro risoluto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._29_in_B-Flat_Major,_Op._106_\"Hammerklavier\"/IV._Largo_-_Allegro_risoluto/musicxml_cleaned.musicxml",
+        "performances": 31
+      },
+      {
+        "composition_id": 1235,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 22 in F Major, Op. 54: I. In tempo d'un minuetto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._22_in_F_Major,_Op._54/I._In_tempo_d'un_minuetto/musicxml_cleaned.musicxml",
+        "performances": 35
+      },
+      {
+        "composition_id": 1236,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 22 in F Major, Op. 54: II. Allegretto - Pi\u00f9 allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._22_in_F_Major,_Op._54/II._Allegretto_-_Pi\u00f9_allegro/musicxml_cleaned.musicxml",
+        "performances": 14
+      },
+      {
+        "composition_id": 1237,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 28 in A Major, Op. 101: III. Langsam und sehnsuchtsvoll",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._28_in_A_Major,_Op._101/III._Langsam_und_sehnsuchtsvoll/musicxml_cleaned.musicxml",
+        "performances": 38
+      },
+      {
+        "composition_id": 1238,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 28 in A Major, Op. 101: II. Lebhaft. Marschmassig",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._28_in_A_Major,_Op._101/II._Lebhaft._Marschmassig/musicxml_cleaned.musicxml",
+        "performances": 19
+      },
+      {
+        "composition_id": 1240,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 28 in A Major, Op. 101: I. Etwas lebhaft und mit der innigsten Empfindung",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._28_in_A_Major,_Op._101/I._Etwas_lebhaft_und_mit_der_innigsten_Empfindung/musicxml_cleaned.musicxml",
+        "performances": 46
+      },
+      {
+        "composition_id": 1241,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 8 in C Minor, Op. 13 \"Path\u00e9tique\": I. Grave - Allegro di molto e con brio",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._8_in_C_Minor,_Op._13_\"Path\u00e9tique\"/I._Grave_-_Allegro_di_molto_e_con_brio/musicxml_cleaned.musicxml",
+        "performances": 69
+      },
+      {
+        "composition_id": 1242,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 8 in C Minor, Op. 13 \"Path\u00e9tique\": II. Adagio cantabile",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._8_in_C_Minor,_Op._13_\"Path\u00e9tique\"/II._Adagio_cantabile/musicxml_cleaned.musicxml",
+        "performances": 60
+      },
+      {
+        "composition_id": 1243,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 8 in C Minor, Op. 13 \"Path\u00e9tique\": III. Rondo. Allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._8_in_C_Minor,_Op._13_\"Path\u00e9tique\"/III._Rondo._Allegro/musicxml_cleaned.musicxml",
+        "performances": 61
+      },
+      {
+        "composition_id": 1244,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 12 in A-Flat Major, Op. 26 \"Funeral March\": III. Marcia funebre sulla morte d'un eroe",
+        "score_path": "Ludwig_van_Beethoven/Sonata_No._12_In_A_Flat_Op._26/3._Marcia_funebre_sulla_morte_d'un_Eroe_-_Live/Sonate_No._12_Funeral_March_3rd_Movement.mxl",
+        "performances": 27
+      },
+      {
+        "composition_id": 1245,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.12 in A flat, Op.26: 2. Scherzo (Allegro molto)",
+        "score_path": "Ludwig_van_Beethoven/Sonata_No._12_In_A_Flat_Op._26/2._Scherzo._Allegro_molto_-_Live/Sonate_No._12_Funeral_March_2nd_Movement.mxl",
+        "performances": 11
+      },
+      {
+        "composition_id": 1248,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.15 In D, Op.28 -\"Pastorale\": 4. Rondo. Allegro ma non troppo",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.15_in_D,_Op.28_-\"Pastorale\"/4._Rondo._Allegro_ma_non_troppo/musicxml_cleaned.musicxml",
+        "performances": 32
+      },
+      {
+        "composition_id": 1249,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.15 In D, Op.28 -\"Pastorale\": 2. Andante",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.15_in_D,_Op.28_-\"Pastorale\"/2._Andante/Sonate_No._15_Pastoral_2nd_Movement.mxl",
+        "performances": 32
+      },
+      {
+        "composition_id": 1251,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.15 In D, Op.28 -\"Pastorale\": 1. Allegro",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.15_in_D,_Op.28_-\"Pastorale\"/1._Allegro/musicxml_cleaned.musicxml",
+        "performances": 29
+      },
+      {
+        "composition_id": 1252,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 17 in D Minor, Op. 31 No. 2 \"Tempest\": II. Adagio (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._17_in_D_Minor,_Op._31_No._2_\"Tempest\"/II._Adagio/musicxml_cleaned.musicxml",
+        "performances": 45
+      },
+      {
+        "composition_id": 1254,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 17 in D Minor, Op. 31 No. 2 \"Tempest\": III. Allegretto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._17_in_D_Minor,_Op._31_No._2_\"Tempest\"/III._Allegretto/musicxml_cleaned.musicxml",
+        "performances": 28
+      },
+      {
+        "composition_id": 1256,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 13 in E Flat Major, Op. 27 No.1: III. Adagio con espressione",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.13_in_E_flat,_Op.27_No.1/3._Adagio_con_espressione/Sonate_No._13_3rd_Movement.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1257,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 13 in E Flat Major, Op. 27 No.1: II. Allegro molto e vivace",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.13_in_E_flat,_Op.27_No.1/2._Allegro_molto_e_vivace/Sonate_No._13_2nd_Movement.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1259,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 27 in E Minor, Op. 90: II. Nicht zu geschwind und sehr singbar vorgetragen (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._27_in_E_Minor,_Op._90/II._Nicht_zu_geschwind_und_sehr_singbar_vorgetragen/musicxml_cleaned.musicxml",
+        "performances": 38
+      },
+      {
+        "composition_id": 1263,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 24 in F-Sharp Major, Op. 78 \"For Therese\": 1. Adagio cantabile - Allegro ma non troppo",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._24_in_F-Sharp_Major,_Op._78_\"For_Therese\"/1._Adagio_cantabile_-_Allegro_ma_non_troppo/musicxml_cleaned.musicxml",
+        "performances": 18
+      },
+      {
+        "composition_id": 1300,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 11 in B-Flat Major, Op. 22: I. Allegro con brio (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._11_in_B-Flat_Major,_Op._22/I._Allegro_con_brio/musicxml_cleaned.musicxml",
+        "performances": 20
+      },
+      {
+        "composition_id": 1302,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 11 in B-Flat Major, Op. 22: IV. Rondo. Allegretto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._11_in_B-Flat_Major,_Op._22/IV._Rondo._Allegretto/musicxml_cleaned.musicxml",
+        "performances": 21
+      },
+      {
+        "composition_id": 1303,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 11 in B-Flat Major, Op. 22: III. Menuetto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._11_in_B-Flat_Major,_Op._22/III._Menuetto/musicxml_cleaned.musicxml",
+        "performances": 21
+      },
+      {
+        "composition_id": 1305,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 14 in C-Sharp Minor, Op. 27 No. 2 \"Moonlight\": I. Adagio sostenuto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._14_in_C-Sharp_Minor,_Op._27_No._2_\"Moonlight\"/1._Adagio_sostenuto/Sonate_No._14_Moonlight_1st_Movement.mxl",
+        "performances": 49
+      },
+      {
+        "composition_id": 1306,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 14 in C-Sharp Minor, Op. 27 No. 2 \"Moonlight\": II. Allegretto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._14_in_C-Sharp_Minor,_Op._27_No._2_\"Moonlight\"/2._Allegretto/Sonata_No._14_Moonlight_2nd_Movement.mxl",
+        "performances": 49
+      },
+      {
+        "composition_id": 1307,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 32 in C Minor, Op. 111: II. Arietta. Adagio molto semplice e cantabile",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._32_in_C_Minor,_Op._111/II._Arietta._Adagio_molto_semplice_e_cantabile/musicxml_cleaned.musicxml",
+        "performances": 51
+      },
+      {
+        "composition_id": 1309,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.5 In C Minor, Op.10 No.1: 1. Allegro molto e con brio",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.5_in_C_minor,_Op.10_No.1/1._Allegro_molto_e_con_brio/musicxml_cleaned.musicxml",
+        "performances": 22
+      },
+      {
+        "composition_id": 1310,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 5 in C Minor, Op. 10 No. 1: II. Adagio molto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.5_in_C_minor,_Op.10_No.1/2._Adagio_molto/Sonate_No._5_2nd_Movement.mxl",
+        "performances": 25
+      },
+      {
+        "composition_id": 1311,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.5 In C Minor, Op.10 No.1: 3. Finale (Prestissimo)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.5_in_C_minor,_Op.10_No.1/3._Finale_(Prestissimo)/Sonate_No._5_3rd_Movement.mxl",
+        "performances": 22
+      },
+      {
+        "composition_id": 1315,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 16 in G Major, Op. 31 No. 1: I. Allegro vivace (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.16_in_G,_Op.31_No.1/1._Allegro_vivace/musicxml_cleaned.musicxml",
+        "performances": 30
+      },
+      {
+        "composition_id": 1316,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 16 in G Major, Op. 31 No. 1: II. Adagio grazioso (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.16_in_G,_Op.31_No.1/2._Adagio_grazioso/musicxml_cleaned.musicxml",
+        "performances": 29
+      },
+      {
+        "composition_id": 1317,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 16 in G Major, Op. 31 No. 1: III. Rondo. Allegretto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.16_in_G,_Op.31_No.1/3._Rondo_(Allegretto)/Sonate_No._16_3rd_Movement.mxl",
+        "performances": 30
+      },
+      {
+        "composition_id": 1503,
+        "composer": "Franz Liszt",
+        "track": "Der Tanz in der Dorfschenke, S514/R181, \"Mephisto Waltz No. 1\"",
+        "score_path": "Franz_Liszt/Mephisto_Waltz_No._1,_S.514/musicxml_cleaned.musicxml",
+        "performances": 20
+      },
+      {
+        "composition_id": 1512,
+        "composer": "Alexander Scriabin",
+        "track": "Piano Sonata No. 5, Op. 53 (Live)",
+        "score_path": "Alexander_Scriabin/Piano_Sonata_No._5,_Op._53/musicxml_cleaned.musicxml",
+        "performances": 6
+      },
+      {
+        "composition_id": 1515,
+        "composer": "Robert Schumann",
+        "track": "Abegg Variations, Op. 1 - Live",
+        "score_path": "Robert_Schumann/Abegg_Variations,_Op._1/musicxml_cleaned.musicxml",
+        "performances": 7
+      },
+      {
+        "composition_id": 1517,
+        "composer": "Robert Schumann",
+        "track": "Arabeske, Op. 18",
+        "score_path": "Robert_Schumann/Arabeske,_Op._18/musicxml_cleaned.musicxml",
+        "performances": 11
+      },
+      {
+        "composition_id": 1518,
+        "composer": "Robert Schumann",
+        "track": "Toccata in C Major, Op. 7",
+        "score_path": "Robert_Schumann/Toccata_in_C_Major,_Op._7/musicxml_cleaned.musicxml",
+        "performances": 20
+      },
+      {
+        "composition_id": 1520,
+        "composer": "Johann Sebastian Bach",
+        "track": "Chromatic Fantasia and Fugue in D Minor, BWV 903",
+        "score_path": "Johann_Sebastian_Bach/Chromatic_Fantasia_and_Fugue_in_D_Minor,_BWV_903/Bach_-_Chromatic_Fantasia_and_Fugue_in_D_Minor._BWV_903._Professional_production_score..mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 1541,
+        "composer": "Maurice Ravel",
+        "track": "Valses nobles et sentimentales, M. 61 (Live)",
+        "score_path": "Maurice_Ravel/Valses_nobles_et_sentimentales,_M._61/Ravel_-_Valses_nobles_et_sentimentales.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1543,
+        "composer": "Maurice Ravel",
+        "track": "Pavane pour une infante d\u00e9funte, M. 19 (Live)",
+        "score_path": "Maurice_Ravel/Pavane_pour_une_infante_d\u00e9funte,_M._19/musicxml_cleaned.musicxml",
+        "performances": 15
+      },
+      {
+        "composition_id": 1544,
+        "composer": "Maurice Ravel",
+        "track": "Jeux d'eau, M. 30 (Live)",
+        "score_path": "Maurice_Ravel/Jeux_d'eau,_M._30/musicxml_cleaned.musicxml",
+        "performances": 24
+      },
+      {
+        "composition_id": 1565,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Fantasia in C Minor, K. 475 (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Fantasia_in_C_Minor,_K._475/Fantasia_in_C_minor_K._475.mxl",
+        "performances": 25
+      },
+      {
+        "composition_id": 1585,
+        "composer": "Domenico Scarlatti",
+        "track": "Keyboard Sonata in B Minor, K.27/L.449/P.83",
+        "score_path": "Domenico_Scarlatti/Keyboard_Sonata_in_B_Minor,_K.27/Sonata_in_B_Minor_K.27.mxl",
+        "performances": 4
+      }
+    ],
+    "validation": [
+      {
+        "composition_id": 9,
+        "composer": "Sergei Rachmaninoff",
+        "track": "13 Preludes, Op. 32 (Excerpts): No. 10 in B Minor [Live]",
+        "score_path": "Sergei_Rachmaninoff/13_Preludes,_Op._32/No._10_in_B_Minor:_Lento/musicxml_cleaned.musicxml",
+        "performances": 12
+      },
+      {
+        "composition_id": 60,
+        "composer": "Sergei Rachmaninoff",
+        "track": "Morceaux de Fantasie, Op.3: No.1 Elegie",
+        "score_path": "Sergei_Rachmaninoff/Morceaux_de_Fantasie,_Op.3/No.1_Elegie/Elgie_Opus_3_No._1.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 122,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.7 Eroica (Allegro)",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.7_Eroica_(Allegro)/musicxml_cleaned.musicxml",
+        "performances": 6
+      },
+      {
+        "composition_id": 127,
+        "composer": "Alexander Scriabin",
+        "track": "12 Etudes, Op. 8 (1894): No. 11 in B-Flat Minor",
+        "score_path": "Alexander_Scriabin/12_Etudes,_Op._8/No._11_in_B-Flat_Minor/musicxml_cleaned.musicxml",
+        "performances": 6
+      },
+      {
+        "composition_id": 220,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op. 16: 1. \u00c4usserst bewegt",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/I._\u00c4u\u00dferst_bewegt/musicxml_cleaned.musicxml",
+        "performances": 26
+      },
+      {
+        "composition_id": 339,
+        "composer": "Johann Sebastian Bach",
+        "track": "English Suite No. 6 in D Minor, BWV 811: I. Prelude (Live)",
+        "score_path": "Johann_Sebastian_Bach/English_Suite_No.6_in_D_minor,_BWV_811/1._Pr\u00e9lude/BWV_811_English_Suite_VI_Prelude.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 523,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 11 in F Major, BWV 856: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._11_in_F_Major,_BWV_856:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 531,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 22 in B-Flat Minor, BWV 867: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._22_in_B-Flat_Minor,_BWV_867:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 534,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 23 in B Major, BWV 868: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._23_in_B_Major,_BWV_868:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 538,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 13 in F-Sharp Major, BWV 858: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._13_in_F-Sharp_Major,_BWV_858:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 542,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 15 in G Major, BWV 860: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._15_in_G_Major,_BWV_860:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 617,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in B minor BWV 893",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_B_minor_BWV_893/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 630,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in D minor BWV 875",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_D_minor_BWV_875/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 642,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in G major BWV 884",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_G_major_BWV_884/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 654,
+        "composer": "Claude Debussy",
+        "track": "Suite bergamasque, L. 75: IV. Passepied (Live)",
+        "score_path": "Claude_Debussy/Suite_bergamasque,_L._75/IV._Passepied/IV._Passepied.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 655,
+        "composer": "Claude Debussy",
+        "track": "Suite bergamasque, L. 75: III. Clair de lune (Live)",
+        "score_path": "Claude_Debussy/Suite_bergamasque,_L._75/III._Clair_de_lune/Clair_de_Lune__Debussy.mxl",
+        "performances": 16
+      },
+      {
+        "composition_id": 674,
+        "composer": "Claude Debussy",
+        "track": "Estampes, L. 100: 3. Jardins sous la pluie",
+        "score_path": "Claude_Debussy/Estampes,_L._100/3._Jardins_sous_la_pluie/Debussy_Claude__-_Jardins_sous_la_pluie_-_Estampes_III..mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 713,
+        "composer": "Maurice Ravel",
+        "track": "Miroirs, M. 43: No. 3, Une barque sur l'oc\u00e9an",
+        "score_path": "Maurice_Ravel/Miroirs,_M._43/No._3,_Une_barque_sur_l'oc\u00e9an/musicxml_cleaned.musicxml",
+        "performances": 10
+      },
+      {
+        "composition_id": 871,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 13 in A Major, Op. 120, D. 664: III. Allegro (Live)",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.13_in_A,_D.664/3._Allegro/musicxml_cleaned.musicxml",
+        "performances": 14
+      },
+      {
+        "composition_id": 884,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 18 in G Major, D. 894: 3. Menuetto. Allegro moderato",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.18_in_G,_D.894/3._Menuetto_(Allegro_moderato)/musicxml_cleaned.musicxml",
+        "performances": 10
+      },
+      {
+        "composition_id": 912,
+        "composer": "Franz Schubert",
+        "track": "4 Impromptus, Op. 90, D. 899: No. 4 in A-Flat Major: Allegretto",
+        "score_path": "Franz_Schubert/4_Impromptus,_Op._90,_D._899/4._Allegretto/musicxml_cleaned.musicxml",
+        "performances": 11
+      },
+      {
+        "composition_id": 1072,
+        "composer": "Franz Joseph Haydn",
+        "track": "Keyboard Sonata in C Major, Op. 79, Hob. XVI:50: I. Allegro (Live)",
+        "score_path": "Franz_Joseph_Haydn/Piano_Sonata_in_C_Major,_Hob.XVI:50/I._Allegro/musicxml_cleaned.musicxml",
+        "performances": 8
+      },
+      {
+        "composition_id": 1138,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 1 in C, K.279: 2. Andante",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._1_in_C,_K.279/2._Andante/Sonata_No._1_2nd_Movement_K._279.mxl",
+        "performances": 8
+      },
+      {
+        "composition_id": 1142,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 17 in B-Flat Major, K. 570: III. Allegretto (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._17_in_B-Flat_Major,_K._570/III._Allegretto/Sonata_No._17_3rd_Movement_K._570.mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 1148,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 11 in A Major, K. 331 (300i): III. (Rondo) alla turca. Allegretto",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._11_in_A_Major,_K._331/3._Alla_Turca._Allegretto/musicxml_cleaned.musicxml",
+        "performances": 19
+      },
+      {
+        "composition_id": 1149,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 10 in C Major, K. 330: I. Allegro moderato",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._10_In_C_Major,_K.330/1._Allegro_moderato/Sonata_No._10_1st_Movement_K._330.mxl",
+        "performances": 21
+      },
+      {
+        "composition_id": 1159,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 6 in D, K.284 \"D\u00fcrnitz\": 1. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._6_in_D,_K.284_\"D\u00fcrnitz\"/1._Allegro/Sonata_No._6Drnitz_1st_Movement_K._284.mxl",
+        "performances": 4
+      },
+      {
+        "composition_id": 1160,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 6 in D, K.284 \"D\u00fcrnitz\": 2. Rondeau en Polonaise (Andante)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._6_in_D,_K.284_\"D\u00fcrnitz\"/2._Rondeau_en_Polonaise_(Andante)/Sonata_No._6Rondeau_en_Polonaise_2nd_Movement_K._284.mxl",
+        "performances": 7
+      },
+      {
+        "composition_id": 1168,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 7 in D Major, Op. 10 No. 3: I. Presto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._7_in_D_Major,_Op._10_No._3/I._Presto/Sonate_No._7_1st_Movement.mxl",
+        "performances": 47
+      },
+      {
+        "composition_id": 1187,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 9 in E Major, Op. 14, No. 1: III. Rondo. Allegro comodo (Recorded 1947)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._9_in_E_Major,_Op._14,_No._1/III._Rondo._Allegro_comodo/musicxml_cleaned.musicxml",
+        "performances": 33
+      },
+      {
+        "composition_id": 1188,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 19 in G Minor, Op. 49, No. 1: I. Andante",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._19_in_G_Minor,_Op._49,_No._1/I._Andante/Sonate_No._19_1st_Movement.mxl",
+        "performances": 26
+      },
+      {
+        "composition_id": 1199,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.6 in F, Op.10 No.2: 3. Presto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.6_in_F,_Op.10_No.2/3._Presto/Sonate_No._6_3rd_Movement.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1215,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.21 In C Major, Op.53 -\"Waldstein\": 2. Introduzione (Adagio molto)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._21_in_C_major,_Op._53,_\"Waldstein\"/II._Introduzione:_Adagio_molto/musicxml_cleaned.musicxml",
+        "performances": 39
+      },
+      {
+        "composition_id": 1222,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 23 in F Minor, Op. 57 \"Appassionata\": II. Andante con moto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._23_in_F_Minor,_Op._57_\"Appassionata\"/II._Andante_con_moto/Sonate_No._23_Appassionata_2nd_Movement.mxl",
+        "performances": 92
+      },
+      {
+        "composition_id": 1228,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 \"The Hunt\": IV. Presto con fuoco (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._18_in_E-Flat_Major,_Op._31_No._3_\"The_Hunt\"/IV._Presto_con_fuoco/musicxml_cleaned.musicxml",
+        "performances": 24
+      },
+      {
+        "composition_id": 1233,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 29 in B-Flat Major, Op. 106 \"Hammerklavier\": II. Scherzo. Assai vivace (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._29_in_B-Flat_Major,_Op._106_\"Hammerklavier\"/II._Scherzo._Assai_vivace/musicxml_cleaned.musicxml",
+        "performances": 32
+      },
+      {
+        "composition_id": 1247,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 12 in A-Flat Major, Op. 26 \"Funeral March\": I. Andante con variazioni (Live)",
+        "score_path": "Ludwig_van_Beethoven/Sonata_No._12_In_A_Flat_Op._26/1._Andante_con_variazioni_-_Live/musicxml_cleaned.musicxml",
+        "performances": 19
+      },
+      {
+        "composition_id": 1250,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 15 in D Major, Op. 28 \"Pastorale\": III. Scherzo. Allegro assai",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.15_in_D,_Op.28_-\"Pastorale\"/3._Scherzo_(Allegro_assai)/Sonate_No._15_Pastoral_3rd_Movement.mxl",
+        "performances": 11
+      },
+      {
+        "composition_id": 1253,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 17 in D Minor, Op. 31 No. 2 \"Tempest\": I. Largo - Allegro (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._17_in_D_Minor,_Op._31_No._2_\"Tempest\"/I._Largo_-_Allegro/musicxml_cleaned.musicxml",
+        "performances": 49
+      },
+      {
+        "composition_id": 1258,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 13 in E Flat Major, Op. 27 No.1: IV. Allegro vivace - Tempo I - Presto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.13_in_E_flat,_Op.27_No.1/4._Allegro_vivace_-_Tempo_I_-_Presto/Sonate_No._13_4th_Movement.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1260,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 27 in E Minor, Op. 90: I. Mit Lebhaftigkeit und durchaus mit Empfindung und Ausdruck (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._27_in_E_Minor,_Op._90/I._Mit_Lebhaftigkeit_und_durchaus_mit_Empfindung_und_Ausdruck/musicxml_cleaned.musicxml",
+        "performances": 33
+      },
+      {
+        "composition_id": 1264,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 24 in F-Sharp Major, Op. 78 \"For Therese\": 2. Allegro vivace",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._24_in_F-Sharp_Major,_Op._78_\"For_Therese\"/2._Allegro_vivace/musicxml_cleaned.musicxml",
+        "performances": 24
+      },
+      {
+        "composition_id": 1495,
+        "composer": "Franz Liszt",
+        "track": "Piano Sonata in B Minor, S. 178",
+        "score_path": "Franz_Liszt/Piano_Sonata_in_B_Minor,_S._178/Sonata_in_B_Minor_S._178.mxl",
+        "performances": 13
+      },
+      {
+        "composition_id": 1560,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Rondo In A Minor, K.511",
+        "score_path": "Wolfgang_Amadeus_Mozart/Rondo_in_A_Minor,_K.511/Mozart_-_Rondo_in_A_minor_K._511_.mxl",
+        "performances": 18
+      }
+    ],
+    "test": [
+      {
+        "composition_id": 69,
+        "composer": "Sergei Rachmaninoff",
+        "track": "6 Moments musicaux, Op.16: No. 5 in D flat, Adagio sostenuto",
+        "score_path": "Sergei_Rachmaninoff/6_Moments_musicaux,_Op._16/No._5_in_D_flat,_Adagio_sostenuto/Rachmaninoff_-_Moment_Musical_No_5_in_Db_Major.mxl",
+        "performances": 2
+      },
+      {
+        "composition_id": 75,
+        "composer": "Sergei Rachmaninoff",
+        "track": "10 Preludes, Op. 23 (Excerpts): No. 2 in B-Flat Major [Live]",
+        "score_path": "Sergei_Rachmaninoff/10_Preludes,_Op._23/No._2_in_B-Flat_Major/musicxml_cleaned.musicxml",
+        "performances": 7
+      },
+      {
+        "composition_id": 80,
+        "composer": "Sergei Rachmaninoff",
+        "track": "10 Preludes, Op. 23 (Excerpts): No. 4 in D Major [Live]",
+        "score_path": "Sergei_Rachmaninoff/10_Preludes,_Op._23/No._4_in_D_Major/musicxml_cleaned.musicxml",
+        "performances": 8
+      },
+      {
+        "composition_id": 96,
+        "composer": "Franz Liszt",
+        "track": "Harmonies poetiques et religieuses, S173/R14: No. 7. Funerailles",
+        "score_path": "Franz_Liszt/10_Harmonies_po\u00e9tiques_et_religieuses,_S.173/No._7._Funerailles/Liszt_-_Funerailles.mxl",
+        "performances": 11
+      },
+      {
+        "composition_id": 105,
+        "composer": "Franz Liszt",
+        "track": "Ann\u00e9es de p\u00e8lerinage, 2nd Year, S. 162 \"Italy Supplement\": No. 1. Gondoliera (Gondolier's Song)",
+        "score_path": "Franz_Liszt/Ann\u00e9es_de_p\u00e8lerinage,_2nd_Year,_S._162_\"Italy_Supplement\"/No._1._Gondoliera_(Gondolier's_Song)/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 119,
+        "composer": "Franz Liszt",
+        "track": "12 Etudes d'ex\u00e9cution transcendante, S.139: No.1 Pr\u00e9lude (Presto)",
+        "score_path": "Franz_Liszt/12_Etudes_d'ex\u00e9cution_transcendante,_S.139/No.1_Pr\u00e9lude_(Presto)/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 216,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op.16: 8. Schnell und spielend",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/VIII._Schnell_und_spielend/musicxml_cleaned.musicxml",
+        "performances": 23
+      },
+      {
+        "composition_id": 217,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op. 16: Sehr langsam; Bewegter",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/IV._Sehr_langsam/musicxml_cleaned.musicxml",
+        "performances": 26
+      },
+      {
+        "composition_id": 219,
+        "composer": "Robert Schumann",
+        "track": "Kreisleriana, Op.16: 5. Sehr lebhaft",
+        "score_path": "Robert_Schumann/Kreisleriana,_Op._16/V._Sehr_lebhaft/musicxml_cleaned.musicxml",
+        "performances": 25
+      },
+      {
+        "composition_id": 520,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 17 in A-Flat Major, BWV 862: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._17_in_A-Flat_Major,_BWV_862:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 522,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 23 in B Major, BWV 868: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._23_in_B_Major,_BWV_868:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 526,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 1 in C Major, BWV 846: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._1_in_C_Major,_BWV_846:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 4
+      },
+      {
+        "composition_id": 540,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 13 in F-Sharp Major, BWV 858: Prelude",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._13_in_F-Sharp_Major,_BWV_858:_Prelude/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 555,
+        "composer": "Johann Sebastian Bach",
+        "track": "The Well-Tempered Clavier, Book I: No. 19 in A Major, BWV 864: Fugue",
+        "score_path": "Johann_Sebastian_Bach/The_Well-Tempered_Clavier,_Book_I/No._19_in_A_Major,_BWV_864:_Fugue/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 571,
+        "composer": "Johann Sebastian Bach",
+        "track": "English Suite No. 2 In A Minor, BWV 807: 1. Prelude",
+        "score_path": "Johann_Sebastian_Bach/English_Suite_No.2_in_A_minor,_BWV_807/1._Prelude/J.S._Bach_English_Suite_No.2_In_A_Minor_BWV_807_-_1._Prelude.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 609,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in F major BWV 880",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_F_major_BWV_880/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 615,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in B flat minor BWV 891",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_B_flat_minor_BWV_891/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 625,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Prelude in F sharp minor BWV 883",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Prelude_in_F_sharp_minor_BWV_883/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 632,
+        "composer": "Johann Sebastian Bach",
+        "track": "Das Wohltemperierte Klavier: Book 2, BWV 870-893: Fugue in B minor BWV 893",
+        "score_path": "Johann_Sebastian_Bach/Das_Wohltemperierte_Klavier_Book2/Book_2,_BWV_870-893:_Fugue_in_B_minor_BWV_893/musicxml_cleaned.musicxml",
+        "performances": 2
+      },
+      {
+        "composition_id": 651,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes / Book 1, L.117: 2. Voiles",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_1,_L._117/No._2,_Voiles/Debussy_-_Voiles.mxl",
+        "performances": 11
+      },
+      {
+        "composition_id": 663,
+        "composer": "Claude Debussy",
+        "track": "12 Etudes, Book 1, L. 136: No. 1, Pour les cinq doigts (Live)",
+        "score_path": "Claude_Debussy/12_Etudes,_Book_1,_L._136/No._1,_Pour_les_cinq_doigts/tude_1_-_Pour_les_cinq_doigts_-_daprs_Monsieur_Czerny__Claude_Debussy.mxl",
+        "performances": 3
+      },
+      {
+        "composition_id": 670,
+        "composer": "Claude Debussy",
+        "track": "Pr\u00e9ludes, Book 2, L. 123: No. 4, Les f\u00e9es sont d'exquises danseuses",
+        "score_path": "Claude_Debussy/Pr\u00e9ludes,_Book_2,_L._123/No._4,_Les_f\u00e9es_sont_d'exquises_danseuses/Debussy_Prelude_Book_2_No_4_Les_fees_sont_dexquises_danseuses.mxl",
+        "performances": 12
+      },
+      {
+        "composition_id": 675,
+        "composer": "Claude Debussy",
+        "track": "Estampes, L. 100: 2. Soir\u00e9e dans Grenade",
+        "score_path": "Claude_Debussy/Estampes,_L._100/2._Soir\u00e9e_dans_Grenade/Debussy_Claude__-_Estampes_II_-_La_soiree_dans_Grenade.mxl",
+        "performances": 8
+      },
+      {
+        "composition_id": 721,
+        "composer": "Maurice Ravel",
+        "track": "Gaspard de la nuit, M.55: Ondine",
+        "score_path": "Maurice_Ravel/Gaspard_de_la_nuit,_M.55/Ondine/musicxml_cleaned.musicxml",
+        "performances": 26
+      },
+      {
+        "composition_id": 865,
+        "composer": "Franz Schubert",
+        "track": "6 Moments musicaux, Op.94 D.780: No.1 in C (Moderato)",
+        "score_path": "Franz_Schubert/6_Moments_musicaux,_Op.94_D.780/No.1_in_C_(Moderato)/musicxml_cleaned.musicxml",
+        "performances": 5
+      },
+      {
+        "composition_id": 870,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 13 in A Major, Op. 120, D. 664: I. Allegro moderato (Live)",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.13_in_A,_D.664/1._Allegro_moderato/Schubert_-_Sonata_in_A_Op.120_D.664_Movement_I.mxl",
+        "performances": 19
+      },
+      {
+        "composition_id": 880,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 17 in D Major, Op. 53, D. 850 \"Gasteiner\": III. Scherzo. Allegro vivace (Live)",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.17_in_D,_D.850/3._Scherzo_(Allegro_vivace)/Schubert_-_Piano_Sonata_No._17_in_D_Major_Op._53_3rd_Movement.mxl",
+        "performances": 16
+      },
+      {
+        "composition_id": 882,
+        "composer": "Franz Schubert",
+        "track": "Piano Sonata No. 17 in D Major, D. 850: III. Scherzo (Allegro vivace)",
+        "score_path": "Franz_Schubert/Piano_Sonata_No.17_in_D,_D.850/1._Allegro_vivace/Schubert_-_Piano_Sonata_No._17_in_D_Major_Op._53_1st_Movement.mxl",
+        "performances": 18
+      },
+      {
+        "composition_id": 1064,
+        "composer": "Franz Joseph Haydn",
+        "track": "Piano Sonata in A Flat Major, Hob. XVI:46: 1. Allegro moderato",
+        "score_path": "Franz_Joseph_Haydn/Piano_Sonata_in_A_Flat_Major,_Hob._XVI:46/1._Allegro_moderato/Allegro_Moderato_First_Mvt._Sonata_in_Ab_Hob_XVI_46.mxl",
+        "performances": 1
+      },
+      {
+        "composition_id": 1076,
+        "composer": "Franz Joseph Haydn",
+        "track": "Piano Sonata in B Minor, Hob.XVI: 32: 1. Allegro moderato",
+        "score_path": "Franz_Joseph_Haydn/Piano_Sonata_in_B_Minor,_Hob.XVI:32/32:_1._Allegro_moderato/musicxml_cleaned.musicxml",
+        "performances": 3
+      },
+      {
+        "composition_id": 1113,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 18 in D, K.576: 3. Allegretto",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.18_in_D,_K.576/3._Allegretto/Sonata_No._18_The_Hunt_3rd_Movement_K._576.mxl",
+        "performances": 23
+      },
+      {
+        "composition_id": 1115,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 18 in D, K.576: 1. Allegro",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.18_in_D,_K.576/1._Allegro/Sonata_No._18_Mvt_1_Mozart.mxl",
+        "performances": 20
+      },
+      {
+        "composition_id": 1122,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 13 in B flat, K.333: 3. Allegretto grazioso",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.13_in_B_flat,_K.333/3._Allegretto_grazioso/Sonata_No._13_3rd_Movement_K._333.mxl",
+        "performances": 9
+      },
+      {
+        "composition_id": 1131,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 14 in C Minor, K. 457: III. Allegro assai (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._14_in_C_Minor,_K._457/III._Allegro_assai/Sonata_No._14_3rd_Movement_K._457.mxl",
+        "performances": 22
+      },
+      {
+        "composition_id": 1132,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No. 14 in C Minor, K. 457: I. Molto allegro (Live)",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No._14_in_C_Minor,_K._457/I._Molto_allegro/Mozart_-_Piano_Sonata_in_C_minor_K_457_No._14_1st_movement.mxl",
+        "performances": 16
+      },
+      {
+        "composition_id": 1145,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.4 in E flat, K.282: 2. Menuetto I-II",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.4_in_E_flat,_K.282/2._Menuetto_I-II/Sonata_No._4_2nd_Movement_K._282.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 1153,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.8 in A minor, K.310: 2. Andante cantabile con espressione",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.8_in_A_minor,_K.310/2._Andante_cantabile_con_espressione/Sonata_No._8_2nd_Movement_K._310.mxl",
+        "performances": 33
+      },
+      {
+        "composition_id": 1162,
+        "composer": "Wolfgang Amadeus Mozart",
+        "track": "Piano Sonata No.16 in C, K.545 \"Sonata facile\": 2. Andante",
+        "score_path": "Wolfgang_Amadeus_Mozart/Piano_Sonata_No.16_in_C,_K.545_\"Sonata_facile\"/2._Andante/Sonata_No._16_2nd_Movement_Mozart.mxl",
+        "performances": 10
+      },
+      {
+        "composition_id": 1177,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 3 in C Major, Op. 2 No. 3: I. Allegro con brio (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._3_in_C_Major,_Op._2_No._3/I._Allegro_con_brio/musicxml_cleaned.musicxml",
+        "performances": 47
+      },
+      {
+        "composition_id": 1185,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 9 in E Major, Op. 14, No. 1: II. Allegretto (Recorded 1947)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._9_in_E_Major,_Op._14,_No._1/II._Allegretto/Sonate_No._9_2nd_Movement.mxl",
+        "performances": 23
+      },
+      {
+        "composition_id": 1197,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 26 in E Flat Major, Op. 81a -\"Les Adieux\": I. Das Lebewohl (Adagio - Allegro)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.26_in_E_flat,_Op.81a_-\"Les_adieux\"/1._Das_Lebewohl_(Adagio_-_Allegro)/musicxml_cleaned.musicxml",
+        "performances": 13
+      },
+      {
+        "composition_id": 1201,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.6 In F, Op.10 No.2: 2. Allegretto",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.6_in_F,_Op.10_No.2/2._Allegretto/Sonate_No._6_2nd_Movement.mxl",
+        "performances": 24
+      },
+      {
+        "composition_id": 1202,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 4 in E-Flat Major, Op. 7 \"Grand\": I. Allegro molto e con brio (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._4_in_E-Flat_Major,_Op._7_\"Grand\"/I._Allegro_molto_e_con_brio/musicxml_cleaned.musicxml",
+        "performances": 14
+      },
+      {
+        "composition_id": 1204,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 4 in E-Flat Major, Op. 7 \"Grand\": III. Allegro (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._4_in_E-Flat_Major,_Op._7_\"Grand\"/III._Allegro/Sonate_No._4_3rd_Movement.mxl",
+        "performances": 16
+      },
+      {
+        "composition_id": 1209,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.2 In A, Op.2 No.2: 1. Allegro vivace",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.2_in_A,_Op.2_No.2/1._Allegro_vivace/musicxml_cleaned.musicxml",
+        "performances": 25
+      },
+      {
+        "composition_id": 1210,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No.2 In A, Op.2 No.2: 3. Scherzo (Allegretto)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.2_in_A,_Op.2_No.2/3._Scherzo_(Allegretto)/Sonate_No._2_3rd_Movement.mxl",
+        "performances": 19
+      },
+      {
+        "composition_id": 1216,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 25 in G Major, Op. 79: I. Presto alla tedesca",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.25_in_G,_Op.79/1._Presto_alla_tedesca/Sonate_No._25_1st_Movement_.mxl",
+        "performances": 24
+      },
+      {
+        "composition_id": 1221,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 23 in F Minor, Op. 57 \"Appassionata\": III. Allegro ma non troppo - Presto (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._23_in_F_Minor,_Op._57_\"Appassionata\"/III._Allegro_ma_non_troppo_-_Presto/Sonate_No._23_Appassionata_3rd_Movement.mxl",
+        "performances": 70
+      },
+      {
+        "composition_id": 1224,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 10 in G Major, Op. 14 No. 2: III. Scherzo. Allegro assai (Recorded 1947)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._10_in_G_Major,_Op._14_No._2/III._Scherzo._Allegro_assai/Sonate_No._10_3rd_Movement.mxl",
+        "performances": 30
+      },
+      {
+        "composition_id": 1227,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 \"The Hunt\": I. Allegro (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._18_in_E-Flat_Major,_Op._31_No._3_\"The_Hunt\"/I._Allegro/musicxml_cleaned.musicxml",
+        "performances": 19
+      },
+      {
+        "composition_id": 1255,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 13 in E Flat Major, Op. 27 No.1: I. Andante - Allegro - Tempo I",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No.13_in_E_flat,_Op.27_No.1/1._Andante_-_Allegro_-_Tempo_I/musicxml_cleaned.musicxml",
+        "performances": 10
+      },
+      {
+        "composition_id": 1301,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 11 in B-Flat Major, Op. 22: II. Adagio con molto espressione (Live)",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._11_in_B-Flat_Major,_Op._22/II._Adagio_con_molto_espressione/musicxml_cleaned.musicxml",
+        "performances": 23
+      },
+      {
+        "composition_id": 1304,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 14 in C-Sharp Minor, Op. 27 No. 2 \"Moonlight\": III. Presto agitato",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._14_in_C-Sharp_Minor,_Op._27_No._2_\"Moonlight\"/3._Presto_agitato/musicxml_cleaned.musicxml",
+        "performances": 48
+      },
+      {
+        "composition_id": 1308,
+        "composer": "Ludwig van Beethoven",
+        "track": "Piano Sonata No. 32 in C Minor, Op. 111: I. Maestoso - Allegro con brio ed appassionato",
+        "score_path": "Ludwig_van_Beethoven/Piano_Sonata_No._32_in_C_Minor,_Op._111/I._Maestoso_-_Allegro_con_brio_ed_appassionato/musicxml_cleaned.musicxml",
+        "performances": 57
+      },
+      {
+        "composition_id": 1511,
+        "composer": "Alexander Scriabin",
+        "track": "Fantasy in B minor, Op.28",
+        "score_path": "Alexander_Scriabin/Fantasy_in_B_minor,_Op.28/Scriabin_-_Fantasy_in_B_minor_Op._28.mxl",
+        "performances": 3
+      },
+      {
+        "composition_id": 1539,
+        "composer": "Claude Debussy",
+        "track": "L'isle joyeuse, L. 106 (Live)",
+        "score_path": "Claude_Debussy/L'Isle_joyeuse,_L.106/LIsle_joyeuse_.mxl",
+        "performances": 19
+      },
+      {
+        "composition_id": 1542,
+        "composer": "Maurice Ravel",
+        "track": "La valse, M. 72",
+        "score_path": "Maurice_Ravel/La_valse,_M.72/musicxml_cleaned.musicxml",
+        "performances": 1
+      },
+      {
+        "composition_id": 1545,
+        "composer": "Maurice Ravel",
+        "track": "Ravel: Menuet antique, M. 7",
+        "score_path": "Maurice_Ravel/Menuet_antique_M.7/Menuet_Antique.mxl",
+        "performances": 8
+      }
+    ]
+  }
+}

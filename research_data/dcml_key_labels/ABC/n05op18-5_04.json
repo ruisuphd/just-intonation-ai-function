@@ -1,0 +1,5753 @@
+{
+  "source": "dcml",
+  "corpus": "ABC",
+  "piece_id": "n05op18-5_04",
+  "global_key": "A",
+  "global_key_class": 9,
+  "annotations": [
+    {
+      "measure": 0,
+      "beat": 3.5,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 1,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 1,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 2,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 2,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 3,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 3,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 4,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 4,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 5,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 5,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 6,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 7,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 9,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 9,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 10,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 10,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 11,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 11,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 12,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 12,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 13,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 13,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 13,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 14,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 15,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 16,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 16,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 17,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 17,
+      "beat": 1.5,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 17,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 17,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 18,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 18,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 19,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 19,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 19,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 19,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 20,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 20,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 21,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 21,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 22,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 22,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 23,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 23,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 24,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 24,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 25,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 25,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 26,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 26,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 27,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 27,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 27,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 28,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 28,
+      "beat": 3.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 29,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 29,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 29,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 30,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 30,
+      "beat": 3.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 31,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 31,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 31,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 32,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 32,
+      "beat": 3.5,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 33,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 33,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 33,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 34,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 34,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 34,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 34,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 35,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 36,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 37,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "7"
+    },
+    {
+      "measure": 38,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "43"
+    },
+    {
+      "measure": 39,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "#vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "7"
+    },
+    {
+      "measure": 40,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "43"
+    },
+    {
+      "measure": 40,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "bVII",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 41,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 41,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 42,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 42,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 42,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 42,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 43,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 43,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 44,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 44,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 45,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 45,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 46,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 46,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 47,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 47,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 48,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 48,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 48,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "iv",
+      "quality": "minor",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 49,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 49,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 49,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 50,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 50,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 50,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 50,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 51,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 51,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 52,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 52,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 52,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 53,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 53,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 53,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 54,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 54,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 54,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 55,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 55,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 55,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 55,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "half-diminished7",
+      "form": "%",
+      "figbass": "7"
+    },
+    {
+      "measure": 56,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "#vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 56,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 56,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 56,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "half-diminished7",
+      "form": "%",
+      "figbass": "7"
+    },
+    {
+      "measure": 57,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 57,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 57,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 57,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 58,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 58,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 58,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 59,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 59,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 59,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 59,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 60,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 60,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 60,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 60,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 61,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 62,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 62,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 62,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 62,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 63,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 63,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 63,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 64,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 64,
+      "beat": 2.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 64,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 64,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 65,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 67,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 67,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 68,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 68,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "v",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 69,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 69,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 70,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 70,
+      "beat": 3.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 71,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 72,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "#vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 73,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 74,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 74,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 75,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 76,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "#vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 77,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 78,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 78,
+      "beat": 4.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 79,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 80,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 81,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 82,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 83,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 84,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 85,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 86,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 87,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 88,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 89,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 90,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 91,
+      "beat": 1.0,
+      "localkey": "E",
+      "localkey_class": 4,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 92,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 93,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 93,
+      "beat": 1.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "#vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "7"
+    },
+    {
+      "measure": 94,
+      "beat": 1.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 95,
+      "beat": 1.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 95,
+      "beat": 3.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 96,
+      "beat": 1.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 96,
+      "beat": 4.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 97,
+      "beat": 1.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 97,
+      "beat": 3.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 98,
+      "beat": 1.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 98,
+      "beat": 3.0,
+      "localkey": "f#",
+      "localkey_class": 18,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 99,
+      "beat": 1.0,
+      "localkey": "c#",
+      "localkey_class": 13,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 99,
+      "beat": 3.0,
+      "localkey": "c#",
+      "localkey_class": 13,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 100,
+      "beat": 1.0,
+      "localkey": "c#",
+      "localkey_class": 13,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 101,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 102,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 103,
+      "beat": 2.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 103,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 103,
+      "beat": 4.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 104,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 104,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 105,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 105,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 106,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 106,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 107,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 107,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 108,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 108,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 109,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 109,
+      "beat": 3.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "64"
+    },
+    {
+      "measure": 110,
+      "beat": 1.0,
+      "localkey": "D",
+      "localkey_class": 2,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 110,
+      "beat": 3.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 111,
+      "beat": 1.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "VII",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 111,
+      "beat": 3.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "VI",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 112,
+      "beat": 1.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "v",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 112,
+      "beat": 3.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "iv",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 113,
+      "beat": 1.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 113,
+      "beat": 3.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 114,
+      "beat": 1.0,
+      "localkey": "d",
+      "localkey_class": 14,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 115,
+      "beat": 1.5,
+      "localkey": "c",
+      "localkey_class": 12,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 116,
+      "beat": 1.0,
+      "localkey": "c",
+      "localkey_class": 12,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 116,
+      "beat": 3.0,
+      "localkey": "c",
+      "localkey_class": 12,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 117,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 118,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 118,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 119,
+      "beat": 3.5,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 120,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 121,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 121,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 122,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 122,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 123,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 124,
+      "beat": 1.5,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 124,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 124,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 125,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 125,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 125,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 126,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 126,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 127,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 127,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 128,
+      "beat": 1.5,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 128,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 128,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 129,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 129,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 129,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 130,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 130,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 130,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 130,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 131,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 132,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 133,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 134,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 135,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 136,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 136,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 136,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 137,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 137,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 137,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "ii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 138,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 138,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 138,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 139,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 139,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 139,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 139,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 140,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 140,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 140,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 141,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 141,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "ii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 141,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 142,
+      "beat": 1.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 142,
+      "beat": 2.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 142,
+      "beat": 3.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 142,
+      "beat": 4.0,
+      "localkey": "C",
+      "localkey_class": 0,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 143,
+      "beat": 1.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 143,
+      "beat": 2.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "II",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 143,
+      "beat": 3.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 143,
+      "beat": 4.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 144,
+      "beat": 1.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "v",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 144,
+      "beat": 3.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "III",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 145,
+      "beat": 1.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 146,
+      "beat": 1.0,
+      "localkey": "a",
+      "localkey_class": 21,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 147,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 148,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 148,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 148,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 149,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "bVII",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 149,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "bVII",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "2"
+    },
+    {
+      "measure": 149,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "bIII",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 150,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "bVI",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 150,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "bVI",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 150,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 150,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 151,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 151,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 151,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "7"
+    },
+    {
+      "measure": 152,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 152,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 153,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "43"
+    },
+    {
+      "measure": 154,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 155,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "43"
+    },
+    {
+      "measure": 156,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 157,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "2"
+    },
+    {
+      "measure": 158,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 159,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "7"
+    },
+    {
+      "measure": 160,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 161,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "2"
+    },
+    {
+      "measure": 162,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 163,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "43"
+    },
+    {
+      "measure": 164,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 165,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 168,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 168,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 169,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 169,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 169,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 170,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 170,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 171,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 171,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 172,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 172,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 173,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 174,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 175,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 176,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 176,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 177,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 177,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 178,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 178,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 179,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 179,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 179,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 180,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 180,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 180,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 180,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 181,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 182,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 183,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 184,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 184,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 184,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 184,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 185,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 185,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 186,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "v",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 186,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 186,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "iii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 187,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 187,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 188,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 188,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 188,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 189,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 189,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 190,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 190,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 190,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 190,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 191,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 191,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 192,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 192,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 193,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 193,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 194,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 194,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 195,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "7"
+    },
+    {
+      "measure": 195,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 196,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 196,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 197,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 197,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 198,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 198,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 199,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 199,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 200,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 200,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 200,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 201,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 201,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 202,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 202,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 203,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 203,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 204,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 204,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 204,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 205,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 205,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 205,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 205,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "i",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 206,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 207,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 208,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 209,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 210,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "#vii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 211,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 211,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 212,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 213,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 213,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 213,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 213,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 214,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 214,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 215,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 215,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 216,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 216,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 217,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 217,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 218,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 218,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 219,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 219,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 219,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 219,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "iv",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 220,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 220,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 220,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 221,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 221,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 221,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 221,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 222,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 222,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 222,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 223,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 223,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 223,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 223,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 224,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 224,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 224,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 225,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 225,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 225,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vi",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 226,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 226,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 226,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 226,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "half-diminished7",
+      "form": "%",
+      "figbass": "7"
+    },
+    {
+      "measure": 227,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "#vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 227,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 227,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 227,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 228,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 228,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 228,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 228,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 229,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 229,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 229,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 229,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 230,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 230,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 230,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 230,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 231,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 231,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 231,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": "6"
+    },
+    {
+      "measure": 231,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 232,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 233,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 233,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 233,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 233,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 234,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 234,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 234,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 234,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 235,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 235,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 235,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 235,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 236,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "43"
+    },
+    {
+      "measure": 238,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 238,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vi",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 239,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 239,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "v",
+      "quality": "minor",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 240,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 240,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 241,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 241,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 242,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 243,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 243,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "#vii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 244,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 245,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 246,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 247,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 247,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "#vii",
+      "quality": "diminished7",
+      "form": "o",
+      "figbass": "65"
+    },
+    {
+      "measure": 248,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 249,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 250,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 251,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 252,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 253,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 254,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 255,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 256,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 257,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 258,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 259,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 260,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 261,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 264,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 265,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 265,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 266,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 266,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 267,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 267,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 268,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 268,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 269,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 270,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 271,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 272,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 273,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "IV",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 274,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 275,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 276,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 277,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 277,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 278,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 279,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 279,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 280,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 281,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 281,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 282,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 283,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "ii",
+      "quality": "minor7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 284,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 285,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 286,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "vii",
+      "quality": "diminished",
+      "form": "o",
+      "figbass": ""
+    },
+    {
+      "measure": 287,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 288,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 289,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 290,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "65"
+    },
+    {
+      "measure": 291,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 292,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "V",
+      "quality": "dominant7",
+      "form": "",
+      "figbass": "7"
+    },
+    {
+      "measure": 293,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 295,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 295,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "6"
+    },
+    {
+      "measure": 296,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 296,
+      "beat": 2.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 296,
+      "beat": 3.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 296,
+      "beat": 4.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": "64"
+    },
+    {
+      "measure": 297,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    },
+    {
+      "measure": 299,
+      "beat": 1.0,
+      "localkey": "A",
+      "localkey_class": 9,
+      "numeral": "I",
+      "quality": "major",
+      "form": "",
+      "figbass": ""
+    }
+  ],
+  "key_regions": [
+    {
+      "start_measure": 0,
+      "end_measure": 21,
+      "localkey": "A",
+      "localkey_class": 9
+    },
+    {
+      "start_measure": 21,
+      "end_measure": 92,
+      "localkey": "E",
+      "localkey_class": 4
+    },
+    {
+      "start_measure": 92,
+      "end_measure": 93,
+      "localkey": "A",
+      "localkey_class": 9
+    },
+    {
+      "start_measure": 93,
+      "end_measure": 99,
+      "localkey": "f#",
+      "localkey_class": 18
+    },
+    {
+      "start_measure": 99,
+      "end_measure": 101,
+      "localkey": "c#",
+      "localkey_class": 13
+    },
+    {
+      "start_measure": 101,
+      "end_measure": 110,
+      "localkey": "D",
+      "localkey_class": 2
+    },
+    {
+      "start_measure": 110,
+      "end_measure": 115,
+      "localkey": "d",
+      "localkey_class": 14
+    },
+    {
+      "start_measure": 115,
+      "end_measure": 117,
+      "localkey": "c",
+      "localkey_class": 12
+    },
+    {
+      "start_measure": 117,
+      "end_measure": 143,
+      "localkey": "C",
+      "localkey_class": 0
+    },
+    {
+      "start_measure": 143,
+      "end_measure": 147,
+      "localkey": "a",
+      "localkey_class": 21
+    },
+    {
+      "start_measure": 147,
+      "end_measure": 299,
+      "localkey": "A",
+      "localkey_class": 9
+    }
+  ],
+  "statistics": {
+    "total_annotations": 567,
+    "unique_local_keys": 9,
+    "major_annotations": 535,
+    "minor_annotations": 32
+  }
+}

@@ -1,0 +1,17 @@
+# Web server
+flask>=2.3.0
+flask-cors>=4.0.0
+flask-socketio>=5.3.0
+
+# Music processing
+partitura>=1.4.0
+parangonar>=1.0.0
+pretty_midi>=0.2.10
+
+# Data processing
+numpy>=1.24.0
+pandas>=2.0.0
+tqdm>=4.65.0
+
+# Machine learning (for score following)
+torch>=2.0.0

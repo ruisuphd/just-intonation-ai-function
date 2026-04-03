@@ -1,0 +1,44 @@
+[
+  {
+    "tag": "skey-default",
+    "lambda_equiv": 1.0,
+    "lambda_mode": 1.5,
+    "lambda_batch": 15.0,
+    "checkpoint": "research_data/symbolic_key_pretrained_skey-default.pt"
+  },
+  {
+    "tag": "equiv-only",
+    "lambda_equiv": 1.0,
+    "lambda_mode": 0.0,
+    "lambda_batch": 15.0,
+    "checkpoint": "research_data/symbolic_key_pretrained_equiv-only.pt"
+  },
+  {
+    "tag": "mode-only",
+    "lambda_equiv": 0.0,
+    "lambda_mode": 1.5,
+    "lambda_batch": 15.0,
+    "checkpoint": "research_data/symbolic_key_pretrained_mode-only.pt"
+  },
+  {
+    "tag": "high-mode",
+    "lambda_equiv": 1.0,
+    "lambda_mode": 3.0,
+    "lambda_batch": 15.0,
+    "checkpoint": "research_data/symbolic_key_pretrained_high-mode.pt"
+  },
+  {
+    "tag": "low-batch",
+    "lambda_equiv": 1.0,
+    "lambda_mode": 1.5,
+    "lambda_batch": 5.0,
+    "checkpoint": "research_data/symbolic_key_pretrained_low-batch.pt"
+  },
+  {
+    "tag": "equal",
+    "lambda_equiv": 1.0,
+    "lambda_mode": 1.0,
+    "lambda_batch": 1.0,
+    "checkpoint": "research_data/symbolic_key_pretrained_equal.pt"
+  }
+]

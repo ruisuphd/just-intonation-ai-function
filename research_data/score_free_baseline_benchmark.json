@@ -1,0 +1,46 @@
+{
+  "validation": {
+    "legacy": {
+      "totalNotes": 111528,
+      "predictedNotes": 111220,
+      "correctNotes": 32842,
+      "truthKeyChanges": 53,
+      "predictedKeyChanges": 777,
+      "compositions": 44,
+      "coverage": 0.9972383616670253,
+      "accuracyWhenPredicting": 0.2952886171551879
+    },
+    "causalEnsemble": {
+      "totalNotes": 111528,
+      "predictedNotes": 111220,
+      "correctNotes": 19987,
+      "truthKeyChanges": 53,
+      "predictedKeyChanges": 296,
+      "compositions": 44,
+      "coverage": 0.9972383616670253,
+      "accuracyWhenPredicting": 0.17970688725049452
+    }
+  },
+  "test": {
+    "legacy": {
+      "totalNotes": 146045,
+      "predictedNotes": 145645,
+      "correctNotes": 36995,
+      "truthKeyChanges": 77,
+      "predictedKeyChanges": 970,
+      "compositions": 58,
+      "coverage": 0.9972611181485159,
+      "accuracyWhenPredicting": 0.2540080332314875
+    },
+    "causalEnsemble": {
+      "totalNotes": 146045,
+      "predictedNotes": 145644,
+      "correctNotes": 32433,
+      "truthKeyChanges": 77,
+      "predictedKeyChanges": 382,
+      "compositions": 58,
+      "coverage": 0.9972542709438872,
+      "accuracyWhenPredicting": 0.2226868254099036
+    }
+  }
+}
