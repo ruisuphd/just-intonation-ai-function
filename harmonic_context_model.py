@@ -263,8 +263,17 @@ def collate_harmonic_batch(examples: Sequence[Dict[str, object]]) -> Dict[str, t
 
 
 class HarmonicContextGRU(nn.Module):
-    def __init__(self, hidden_size: int = 96, num_layers: int = 1, dropout: float = 0.1):
+    def __init__(
+        self,
+        hidden_size: int = 96,
+        num_layers: int = 1,
+        dropout: float = 0.1,
+        bidirectional: bool = False,
+        use_pcp: bool = False,
+    ):
         super().__init__()
+        self.bidirectional = bidirectional
+        self.use_pcp = use_pcp
 
         self.pitch_embedding = nn.Embedding(12, 32)
         self.register_embedding = nn.Embedding(11, 8)
@@ -273,7 +282,12 @@ class HarmonicContextGRU(nn.Module):
         self.velocity_embedding = nn.Embedding(len(VELOCITY_BUCKETS) + 1, 8)
         self.active_projection = nn.Linear(12, 16)
 
-        feature_size = 32 + 8 + 8 + 8 + 8 + 16
+        feature_size = 32 + 8 + 8 + 8 + 8 + 16  # = 80
+        if use_pcp:
+            # Add PCP projection (12-dim histogram -> 16-dim embedding)
+            self.pcp_projection = nn.Linear(12, 16)
+            feature_size += 16  # = 96
+
         self.input_projection = nn.Linear(feature_size, hidden_size)
         self.encoder = nn.GRU(
             input_size=hidden_size,
@@ -281,23 +295,26 @@ class HarmonicContextGRU(nn.Module):
             num_layers=num_layers,
             batch_first=True,
             dropout=dropout if num_layers > 1 else 0.0,
+            bidirectional=bidirectional,
         )
         self.dropout = nn.Dropout(dropout)
-        self.classifier = nn.Linear(hidden_size, len(KEY_LABELS))
+        # Bidirectional doubles the output dimension
+        classifier_input = hidden_size * 2 if bidirectional else hidden_size
+        self.classifier = nn.Linear(classifier_input, len(KEY_LABELS))
 
     def forward(self, batch: Dict[str, torch.Tensor]) -> torch.Tensor:
-        features = torch.cat(
-            [
-                self.pitch_embedding(batch['pitch_class']),
-                self.register_embedding(batch['register']),
-                self.delta_embedding(batch['delta_bucket']),
-                self.duration_embedding(batch['duration_bucket']),
-                self.velocity_embedding(batch['velocity_bucket']),
-                self.active_projection(batch['active_mask']),
-            ],
-            dim=-1,
-        )
+        feature_parts = [
+            self.pitch_embedding(batch['pitch_class']),
+            self.register_embedding(batch['register']),
+            self.delta_embedding(batch['delta_bucket']),
+            self.duration_embedding(batch['duration_bucket']),
+            self.velocity_embedding(batch['velocity_bucket']),
+            self.active_projection(batch['active_mask']),
+        ]
+        if self.use_pcp:
+            feature_parts.append(self.pcp_projection(batch['pcp']))
 
+        features = torch.cat(feature_parts, dim=-1)
         projected = self.input_projection(features)
         encoded, _ = self.encoder(projected)
         return self.classifier(self.dropout(encoded))

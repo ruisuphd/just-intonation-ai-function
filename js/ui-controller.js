@@ -101,7 +101,10 @@ document.querySelectorAll('input[name="keyMode"]').forEach(radio => {
 });
 
 window.addEventListener('load', () => {
+    let hookRetries = 0;
+    const maxRetries = 50; // 5 seconds max
     const checkAndHook = setInterval(() => {
+        hookRetries++;
         if (window.handleNoteOn) {
             const original = window.handleNoteOn;
             window.handleNoteOn = function(note, velocity, channel, hardwareTimestamp) {
@@ -110,6 +113,9 @@ window.addEventListener('load', () => {
             };
             clearInterval(checkAndHook);
             console.log('Two-stage note hook installed');
+        } else if (hookRetries >= maxRetries) {
+            clearInterval(checkAndHook);
+            console.warn('Two-stage note hook: handleNoteOn not found after 5s — hook not installed');
         }
     }, 100);
 });

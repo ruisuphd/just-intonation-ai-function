@@ -43,8 +43,12 @@ except Exception as exc:
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+ALLOWED_ORIGINS = [
+    "http://localhost:8000", "http://localhost:3000", "http://localhost:5005",
+    "http://127.0.0.1:8000", "http://127.0.0.1:3000", "http://127.0.0.1:5005",
+]
+CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
+socketio = SocketIO(app, cors_allowed_origins=ALLOWED_ORIGINS, async_mode='threading')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_HARMONIC_CHECKPOINT = os.path.join(BASE_DIR, 'research_data', 'harmonic_context_model.pt')
 
@@ -345,12 +349,17 @@ class TwoStageSystem:
         """Convert MIDI buffer to temp file (normalizes timestamps to start from 0)"""
         if not buffer:
             return None
-        
+
+        # Validate buffer entries have required fields
+        valid_notes = [n for n in buffer if 'pitch' in n and 'timestamp' in n and 'velocity' in n]
+        if len(valid_notes) < 4:  # Need at least 4 notes for n-gram fingerprinting
+            return None
+
         midi = pretty_midi.PrettyMIDI()
         instrument = pretty_midi.Instrument(program=0)
-        
-        min_timestamp = min(note['timestamp'] for note in buffer)
-        for note_data in buffer:
+
+        min_timestamp = min(note['timestamp'] for note in valid_notes)
+        for note_data in valid_notes:
             relative_start = note_data['timestamp'] - min_timestamp
             note = pretty_midi.Note(
                 velocity=note_data['velocity'],
@@ -883,7 +892,7 @@ def handle_connect():
     
     # If system was in active state from previous session, reset it
     # But allow quick reconnects to preserve session
-    if system and system.state in [SystemState.SCORE_FOLLOWING, SystemState.IDENTIFIED]:
+    if system and system.state in [SystemState.SCORE_FOLLOWING, SystemState.IDENTIFIED, SystemState.IDENTIFYING, SystemState.ERROR]:
         if time_since_disconnect > SESSION_GRACE_PERIOD:
             print('⚠️  Resetting stale system state from previous session')
             system.reset()
@@ -947,13 +956,24 @@ def handle_midi_note(data):
         # Stage 1: Attempt identification if ready
         if system.should_attempt_identification():
             result = system.attempt_identification()
-            
+
             if result and result.get('success'):
                 # Successfully identified!
                 emit('piece_identified', {
                     'piece': result['piece'],
                     'confidence': result['confidence'],
                     'alternatives': result.get('alternatives', [])
+                })
+            elif result:
+                # Identification attempted but failed — inform client
+                best = result.get('best_guess')
+                emit('identification_attempt', {
+                    'success': False,
+                    'reason': result.get('reason', 'Unknown'),
+                    'best_guess': best['piece'] if best else None,
+                    'best_confidence': best['confidence'] if best else 0,
+                    'buffer_size': len(system.midi_buffer),
+                    'message': 'Keep playing — will retry in 10 seconds',
                 })
                 
                 # Stage 2: Initialize score following (if score available)
