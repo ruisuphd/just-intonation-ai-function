@@ -263,6 +263,18 @@ def collate_harmonic_batch(examples: Sequence[Dict[str, object]]) -> Dict[str, t
 
 
 class HarmonicContextGRU(nn.Module):
+    """Causal GRU model for local key estimation from symbolic MIDI.
+
+    When bidirectional=False (default), this model is fully causal and suitable
+    for real-time inference — it only sees past and current notes.
+
+    When bidirectional=True, the model sees both past AND future notes via
+    backward GRU pass. This provides a non-causal upper bound for offline
+    evaluation but is NOT deployable in the real-time tuner pipeline.
+    Bidirectional results should be reported with a dagger footnote in
+    ablation tables indicating they are offline-only oracle bounds.
+    """
+
     def __init__(
         self,
         hidden_size: int = 96,

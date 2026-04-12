@@ -1,0 +1,31 @@
+{
+  "grid": {
+    "krumhansl_kessler__exponential10": 0.5910550776914539,
+    "krumhansl_kessler__exponential2": 0.5788750346836848,
+    "krumhansl_kessler__linear": 0.48619676054384015,
+    "krumhansl_kessler__symmetrical": 0.36821847253052165,
+    "krumhansl_kessler__heatmap": 0.15398168701442844,
+    "temperley__exponential10": 0.6684092327968923,
+    "temperley__exponential2": 0.6113961917314096,
+    "temperley__linear": 0.6054063193673697,
+    "temperley__symmetrical": 0.2623265815760266,
+    "temperley__heatmap": 0.056470241398446176,
+    "albrecht_shanahan__exponential10": 0.6295522336293008,
+    "albrecht_shanahan__exponential2": 0.6823260613207548,
+    "albrecht_shanahan__linear": 0.6142471906215315,
+    "albrecht_shanahan__symmetrical": 0.36821847253052165,
+    "albrecht_shanahan__heatmap": 0.1215064858490566,
+    "bellman_budge__exponential10": 0.6478565482796892,
+    "bellman_budge__exponential2": 0.5928057366814651,
+    "bellman_budge__linear": 0.41936997086570477,
+    "bellman_budge__symmetrical": 0.2623265815760266,
+    "bellman_budge__heatmap": 0.069056083518313,
+    "aarden_essen__exponential10": 0.60032515954495,
+    "aarden_essen__exponential2": 0.6437118479467259,
+    "aarden_essen__linear": 0.6051982172586016,
+    "aarden_essen__symmetrical": 0.4801539955604883,
+    "aarden_essen__heatmap": 0.13755722807991122
+  },
+  "best": "albrecht_shanahan__exponential2",
+  "best_mirex": 0.6823260613207548
+}

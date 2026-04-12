@@ -274,6 +274,68 @@ def bootstrap_mirex_ci(
     }
 
 
+def mcnemar_test(
+    per_comp_results_a: List[Dict],
+    prediction_file_b: str,
+) -> tuple:
+    """McNemar's test for pairwise comparison of two key detection models.
+
+    Ref: McNemar, "Note on the sampling error of the difference between
+    correlated proportions or percentages," Psychometrika, 1947.
+
+    Classifies each prediction into a 2x2 table:
+      n_11: both correct, n_00: both wrong
+      n_10: A correct B wrong, n_01: A wrong B correct
+
+    Returns (chi2, p_value, n_discordant) where n_discordant = n_10 + n_01.
+    """
+    with open(prediction_file_b, 'r') as f:
+        data_b = json.load(f)
+
+    # Build lookup: comp_id -> predictions for model B
+    b_lookup = {}
+    for comp in data_b['compositions']:
+        b_lookup[str(comp['composition_id'])] = comp['predictions']
+
+    n_10 = 0  # A correct, B wrong
+    n_01 = 0  # A wrong, B correct
+
+    for comp_a in per_comp_results_a:
+        comp_id = str(comp_a['composition_id'])
+        preds_b = b_lookup.get(comp_id)
+        if preds_b is None:
+            continue
+        preds_a = comp_a['predictions']
+        if len(preds_a) != len(preds_b):
+            print(f'  WARNING: composition {comp_id} has {len(preds_a)} vs '
+                  f'{len(preds_b)} predictions — using min length')
+        for (pa, ta), (pb, tb) in zip(preds_a, preds_b):
+            a_correct = (pa == ta)
+            b_correct = (pb == tb)
+            if a_correct and not b_correct:
+                n_10 += 1
+            elif not a_correct and b_correct:
+                n_01 += 1
+
+    n_discordant = n_10 + n_01
+    if n_discordant == 0:
+        return 0.0, 1.0, 0
+
+    # McNemar's chi-squared with continuity correction
+    chi2 = (abs(n_10 - n_01) - 1) ** 2 / n_discordant
+    # p-value from chi-squared distribution with 1 df
+    try:
+        from scipy import stats
+        p_value = float(stats.chi2.sf(chi2, df=1))
+    except ImportError:
+        # Fallback: approximate p-value using normal distribution (valid for large n)
+        import math
+        z = math.sqrt(chi2)
+        p_value = 2.0 * (1.0 - 0.5 * (1.0 + math.erf(z / math.sqrt(2.0))))
+        print('  NOTE: scipy not available, using normal approximation for p-value')
+    return chi2, p_value, n_discordant
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description='Evaluate a trained harmonic-context model',
@@ -299,11 +361,20 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '--save-predictions', default=None,
-        help='Save per-note predictions to JSON file (for McNemar tests between models)',
+        help='Save per-note test predictions to JSON file (with softmax probabilities)',
+    )
+    parser.add_argument(
+        '--save-val-predictions', default=None,
+        help='Save per-note validation predictions to JSON file (for hyperparameter tuning '
+             'without test-set leakage — used by ensemble_key_detector.py and hmm_postprocessing.py)',
     )
     parser.add_argument(
         '--bootstrap-n', type=int, default=1000,
         help='Number of bootstrap iterations for MIREX CI (default: 1000, 0=skip)',
+    )
+    parser.add_argument(
+        '--compare', default=None,
+        help='Path to another prediction file for McNemar\'s test (pairwise significance)',
     )
     return parser.parse_args()
 
@@ -454,7 +525,7 @@ def main() -> None:
               f'–{bootstrap_result["mirex_ci_upper"]:.4f}), '
               f'n_compositions={bootstrap_result["n_compositions"]}')
 
-    # --- Save per-note predictions for McNemar tests ---
+    # --- Save per-note TEST predictions (with softmax for HMM/ensemble) ---
     if args.save_predictions:
         if per_comp_results is None:
             per_comp_results = evaluate_per_composition(
@@ -465,6 +536,7 @@ def main() -> None:
         pred_payload = {
             'checkpoint': args.checkpoint,
             'model_type': args.model_type,
+            'split': 'test',
             'has_softmax': True,
             'compositions': [
                 {
@@ -481,7 +553,51 @@ def main() -> None:
         os.makedirs(os.path.dirname(args.save_predictions) or '.', exist_ok=True)
         with open(args.save_predictions, 'w', encoding='utf-8') as f:
             json.dump(pred_payload, f)
-        print(f'\nSaved per-note predictions to {args.save_predictions}')
+        print(f'\nSaved per-note test predictions to {args.save_predictions}')
+
+    # --- Save per-note VALIDATION predictions (for hyperparameter tuning) ---
+    # This prevents data leakage: ensemble alpha and HMM params should be
+    # tuned on validation, not test. See Bugs 2 & 3 in CHANGELOG v0.9.2.
+    if args.save_val_predictions:
+        val_comp_results = evaluate_per_composition(
+            model, validation_records, str(device),
+            window_size=args.window_size, window_hop=args.window_hop,
+            batch_size=args.batch_size,
+        )
+        val_pred_payload = {
+            'checkpoint': args.checkpoint,
+            'model_type': args.model_type,
+            'split': 'val',
+            'has_softmax': True,
+            'compositions': [
+                {
+                    'composition_id': r['composition_id'],
+                    'mirex': r['mirex'],
+                    'accuracy': r['accuracy'],
+                    'n_predictions': r['n_predictions'],
+                    'predictions': r['predictions'],
+                    'softmax': r.get('softmax', []),
+                }
+                for r in val_comp_results
+            ],
+        }
+        os.makedirs(os.path.dirname(args.save_val_predictions) or '.', exist_ok=True)
+        with open(args.save_val_predictions, 'w', encoding='utf-8') as f:
+            json.dump(val_pred_payload, f)
+        print(f'Saved per-note validation predictions to {args.save_val_predictions}')
+
+    # --- McNemar's test for pairwise model comparison ---
+    if args.compare:
+        if per_comp_results is None:
+            per_comp_results = evaluate_per_composition(
+                model, test_records, str(device),
+                window_size=args.window_size, window_hop=args.window_hop,
+                batch_size=args.batch_size,
+            )
+        chi2, p_value, n_discordant = mcnemar_test(per_comp_results, args.compare)
+        sig = '***' if p_value < 0.001 else '**' if p_value < 0.01 else '*' if p_value < 0.05 else 'n.s.'
+        print(f'\nMcNemar\'s test vs {args.compare}:')
+        print(f'  chi2={chi2:.4f}, p={p_value:.6f} ({sig}), n_discordant={n_discordant}')
 
     payload = {
         'checkpoint': args.checkpoint,

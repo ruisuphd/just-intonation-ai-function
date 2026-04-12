@@ -1,0 +1,47 @@
+{
+  "mode": "justkeydding_hmm",
+  "transition": "exponential10",
+  "aligned_to": "/tmp/phase2_extract/ablation_A1_predictions_softmax.json",
+  "profiles": {
+    "krumhansl_kessler": {
+      "overall_mirex": 0.5910550776914539,
+      "overall_accuracy": 0.5164053829078802,
+      "total_predictions": 230656,
+      "n_compositions": 41,
+      "profile": "krumhansl_kessler",
+      "transition": "exponential10"
+    },
+    "temperley": {
+      "overall_mirex": 0.6684092327968923,
+      "overall_accuracy": 0.5915649278579356,
+      "total_predictions": 230656,
+      "n_compositions": 41,
+      "profile": "temperley",
+      "transition": "exponential10"
+    },
+    "albrecht_shanahan": {
+      "overall_mirex": 0.6295522336293008,
+      "overall_accuracy": 0.558294603218646,
+      "total_predictions": 230656,
+      "n_compositions": 41,
+      "profile": "albrecht_shanahan",
+      "transition": "exponential10"
+    },
+    "bellman_budge": {
+      "overall_mirex": 0.6478565482796892,
+      "overall_accuracy": 0.55507769145394,
+      "total_predictions": 230656,
+      "n_compositions": 41,
+      "profile": "bellman_budge",
+      "transition": "exponential10"
+    },
+    "aarden_essen": {
+      "overall_mirex": 0.60032515954495,
+      "overall_accuracy": 0.5103444089900111,
+      "total_predictions": 230656,
+      "n_compositions": 41,
+      "profile": "aarden_essen",
+      "transition": "exponential10"
+    }
+  }
+}

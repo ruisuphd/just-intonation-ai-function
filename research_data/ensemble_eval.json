@@ -1,0 +1,53 @@
+{
+  "alpha": 0.3,
+  "has_softmax": true,
+  "neural_mirex": 0.44516289893615757,
+  "classical_mirex": 0.4616023936170719,
+  "ensemble_mirex": 0.4625249335106887,
+  "neural_accuracy": 0.3070423315602837,
+  "classical_accuracy": 0.3260749113475177,
+  "ensemble_accuracy": 0.3260749113475177,
+  "total_predictions": 36096,
+  "per_composition": [
+    {
+      "composition_id": "670",
+      "mirex": 0.15820312500000344,
+      "neural_mirex": 0.1306490384615407,
+      "classical_mirex": 0.14819711538461927,
+      "accuracy": 0.0,
+      "n_predictions": 3328
+    },
+    {
+      "composition_id": "1076",
+      "mirex": 0.29999999999998694,
+      "neural_mirex": 0.42595880681816745,
+      "classical_mirex": 0.29999999999998694,
+      "accuracy": 0.0,
+      "n_predictions": 2816
+    },
+    {
+      "composition_id": "1132",
+      "mirex": 1.0,
+      "neural_mirex": 0.6929917279411688,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 4352
+    },
+    {
+      "composition_id": "1227",
+      "mirex": 1.0,
+      "neural_mirex": 0.6342548076923065,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 6656
+    },
+    {
+      "composition_id": "1542",
+      "mirex": 0.22782939189189025,
+      "neural_mirex": 0.37989864864865824,
+      "classical_mirex": 0.22782939189189025,
+      "accuracy": 0.040223817567567564,
+      "n_predictions": 18944
+    }
+  ]
+}

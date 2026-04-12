@@ -108,8 +108,20 @@ def evaluate_ensemble_on_compositions(
     label_dir: str,
     splits_path: str,
     alpha: float,
+    split_name: str = 'test',
 ) -> Dict:
-    """Evaluate neural + classical ensemble on test set."""
+    """Evaluate neural + classical ensemble on a dataset split.
+
+    Args:
+        neural_pred_file: Path to JSON with neural predictions and optional softmax.
+        label_dir: Directory containing per-composition label JSON files.
+        splits_path: Path to composition_splits.json.
+        alpha: Weight for neural model (1.0 = neural only, 0.0 = classical only).
+        split_name: Which split to evaluate on ('test' or 'validation').
+
+    Returns:
+        Dict with MIREX scores, accuracy, and per-composition breakdown.
+    """
     with open(neural_pred_file, 'r') as f:
         neural_data = json.load(f)
 
@@ -118,10 +130,10 @@ def evaluate_ensemble_on_compositions(
         print('WARNING: Prediction file has no softmax. Falling back to one-hot '
               'neural predictions — ensemble quality will be limited.')
 
-    # Load test records for classical detection
+    # Load records for classical detection from the requested split
     with open(splits_path, 'r') as f:
         splits = json.load(f)
-    test_ids = {str(item['composition_id']) for item in splits['splits']['test']}
+    test_ids = {str(item['composition_id']) for item in splits['splits'][split_name]}
 
     test_records = {}
     for cid_str in sorted(test_ids):
@@ -204,18 +216,73 @@ def evaluate_ensemble_on_compositions(
     }
 
 
+def search_alpha_on_validation(
+    val_pred_file: str,
+    val_label_dir: str,
+    splits_path: str,
+) -> Tuple[float, float]:
+    """Grid-search for the best ensemble alpha on the validation split.
+
+    Searches alpha in [0.00, 0.05, ..., 1.00] and returns the value that
+    maximises MIREX on the validation set.  This keeps the test set unseen
+    during hyperparameter selection, preventing data leakage.
+
+    Args:
+        val_pred_file: Path to validation-split neural predictions JSON.
+        val_label_dir: Directory with per-composition label files for the
+            validation compositions.
+        splits_path: Path to composition_splits.json (uses 'validation' key).
+
+    Returns:
+        (best_alpha, best_mirex) tuple.
+    """
+    print('Grid-searching alpha on VALIDATION split...')
+    print(f'{"Alpha":>8} {"Neural":>10} {"Classical":>10} {"Ensemble":>10}')
+    print('-' * 42)
+
+    best_alpha = 1.0
+    best_mirex = 0.0
+
+    for alpha_int in range(0, 105, 5):
+        alpha = alpha_int / 100.0
+        result = evaluate_ensemble_on_compositions(
+            val_pred_file, val_label_dir, splits_path, alpha,
+            split_name='validation',
+        )
+        print(f'{alpha:>8.2f} {result["neural_mirex"]:>10.4f} '
+              f'{result["classical_mirex"]:>10.4f} {result["ensemble_mirex"]:>10.4f}')
+        if result['ensemble_mirex'] > best_mirex:
+            best_mirex = result['ensemble_mirex']
+            best_alpha = alpha
+
+    print(f'\nBest alpha on validation: {best_alpha:.2f}  '
+          f'(val MIREX={best_mirex:.4f})')
+    return best_alpha, best_mirex
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description='Neural + Classical ensemble key detector')
     parser.add_argument('--neural-predictions', required=True,
-                        help='Path to neural model predictions JSON (with softmax)')
+                        help='Path to neural model predictions JSON (with softmax) for the TEST set')
+    parser.add_argument('--val-predictions', default=None,
+                        help='Path to neural model predictions JSON for the VALIDATION set. '
+                             'When provided, alpha is tuned on validation and evaluated once '
+                             'on test, preventing data leakage.')
     parser.add_argument('--splits', default=os.path.join(BASE_DIR, 'research_data', 'composition_splits.json'))
     parser.add_argument('--label-dir', default=os.path.join(BASE_DIR, 'research_data', 'score_key_labels'))
+    parser.add_argument('--val-label-dir', default=None,
+                        help='Label directory for validation compositions. '
+                             'Defaults to --label-dir if not specified.')
     parser.add_argument('--alpha', type=float, default=None,
-                        help='Neural weight (0-1). If not set, grid-searches for best on test set.')
+                        help='Neural weight (0-1). If not set, grid-searches for best alpha.')
     parser.add_argument('--output', default=os.path.join(BASE_DIR, 'research_data', 'ensemble_eval.json'))
     args = parser.parse_args()
 
+    # Default val-label-dir to label-dir
+    val_label_dir = args.val_label_dir if args.val_label_dir else args.label_dir
+
     if args.alpha is not None:
+        # ---- Fixed alpha: evaluate directly on test ----
         result = evaluate_ensemble_on_compositions(
             args.neural_predictions, args.label_dir, args.splits, args.alpha,
         )
@@ -223,9 +290,27 @@ def main() -> None:
         print(f'  Neural MIREX:    {result["neural_mirex"]:.4f}')
         print(f'  Classical MIREX: {result["classical_mirex"]:.4f}')
         print(f'  Ensemble MIREX:  {result["ensemble_mirex"]:.4f}')
+
+    elif args.val_predictions is not None:
+        # ---- Proper workflow: tune on validation, evaluate once on test ----
+        best_alpha, val_mirex = search_alpha_on_validation(
+            args.val_predictions, val_label_dir, args.splits,
+        )
+
+        print(f'\nEvaluating on TEST set with alpha={best_alpha:.2f} ...')
+        result = evaluate_ensemble_on_compositions(
+            args.neural_predictions, args.label_dir, args.splits, best_alpha,
+        )
+        print(f'  Neural MIREX:    {result["neural_mirex"]:.4f}')
+        print(f'  Classical MIREX: {result["classical_mirex"]:.4f}')
+        print(f'  Ensemble MIREX:  {result["ensemble_mirex"]:.4f}  '
+              f'(alpha={best_alpha:.2f}, tuned on validation)')
+
     else:
-        # Grid search for best alpha
-        print('Searching for optimal alpha...')
+        # ---- Legacy fallback: grid-search on test (data leakage) ----
+        print('WARNING: --val-predictions not provided. Grid-searching alpha on '
+              'the TEST set — this is data leakage and should only be used for '
+              'exploratory analysis, NOT for reporting final results.')
         print(f'{"Alpha":>8} {"Neural":>10} {"Classical":>10} {"Ensemble":>10}')
         print('-' * 42)
 

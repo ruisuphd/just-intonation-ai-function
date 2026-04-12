@@ -1,0 +1,94 @@
+[
+  {
+    "exp_id": "A6",
+    "config": {
+      "name": "BiGRU_aug_noWeight",
+      "model_type": "gru",
+      "no_augment": false,
+      "weight_mode": "none",
+      "epochs": 30,
+      "batch_size": 8,
+      "learning_rate": 0.001,
+      "bidirectional": true,
+      "gru_pcp": false,
+      "focal_loss": false
+    },
+    "mirex": 0.5748835256085146,
+    "accuracy": 0.434085002535497,
+    "mirex_ci_lower": 0.5084768649574182,
+    "mirex_ci_upper": 0.6509586528893557,
+    "major_accuracy": 0.4984795152988042,
+    "minor_accuracy": 0.25744160122091564,
+    "total_predictions": 252416,
+    "train_time_hours": 0.3113158324691984
+  },
+  {
+    "exp_id": "A7",
+    "config": {
+      "name": "GRU_PCP_aug_noWeight",
+      "model_type": "gru",
+      "no_augment": false,
+      "weight_mode": "none",
+      "epochs": 30,
+      "batch_size": 8,
+      "learning_rate": 0.001,
+      "bidirectional": false,
+      "gru_pcp": true,
+      "focal_loss": false
+    },
+    "mirex": 0.5427227275609582,
+    "accuracy": 0.4076564084685598,
+    "mirex_ci_lower": 0.4754006111683305,
+    "mirex_ci_upper": 0.619148358649267,
+    "major_accuracy": 0.4504486947479697,
+    "minor_accuracy": 0.2769076737142637,
+    "total_predictions": 252416,
+    "train_time_hours": 0.3215603948301739
+  },
+  {
+    "exp_id": "A8",
+    "config": {
+      "name": "GRU_aug_focal",
+      "model_type": "gru",
+      "no_augment": false,
+      "weight_mode": "none",
+      "epochs": 30,
+      "batch_size": 8,
+      "learning_rate": 0.001,
+      "bidirectional": false,
+      "gru_pcp": false,
+      "focal_loss": true
+    },
+    "mirex": 0.5293206452840875,
+    "accuracy": 0.38714661511156184,
+    "mirex_ci_lower": 0.4689395469391465,
+    "mirex_ci_upper": 0.6044247383314927,
+    "major_accuracy": 0.4435810714002956,
+    "minor_accuracy": 0.21193171889107254,
+    "total_predictions": 252416,
+    "train_time_hours": 0.22265454444620345
+  },
+  {
+    "exp_id": "A9",
+    "config": {
+      "name": "BiGRU_PCP_aug_focal",
+      "model_type": "gru",
+      "no_augment": false,
+      "weight_mode": "none",
+      "epochs": 30,
+      "batch_size": 8,
+      "learning_rate": 0.001,
+      "bidirectional": true,
+      "gru_pcp": true,
+      "focal_loss": true
+    },
+    "mirex": 0.5994441715263281,
+    "accuracy": 0.472866220841785,
+    "mirex_ci_lower": 0.5297977859324253,
+    "mirex_ci_upper": 0.6826698018457935,
+    "major_accuracy": 0.4980942977873118,
+    "minor_accuracy": 0.3816891792081958,
+    "total_predictions": 252416,
+    "train_time_hours": 0.33612999399503074
+  }
+]

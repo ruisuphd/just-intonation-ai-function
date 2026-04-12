@@ -1,0 +1,148 @@
+{
+  "note": "Minor-key data quality investigation. A1 vs A9 per-composition.",
+  "n_compositions": 51,
+  "n_compositions_with_minor": 25,
+  "compositions_with_zero_minor_correct_a1": 1,
+  "worst_10": [
+    {
+      "cid": "mozart_k279_3",
+      "minor_total": 429,
+      "minor_correct": 0,
+      "minor_acc": 0.0
+    },
+    {
+      "cid": "bach_the_well-tempered_clavier_i_03",
+      "minor_total": 866,
+      "minor_correct": 2,
+      "minor_acc": 0.0023094688221709007
+    },
+    {
+      "cid": 670,
+      "minor_total": 2638,
+      "minor_correct": 17,
+      "minor_acc": 0.006444275966641395
+    },
+    {
+      "cid": "mozart_k576_1",
+      "minor_total": 743,
+      "minor_correct": 16,
+      "minor_acc": 0.021534320323014805
+    },
+    {
+      "cid": 1542,
+      "minor_total": 7688,
+      "minor_correct": 312,
+      "minor_acc": 0.04058272632674298
+    },
+    {
+      "cid": 650,
+      "minor_total": 2944,
+      "minor_correct": 168,
+      "minor_acc": 0.057065217391304345
+    },
+    {
+      "cid": 1512,
+      "minor_total": 7484,
+      "minor_correct": 552,
+      "minor_acc": 0.07375734901122394
+    },
+    {
+      "cid": 541,
+      "minor_total": 1280,
+      "minor_correct": 141,
+      "minor_acc": 0.11015625
+    },
+    {
+      "cid": 602,
+      "minor_total": 1536,
+      "minor_correct": 172,
+      "minor_acc": 0.11197916666666667
+    },
+    {
+      "cid": 550,
+      "minor_total": 2816,
+      "minor_correct": 340,
+      "minor_acc": 0.12073863636363637
+    }
+  ],
+  "top_15_confusions": [
+    {
+      "true": "Cm",
+      "predicted": "D#",
+      "count": 3356
+    },
+    {
+      "true": "Am",
+      "predicted": "C",
+      "count": 3283
+    },
+    {
+      "true": "Bm",
+      "predicted": "D",
+      "count": 2808
+    },
+    {
+      "true": "Cm",
+      "predicted": "G#",
+      "count": 2581
+    },
+    {
+      "true": "D#m",
+      "predicted": "F#",
+      "count": 2098
+    },
+    {
+      "true": "Bm",
+      "predicted": "B",
+      "count": 1773
+    },
+    {
+      "true": "Dm",
+      "predicted": "F",
+      "count": 1764
+    },
+    {
+      "true": "A#m",
+      "predicted": "C#",
+      "count": 1515
+    },
+    {
+      "true": "G#m",
+      "predicted": "B",
+      "count": 1428
+    },
+    {
+      "true": "Bm",
+      "predicted": "G",
+      "count": 1383
+    },
+    {
+      "true": "Bm",
+      "predicted": "A",
+      "count": 1145
+    },
+    {
+      "true": "Fm",
+      "predicted": "Cm",
+      "count": 1137
+    },
+    {
+      "true": "Gm",
+      "predicted": "A#",
+      "count": 1091
+    },
+    {
+      "true": "Am",
+      "predicted": "Fm",
+      "count": 999
+    },
+    {
+      "true": "Cm",
+      "predicted": "A#",
+      "count": 981
+    }
+  ],
+  "total_minor_errors_a1": 56184,
+  "relative_major_errors_a1": 18677,
+  "pct_relative_major": 33.24256015947601
+}

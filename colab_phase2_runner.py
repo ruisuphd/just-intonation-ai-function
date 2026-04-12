@@ -4,12 +4,22 @@ Colab Phase 2 Runner — Post-processing, ensemble, and new architecture experim
 
 === WHAT THIS SCRIPT DOES ===
 
-Part A: Re-evaluate A1 (best GRU) to save softmax probabilities
-Part B: HMM post-processing with grid search on A1 softmax
-Part C: Neural + Classical ensemble with alpha grid search
+Part A: Re-evaluate A1 (best GRU) to save softmax probabilities (test + validation)
+Part B: HMM post-processing with grid search — tuned on validation, applied to test
+Part C: Neural + Classical ensemble with alpha grid search — tuned on validation
 Part D: Cascade: Ensemble + HMM (best single result)
-Part E: New experiments: Bidirectional GRU (A6), GRU+PCP (A7), Focal loss (A8)
+Part E: New experiments: BiGRU (A6), GRU+PCP (A7), Focal (A8), combined (A9),
+        grad-clip+smooth (A10), all-improvements (A11)
 Part F: Generate complete thesis ablation table
+
+=== DATA LEAKAGE FIXES (Research Audit) ===
+
+- Part A now generates BOTH test and validation predictions so that
+  hyperparameter tuning in Parts B/C never touches the test set.
+- Part B passes --val-predictions so HMM grid search uses validation data.
+- Part C passes --val-predictions so ensemble alpha search uses validation data.
+- Part E adds --save-val-predictions for each experiment and supports
+  new training flags: --clip-grad, --label-smoothing, --weight-decay, --amp.
 
 === COLAB INSTRUCTIONS ===
 
@@ -125,6 +135,36 @@ PHASE2_GRID = {
         'gru_pcp': True,
         'focal_loss': True,
     },
+    'A10': {
+        'name': 'GRU_aug_clip_smooth',
+        'model_type': 'gru',
+        'no_augment': False,
+        'weight_mode': 'none',
+        'epochs': 30,
+        'batch_size': 8,
+        'learning_rate': 1e-3,
+        'bidirectional': False,
+        'gru_pcp': False,
+        'focal_loss': False,
+        'clip_grad': 1.0,
+        'label_smoothing': 0.1,
+        'weight_decay': 0.01,
+    },
+    'A11': {
+        'name': 'GRU_aug_allImprove',
+        'model_type': 'gru',
+        'no_augment': False,
+        'weight_mode': 'none',
+        'epochs': 30,
+        'batch_size': 8,
+        'learning_rate': 1e-3,
+        'bidirectional': False,
+        'gru_pcp': False,
+        'focal_loss': False,
+        'clip_grad': 1.0,
+        'label_smoothing': 0.1,
+        'weight_decay': 0.001,
+    },
 }
 
 
@@ -141,12 +181,13 @@ def backup_to_drive(files: List[str], drive_dir: str | None) -> None:
 
 
 def run_part_a(drive_backup: str | None) -> None:
-    """Part A: Re-evaluate A1 with softmax probabilities."""
+    """Part A: Re-evaluate A1 with softmax probabilities (test + validation)."""
     print('\n' + '=' * 60)
-    print('PART A: Re-evaluate A1 with softmax probabilities')
+    print('PART A: Re-evaluate A1 with softmax probabilities (test + val)')
     print('=' * 60)
 
     output_pred = os.path.join(BASE_DIR, 'research_data', 'ablation_A1_predictions_softmax.json')
+    output_val_pred = os.path.join(BASE_DIR, 'research_data', 'ablation_A1_predictions_val_softmax.json')
     output_eval = os.path.join(BASE_DIR, 'research_data', 'ablation_A1_eval_softmax.json')
 
     # Check if A1 checkpoint exists (may be in project or need to copy from Drive)
@@ -168,6 +209,7 @@ def run_part_a(drive_backup: str | None) -> None:
         '--checkpoint', checkpoint,
         '--output', output_eval,
         '--save-predictions', output_pred,
+        '--save-val-predictions', output_val_pred,
         '--bootstrap-n', '1000',
     ]
 
@@ -178,20 +220,29 @@ def run_part_a(drive_backup: str | None) -> None:
         print('ERROR: Re-evaluation failed')
         return
 
-    # Verify softmax is in the file
+    # Verify softmax is in the test predictions file
     with open(output_pred, 'r') as f:
         data = json.load(f)
     has_softmax = data.get('has_softmax', False)
     n_comps = len(data.get('compositions', []))
-    print(f'\nSoftmax saved: {has_softmax}, compositions: {n_comps}')
+    print(f'\nTest predictions — softmax: {has_softmax}, compositions: {n_comps}')
 
-    backup_to_drive([output_pred, output_eval], drive_backup)
+    # Verify validation predictions file
+    if os.path.isfile(output_val_pred):
+        with open(output_val_pred, 'r') as f:
+            val_data = json.load(f)
+        val_n = len(val_data.get('compositions', []))
+        print(f'Val predictions — compositions: {val_n}')
+    else:
+        print('WARNING: Validation predictions file was not created')
+
+    backup_to_drive([output_pred, output_val_pred, output_eval], drive_backup)
 
 
 def run_part_b(drive_backup: str | None) -> None:
-    """Part B: HMM post-processing with grid search."""
+    """Part B: HMM post-processing with grid search (tuned on validation)."""
     print('\n' + '=' * 60)
-    print('PART B: HMM post-processing (grid search)')
+    print('PART B: HMM post-processing (grid search on validation)')
     print('=' * 60)
 
     # Prefer softmax predictions if available
@@ -206,6 +257,9 @@ def run_part_b(drive_backup: str | None) -> None:
                 print(f'ERROR: No prediction file found. Run Part A first.')
                 return
 
+    # Validation predictions for hyperparameter tuning (avoids test-set leakage)
+    val_pred_file = os.path.join(BASE_DIR, 'research_data', 'ablation_A1_predictions_val_softmax.json')
+
     output = os.path.join(BASE_DIR, 'research_data', 'hmm_postprocessing_eval.json')
 
     cmd = [
@@ -214,6 +268,13 @@ def run_part_b(drive_backup: str | None) -> None:
         '--grid-search',
         '--output', output,
     ]
+
+    # Pass validation predictions so grid search tunes on val, not test
+    if os.path.isfile(val_pred_file):
+        cmd.extend(['--val-predictions', val_pred_file])
+        print(f'Using validation predictions for grid search: {val_pred_file}')
+    else:
+        print('WARNING: No validation predictions found — grid search will use test set')
 
     print(f'Command: {" ".join(cmd)}\n')
     result = subprocess.run(cmd, capture_output=False)
@@ -226,9 +287,9 @@ def run_part_b(drive_backup: str | None) -> None:
 
 
 def run_part_c(drive_backup: str | None) -> None:
-    """Part C: Neural + Classical ensemble with alpha grid search."""
+    """Part C: Neural + Classical ensemble with alpha grid search (tuned on validation)."""
     print('\n' + '=' * 60)
-    print('PART C: Neural + Classical ensemble (alpha grid search)')
+    print('PART C: Neural + Classical ensemble (alpha grid search on validation)')
     print('=' * 60)
 
     # Prefer softmax predictions
@@ -240,6 +301,9 @@ def run_part_c(drive_backup: str | None) -> None:
         print(f'ERROR: No prediction file found at {pred_file}. Run Part A first.')
         return
 
+    # Validation predictions for alpha tuning (avoids test-set leakage)
+    val_pred_file = os.path.join(BASE_DIR, 'research_data', 'ablation_A1_predictions_val_softmax.json')
+
     output = os.path.join(BASE_DIR, 'research_data', 'ensemble_eval.json')
 
     cmd = [
@@ -249,6 +313,13 @@ def run_part_c(drive_backup: str | None) -> None:
         '--label-dir', DEFAULT_LABEL_DIR,
         '--output', output,
     ]
+
+    # Pass validation predictions so alpha search tunes on val, not test
+    if os.path.isfile(val_pred_file):
+        cmd.extend(['--val-predictions', val_pred_file])
+        print(f'Using validation predictions for alpha search: {val_pred_file}')
+    else:
+        print('WARNING: No validation predictions found — alpha search will use test set')
 
     print(f'Command: {" ".join(cmd)}\n')
     result = subprocess.run(cmd, capture_output=False)
@@ -285,10 +356,17 @@ def run_part_d(drive_backup: str | None) -> None:
 
 
 def run_part_e(drive_backup: str | None) -> None:
-    """Part E: Train new architecture experiments (A6-A9)."""
+    """Part E: Train new architecture experiments (A6-A11)."""
     print('\n' + '=' * 60)
     print('PART E: Phase 2 training experiments')
     print('=' * 60)
+
+    # Detect CUDA for --amp flag
+    try:
+        import torch
+        has_cuda = torch.cuda.is_available()
+    except ImportError:
+        has_cuda = False
 
     all_results = []
 
@@ -297,11 +375,15 @@ def run_part_e(drive_backup: str | None) -> None:
         print(f'EXPERIMENT {exp_id}: {config["name"]}')
         print(f'  BiGRU: {config["bidirectional"]}, PCP: {config["gru_pcp"]}, '
               f'Focal: {config["focal_loss"]}')
+        if config.get('clip_grad'):
+            print(f'  clip_grad: {config["clip_grad"]}, label_smooth: {config.get("label_smoothing")}, '
+                  f'weight_decay: {config.get("weight_decay")}')
         print(f'{"="*60}\n')
 
         checkpoint = os.path.join(BASE_DIR, 'research_data', f'ablation_{exp_id}.pt')
         eval_output = os.path.join(BASE_DIR, 'research_data', f'ablation_{exp_id}_eval.json')
         pred_output = os.path.join(BASE_DIR, 'research_data', f'ablation_{exp_id}_predictions.json')
+        val_pred_output = os.path.join(BASE_DIR, 'research_data', f'ablation_{exp_id}_predictions_val.json')
 
         # Build training command
         train_cmd = [
@@ -325,6 +407,14 @@ def run_part_e(drive_backup: str | None) -> None:
             train_cmd.append('--gru-pcp')
         if config['focal_loss']:
             train_cmd.append('--focal-loss')
+        if config.get('clip_grad'):
+            train_cmd.extend(['--clip-grad', str(config['clip_grad'])])
+        if config.get('label_smoothing'):
+            train_cmd.extend(['--label-smoothing', str(config['label_smoothing'])])
+        if config.get('weight_decay'):
+            train_cmd.extend(['--weight-decay', str(config['weight_decay'])])
+        if has_cuda:
+            train_cmd.append('--amp')
 
         start = time.time()
         print(f'Training command: {" ".join(train_cmd)}\n')
@@ -337,7 +427,7 @@ def run_part_e(drive_backup: str | None) -> None:
             all_results.append({'exp_id': exp_id, 'error': 'training_failed'})
             continue
 
-        # Evaluate
+        # Evaluate — save both test and validation predictions
         eval_cmd = [
             sys.executable, os.path.join(BASE_DIR, 'evaluate_harmonic_context_model.py'),
             '--manifest', DEFAULT_MANIFEST,
@@ -346,8 +436,12 @@ def run_part_e(drive_backup: str | None) -> None:
             '--checkpoint', checkpoint,
             '--output', eval_output,
             '--save-predictions', pred_output,
+            '--save-val-predictions', val_pred_output,
             '--bootstrap-n', '1000',
         ]
+
+        # Note: eval script auto-reads bidirectional/gru_pcp from checkpoint
+        # metadata (evaluate_harmonic_context_model.py:366-372), no CLI flags needed.
 
         print(f'\nEvaluating...')
         result = subprocess.run(eval_cmd, capture_output=False)
@@ -383,7 +477,7 @@ def run_part_e(drive_backup: str | None) -> None:
         print(f'  Major: {result_summary["major_accuracy"]:.4f}, Minor: {result_summary["minor_accuracy"]:.4f}')
 
         all_results.append(result_summary)
-        backup_to_drive([checkpoint, eval_output, pred_output], drive_backup)
+        backup_to_drive([checkpoint, eval_output, pred_output, val_pred_output], drive_backup)
 
     # Save Phase 2 summary
     summary_path = os.path.join(BASE_DIR, 'research_data', 'phase2_ablation_summary.json')

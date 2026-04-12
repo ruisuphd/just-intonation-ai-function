@@ -1,0 +1,37 @@
+\begin{table}[htbp]
+\centering
+\caption{Ablation study on ATEPP-319 balanced test set. $\dagger$~Non-causal (bidirectional): offline upper bound, not deployable in real-time. Classical profiles from N\'apoles (2019); JKD HMM rows are our pure-Python port.}
+\label{tab:ablation}
+\begin{tabular}{llcccccc}
+\toprule
+Row & Model & Aug. & Weight & MIREX (95\% CI) & Acc. & Major & Minor \\
+\midrule
+B_KK & Krumhansl Kessler & -- & -- & 0.679 (0.585--0.776) & 0.530 & -- & -- \\
+B_TE & Temperley & -- & -- & 0.778 (0.677--0.873) & 0.710 & -- & -- \\
+B_AS & Albrecht Shanahan & -- & -- & 0.776 (0.674--0.871) & 0.705 & -- & -- \\
+B_EN & Ensemble & -- & -- & 0.788 (0.688--0.884) & 0.724 & -- & -- \\
+BA_KK & Krumhansl Kessler (aligned) & -- & -- & 0.602 (0.461--0.754) & 0.501 & -- & -- \\
+BA_TE & Temperley (aligned) & -- & -- & 0.630 (0.487--0.792) & 0.546 & -- & -- \\
+BA_AS & Albrecht Shanahan (aligned) & -- & -- & 0.623 (0.481--0.789) & 0.543 & -- & -- \\
+BA_BB & Bellman Budge (aligned) & -- & -- & 0.632 (0.489--0.792) & 0.546 & -- & -- \\
+BA_AE & Aarden Essen (aligned) & -- & -- & 0.616 (0.477--0.771) & 0.517 & -- & -- \\
+BA_EN & Ensemble (aligned) & -- & -- & 0.620 (0.476--0.785) & 0.537 & -- & -- \\
+BA_E5 & Ensemble 5 (aligned) & -- & -- & 0.627 (0.481--0.794) & 0.550 & -- & -- \\
+JKD_KK & JKD HMM Krumhansl Kessler (exponential10) & -- & HMM & 0.591 & 0.516 & -- & -- \\
+JKD_TE & JKD HMM Temperley (exponential10) & -- & HMM & 0.668 & 0.592 & -- & -- \\
+JKD_AS & JKD HMM Albrecht Shanahan (exponential10) & -- & HMM & 0.630 & 0.558 & -- & -- \\
+JKD_BB & JKD HMM Bellman Budge (exponential10) & -- & HMM & 0.648 & 0.555 & -- & -- \\
+JKD_AE & JKD HMM Aarden Essen (exponential10) & -- & HMM & 0.600 & 0.510 & -- & -- \\
+E_GRU 24 & GRU 24-key balanced & ? & ? & 0.538 & 0.390 & -- & -- \\
+E_Transf & Transformer+S-KEY PT & ? & ? & 0.523 & 0.373 & -- & -- \\
+E_Transf & Transformer no-PT & ? & ? & 0.521 & 0.373 & -- & -- \\
+A1 & ? (A1) & ? & ? & 0.531 (0.470--0.604) & 0.390 & 0.453 & 0.211 \\
+A6 & BiGRU (A6) $\dagger$ & Yes & none & 0.575 (0.508--0.651) & 0.434 & 0.498 & 0.257 \\
+A7 & GRU+PCP (A7) & Yes & none & 0.543 (0.475--0.619) & 0.408 & 0.450 & 0.277 \\
+A8 & GRU (A8) & Yes & focal & 0.529 (0.469--0.604) & 0.387 & 0.444 & 0.212 \\
+A9 & BiGRU+PCP (A9) $\dagger$ & Yes & focal & 0.599 (0.530--0.683) & 0.473 & 0.498 & 0.382 \\
+PP_HMM & Best + HMM & -- & -- & 0.540 & 0.400 & -- & -- \\
+PP_ENS & Neural+Classical (a=0.3) & -- & -- & 0.463 & 0.326 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
