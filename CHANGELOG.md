@@ -1,5 +1,107 @@
 # Changelog — Adaptive Just Intonation Tuner
 
+## v0.9.2 — 2026-04-10 (Research Integrity Fixes + Training Improvements)
+
+### Critical Bug Fixes (Research Integrity)
+
+#### Bug 1: Velocity Feature Hardcoded in Training (MEDIUM)
+- **Problem:** `train_harmonic_context_model.py:233` hardcoded velocity to 96 for all training examples (`sum(96 > edge ...)`). At inference, actual MIDI velocity was used via `harmonic_context_model.py:191`, creating a train-inference feature mismatch.
+- **Nuance:** Current MusicXML-derived training labels lack velocity fields, so the fix has zero effect on existing data. However, it enables future velocity-aware training when MIDI performance data is used directly.
+- **Fix:** Read actual velocity with fallback: `vel = int(note.get('velocity', 96))`.
+- **Files:** `train_harmonic_context_model.py` (line 233)
+
+#### Bug 2: Data Leakage — Ensemble Alpha Tuned on Test Set (CRITICAL)
+- **Problem:** `ensemble_key_detector.py` grid-searched ensemble alpha (0.00–1.00 in 0.05 steps) by evaluating on the TEST set. The alpha that maximized test MIREX was selected and used to report test results — textbook data leakage inflating reported metrics.
+- **Fix:** Added `--val-predictions` argument. When provided, alpha is tuned on VALIDATION predictions, then evaluated once on test with the fixed alpha. Legacy behavior preserved with a deprecation warning when `--val-predictions` is omitted.
+- **Impact:** Reported ensemble MIREX will decrease (honest numbers).
+- **Files:** `ensemble_key_detector.py` (new: `search_alpha_on_validation()`, modified: `evaluate_ensemble_on_compositions()` with `split_name` param)
+
+#### Bug 3: Data Leakage — HMM Hyperparameters Tuned on Test Set (CRITICAL)
+- **Problem:** `hmm_postprocessing.py` grid-searched `self_transition` × `tau` (30 combinations) using test set predictions. Best hyperparameters were selected by test delta — same leakage pattern as Bug 2.
+- **Fix:** Added `--val-predictions` argument. When provided, grid search runs on validation predictions, best parameters evaluated once on test. Deprecation warning when omitted.
+- **Impact:** Reported HMM MIREX will decrease (honest numbers).
+- **Files:** `hmm_postprocessing.py`
+
+### Training Improvements
+
+#### Gradient Clipping (Pascanu et al., ICML 2013)
+- Added `--clip-grad` flag (float, default 1.0, 0 to disable).
+- Applies `torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)` between `loss.backward()` and `optimizer.step()`.
+- Standard practice for RNNs to prevent gradient explosion during training.
+- **Files:** `train_harmonic_context_model.py`
+
+#### Circle-of-Fifths Label Smoothing (Novel — adapted from Szegedy et al., CVPR 2016)
+- Added `--label-smoothing` flag (float, default 0.0, recommended 0.1).
+- Instead of uniform label smoothing, distributes epsilon mass proportionally to MIREX key similarity: fifth relation = 0.5, relative key = 0.3, parallel key = 0.2, other = 0.0.
+- This directly aligns the training objective with the evaluation metric — a novel contribution that encodes music-theoretic knowledge into the loss function.
+- New class `MusicTheoreticLabelSmoothing` precomputes a 24×24 kernel. Compatible with class weights and focal loss.
+- **Files:** `train_harmonic_context_model.py`
+
+#### Weight Decay as Hyperparameter (Loshchilov & Hutter, ICLR 2019)
+- Exposed `--weight-decay` flag (float, default 0.01) for the AdamW optimizer.
+- The 67K-param GRU may benefit from lower decay (0.001). Now tunable in ablation grid.
+- **Files:** `train_harmonic_context_model.py`
+
+#### Mixed-Precision Training (Micikevicius et al., ICLR 2018)
+- Added `--amp` flag for automatic mixed-precision on CUDA devices.
+- Uses `torch.cuda.amp.autocast()` + `GradScaler` for ~2x speedup on T4 GPU.
+- Only activates on CUDA; MPS/CPU silently ignore the flag.
+- **Files:** `train_harmonic_context_model.py`
+
+### Evaluation Improvements
+
+#### Validation-Set Prediction Saving
+- Added `--save-val-predictions` flag to `evaluate_harmonic_context_model.py`.
+- Generates per-note validation predictions with softmax probabilities.
+- Required by Bug 2 and Bug 3 fixes: ensemble alpha and HMM hyperparameters must be tuned on validation, not test.
+- **Files:** `evaluate_harmonic_context_model.py`
+
+#### McNemar's Test for Pairwise Model Comparison (McNemar, 1947)
+- Added `--compare <prediction_file>` flag to `evaluate_harmonic_context_model.py`.
+- Computes McNemar's chi-squared test with continuity correction between two models.
+- Reports chi2, p-value, and significance level (*, **, ***).
+- Used to test whether differences between ablation experiments (A1 vs A6, etc.) are statistically significant.
+- **Files:** `evaluate_harmonic_context_model.py`
+
+#### BiGRU Documented as Non-Causal Upper Bound
+- Added docstring to `HarmonicContextGRU` in `harmonic_context_model.py` documenting that `bidirectional=True` is for offline evaluation only — not deployable in the real-time tuner pipeline.
+- Ablation table (`generate_ablation_table.py`) now marks bidirectional models with a dagger footnote (†) in both Markdown and LaTeX output.
+- **Files:** `harmonic_context_model.py`, `generate_ablation_table.py`
+
+### Phase 2 Runner Updates
+- **Part A:** Now generates BOTH validation and test predictions with softmax.
+- **Part B:** Passes `--val-predictions` to HMM grid search (fixes data leakage).
+- **Part C:** Passes `--val-predictions` to ensemble alpha search (fixes data leakage).
+- **Part E:** Added experiments A10 (gradient clipping + label smoothing) and A11 (all improvements combined). Training commands now pass `--clip-grad`, `--label-smoothing`, `--weight-decay`, and `--amp` when configured.
+- **Files:** `colab_phase2_runner.py`
+
+### Research References
+
+| Change | Reference | Year |
+|--------|-----------|------|
+| Gradient clipping | Pascanu, Mikolov & Bengio, "On the difficulty of training RNNs," ICML | 2013 |
+| Label smoothing | Szegedy et al., "Rethinking the Inception Architecture," CVPR | 2016 |
+| CoF smoothing kernel | Novel — MIREX-weighted kernel for key detection | 2026 |
+| AdamW weight decay | Loshchilov & Hutter, "Decoupled Weight Decay Regularization," ICLR | 2019 |
+| Mixed-precision | Micikevicius et al., "Mixed Precision Training," ICLR | 2018 |
+| McNemar's test | McNemar, Psychometrika | 1947 |
+
+---
+
+## Files Modified (v0.9.2)
+
+| File | Changes |
+|------|---------|
+| `train_harmonic_context_model.py` | Velocity fix, gradient clipping, label smoothing, weight decay, AMP |
+| `ensemble_key_detector.py` | Data leakage fix: val-based alpha tuning |
+| `hmm_postprocessing.py` | Data leakage fix: val-based hyperparameter tuning |
+| `evaluate_harmonic_context_model.py` | Val prediction saving, McNemar's test, --compare flag |
+| `harmonic_context_model.py` | BiGRU non-causal documentation |
+| `generate_ablation_table.py` | BiGRU dagger footnote (Markdown + LaTeX) |
+| `colab_phase2_runner.py` | Parts A-E updated for leakage fixes + new experiments |
+
+---
+
 ## v0.9.1 — 2026-04-08 (App Fixes + S-KEY Phase 2 Preparation)
 
 ### Bug Fixes

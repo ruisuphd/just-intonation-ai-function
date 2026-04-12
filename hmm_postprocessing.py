@@ -13,6 +13,10 @@ constraints that the neural model may not have fully learned.
 
 Usage:
     python hmm_postprocessing.py --predictions research_data/gru_predictions.json
+
+    # Grid search with proper train/val/test split (recommended):
+    python hmm_postprocessing.py --predictions research_data/test_predictions.json \
+        --val-predictions research_data/val_predictions.json --grid-search
 """
 
 from __future__ import annotations
@@ -264,32 +268,62 @@ def main() -> None:
                         help='Path to saved predictions JSON (from evaluate --save-predictions)')
     parser.add_argument('--self-transition', type=float, default=0.85)
     parser.add_argument('--tau', type=float, default=2.0)
+    parser.add_argument('--val-predictions', default=None,
+                        help='Path to VALIDATION predictions JSON for grid search tuning '
+                             '(prevents data leakage from tuning on test set)')
     parser.add_argument('--grid-search', action='store_true',
                         help='Search over self_transition and tau values')
     parser.add_argument('--output', default=os.path.join(BASE_DIR, 'research_data', 'hmm_postprocessing_eval.json'))
     args = parser.parse_args()
 
     if args.grid_search:
-        print('Grid search over HMM hyperparameters:')
+        # Determine which file to use for hyperparameter tuning
+        if args.val_predictions:
+            tuning_file = args.val_predictions
+            print('Grid search over HMM hyperparameters (tuning on VALIDATION set):')
+        else:
+            tuning_file = args.predictions
+            print('WARNING: --val-predictions not provided. Grid search is tuning on '
+                  'the TEST set, which constitutes data leakage. Provide '
+                  '--val-predictions for proper evaluation.')
+            print('Grid search over HMM hyperparameters (tuning on TEST set):')
+
         print(f'{"self_trans":>12} {"tau":>6} {"Orig MIREX":>12} {"HMM MIREX":>12} {"Delta":>8}')
         print('-' * 55)
 
-        best_result = None
+        best_val_result = None
         best_delta = -1.0
+        best_st = None
+        best_tau = None
 
         for st in [0.70, 0.75, 0.80, 0.85, 0.90, 0.95]:
             for tau in [1.0, 1.5, 2.0, 3.0, 5.0]:
-                result = evaluate_with_hmm(args.predictions, self_transition=st, tau=tau)
-                delta = result['mirex_improvement']
-                print(f'{st:>12.2f} {tau:>6.1f} {result["original_mirex"]:>12.4f} '
-                      f'{result["hmm_mirex"]:>12.4f} {delta:>+8.4f}')
+                val_result = evaluate_with_hmm(tuning_file, self_transition=st, tau=tau)
+                delta = val_result['mirex_improvement']
+                print(f'{st:>12.2f} {tau:>6.1f} {val_result["original_mirex"]:>12.4f} '
+                      f'{val_result["hmm_mirex"]:>12.4f} {delta:>+8.4f}')
                 if delta > best_delta:
                     best_delta = delta
-                    best_result = result
+                    best_val_result = val_result
+                    best_st = st
+                    best_tau = tau
 
-        print(f'\nBest: self_transition={best_result["self_transition"]}, '
-              f'tau={best_result["tau"]}, delta={best_delta:+.4f}')
-        result = best_result
+        print(f'\nBest params (on {"validation" if args.val_predictions else "test"}): '
+              f'self_transition={best_st}, tau={best_tau}, delta={best_delta:+.4f}')
+
+        if args.val_predictions:
+            # Evaluate ONCE on test set with the best parameters from validation
+            print(f'\nEvaluating on TEST set with fixed params '
+                  f'(self_transition={best_st}, tau={best_tau}):')
+            result = evaluate_with_hmm(
+                args.predictions, self_transition=best_st, tau=best_tau,
+            )
+            print(f'  Validation MIREX: {best_val_result["hmm_mirex"]:.4f} '
+                  f'(delta={best_delta:+.4f})')
+            print(f'  Test MIREX:       {result["hmm_mirex"]:.4f} '
+                  f'(delta={result["mirex_improvement"]:+.4f})')
+        else:
+            result = best_val_result
     else:
         result = evaluate_with_hmm(
             args.predictions,

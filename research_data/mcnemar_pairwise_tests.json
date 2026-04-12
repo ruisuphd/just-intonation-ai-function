@@ -1,0 +1,91 @@
+{
+  "note": "McNemar chi-squared with continuity correction. n_10 = A correct B wrong, n_01 = A wrong B correct.",
+  "bonferroni_corrected_alpha": 0.0071428571428571435,
+  "n_tests": 7,
+  "pairs": [
+    {
+      "pair": "A1 vs A7",
+      "description": "PCP feature contribution (causal)",
+      "chi2": 719.8454464219227,
+      "p_value": 0.0,
+      "n_10": 11230,
+      "n_01": 15628,
+      "n_discordant": 26858,
+      "n_total": 252416,
+      "agree_rate": 0.8935962854969574,
+      "significance": "***"
+    },
+    {
+      "pair": "A1 vs A6",
+      "description": "Bidirectionality ceiling (non-causal)",
+      "chi2": 2356.0983978612508,
+      "p_value": 0.0,
+      "n_10": 20462,
+      "n_01": 31531,
+      "n_discordant": 51993,
+      "n_total": 252416,
+      "agree_rate": 0.7940186042089249,
+      "significance": "***"
+    },
+    {
+      "pair": "A1 vs A8",
+      "description": "Focal loss in isolation (causal)",
+      "chi2": 56.75424285044538,
+      "p_value": 4.929390229335695e-14,
+      "n_10": 5722,
+      "n_01": 4943,
+      "n_discordant": 10665,
+      "n_total": 252416,
+      "agree_rate": 0.9577483202332657,
+      "significance": "***"
+    },
+    {
+      "pair": "A6 vs A9",
+      "description": "PCP+focal on top of BiGRU (non-causal)",
+      "chi2": 2973.3696657459423,
+      "p_value": 0.0,
+      "n_10": 11216,
+      "n_01": 21005,
+      "n_discordant": 32221,
+      "n_total": 252416,
+      "agree_rate": 0.872349613336714,
+      "significance": "***"
+    },
+    {
+      "pair": "A7 vs A9",
+      "description": "Bidirectionality boost on GRU+PCP",
+      "chi2": 5279.029561930002,
+      "p_value": 0.0,
+      "n_10": 17428,
+      "n_01": 33888,
+      "n_discordant": 51316,
+      "n_total": 252416,
+      "agree_rate": 0.7967006845841785,
+      "significance": "***"
+    },
+    {
+      "pair": "A1 vs A9",
+      "description": "Best non-causal vs A1 baseline",
+      "chi2": 7846.2979149381335,
+      "p_value": 0.0,
+      "n_10": 17292,
+      "n_01": 38150,
+      "n_discordant": 55442,
+      "n_total": 252416,
+      "agree_rate": 0.7803546526369168,
+      "significance": "***"
+    },
+    {
+      "pair": "A8 vs A7",
+      "description": "PCP vs focal loss (causal)",
+      "chi2": 960.009173325689,
+      "p_value": 0.0,
+      "n_10": 11365,
+      "n_01": 16542,
+      "n_discordant": 27907,
+      "n_total": 252416,
+      "agree_rate": 0.889440447515213,
+      "significance": "***"
+    }
+  ]
+}
