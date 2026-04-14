@@ -460,6 +460,12 @@ def main() -> None:
                 '  real-time tuning path. To evaluate as an offline oracle bound, pass\n'
                 '  --allow-oracle (output will be tagged "_ORACLE").'
             )
+
+        model = HarmonicContextGRU(
+            bidirectional=bidirectional,
+            use_pcp=gru_pcp,
+        ).to(device)
+
         if bidirectional:
             if args.causal_only and args.allow_oracle:
                 print('  Model: bidirectional GRU [ORACLE — offline-only, not a deployable result]')
