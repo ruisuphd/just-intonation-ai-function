@@ -11,26 +11,34 @@ results. The pre-registration is frozen once the first Phase B run kicks off;
 any subsequent change is documented as a **Phase B-prime** amendment rather
 than edited in place.
 
-## 0. A1-corrected baseline (finalized 2026-04-14)
+## 0. A1-corrected baseline + STRONG baseline (finalized 2026-04-14, amended after Phase A Track 1)
 
 Measured on 3 seeds (20260309, 20260310, 20260311) under `--weight-mode sqrt`,
 `--selection-metric val_mirex`, `--require-causal`, `--deterministic`,
 30 epochs with patience=10:
 
-| Aggregation | MIREX | 95% CI | σ_bootstrap |
-|---|---:|---:|---:|
-| **Frame-weighted (canonical)** | **0.5026** | [0.4336, 0.5889] | 0.0400 |
-| Composition-equal | 0.5802 | [0.5186, 0.6390] | 0.0310 |
+| Method | Test MIREX | σ (seeds) | 95% CI (B=10,000) | Notes |
+|---|---:|---:|---:|---|
+| **A1-corrected** (causal GRU h=96, sqrt, val-MIREX, 30ep) | **0.4984** | 0.0088 | [0.4336, 0.5889] | Architecture-only causal lower bound |
+| A1 + HMM (val-tuned τ, self_t) | 0.5090 | 0.0089 | — | A1 + Viterbi smoothing |
+| **Pure classical ensemble** (KK + Temperley + AS) | **0.6201** | 0.0000 | — | Deterministic; the strong baseline to beat |
+| Neural+Classical blend (val-tuned α≈0.48) | 0.6190 | 0.0032 | — | At parity with classical alone |
 
-- σ(test-MIREX across seeds) = **0.0088** (meets Phase A target σ ≤ 0.01)
-- Minor mean accuracy = **0.3245** (σ = 0.0120)
-- Major mean accuracy = **0.3979** (σ = 0.0132)
-- Val MIREX = **0.6109** (σ = 0.0020, extremely stable)
-- Val-to-test drift = **−0.1126** (systematic across seeds, not seed noise)
+**Two baselines are reported for every Phase B cell:**
+1. **A1-corrected = 0.4984** — architecture-only causal lower bound. Useful for measuring whether new architectures/losses help over the previous neural attempt.
+2. **Classical ensemble = 0.6201** — the strong baseline. KK + Temperley + Albrecht-Shanahan profile correlation, deterministic, no NN. Phase A Track 1 found that classical alone outperforms A1-corrected by Δ=0.122 MIREX. **Beating classical (or matching it on modulating pieces) is the real Phase B target.**
 
-**This is the baseline every Phase B cell is compared against.** Per-composition
-MIREX arrays for all 3 seeds are persisted in `phase_a_seeds_2026-04-14/*_predictions.json`;
-paired bootstrap against A1-corrected does not require re-running A1.
+Phase A also produced these per-class and stratification numbers (3-seed mean):
+- Minor mean accuracy = 0.3245 (σ = 0.0120) — vs audited Phase 2 A1 = 0.2383 (+0.086)
+- Major mean accuracy = 0.3979 (σ = 0.0132)
+- Val MIREX = 0.6109 (σ = 0.0020, extremely stable)
+- Val-to-test drift = **−0.1126** (systematic across seeds AND across methods — Phase A Track 1 confirmed classical drifts identically. This is a property of the data split, not the algorithm.)
+
+Stratified mono-tonal vs modulating (composition-equal MIREX, 3-seed mean):
+- Mono-tonal (23 comps, 47k frames): A1=0.609, classical=0.842, ensemble=0.849 — classical wins decisively.
+- Modulating (18 comps, 70k frames): A1=0.543, classical=0.666, ensemble=0.650 — gap narrows; neural wins 7/18 modulating pieces.
+
+Per-composition MIREX arrays for all 3 seeds are persisted in `phase_a_seeds_2026-04-14/*_predictions.json`. Paired bootstrap against any baseline does not require re-running A1 or classical.
 
 ---
 
@@ -42,22 +50,44 @@ paths, class weighting restored per Phase 1 intent), does any fully-causal,
 <20ms-deployable architecture exceed the Phase 2 A1-corrected baseline by
 at least Δ=0.015 MIREX at p<0.05?
 
-Three outcomes are all Phase B successes:
+Phase B success criteria are now anchored on the CLASSICAL baseline (0.6201),
+not just on A1-corrected (0.4984). Phase A Track 1 showed that classical alone
+beats A1-corrected by Δ=0.122 — making "beat A1 by 0.015" a trivial bar. The
+real research question is: can a causal per-frame neural model beat (or match)
+classical, particularly on modulating pieces where classical fundamentally
+cannot do per-frame key tracking?
 
-- **Winner.** A specific architecture + loss configuration clears Δ=0.015
-  MIREX vs A1-corrected at p<0.05 paired cluster-bootstrap **AND** σ(test-MIREX)
-  ≤ 0.015 across 3 seeds **AND** minor mean accuracy ≥ 0.32 (no regression vs
-  A1-corrected). That configuration is carried into Phase C for pretraining.
-- **Null + ceiling.** No configuration clears the bar. Ceiling ~ 0.50 MIREX
-  (frame-weighted, causal, sqrt-weighted, val-MIREX-selected, 3-seed mean) is
-  reported as the defensible upper bound at this data and compute scale.
-  Phase C pivots to testing whether pretraining can move the ceiling.
-- **Partial.** One configuration clears (1) and (2) but not (3) — i.e. higher
-  aggregate MIREX with minor-class regression. Reported as a design tradeoff,
-  not a win. May still go to Phase C if the minor regression is <0.02.
-- **Aggregate-only.** Cell clears Δ=0.015 single-seed at p<0.05 but σ > 0.015
-  across 3 seeds, i.e. seed noise inflated the single-seed number. Reported
-  as "single-seed artefact" — explicitly not a winner.
+**Outcome categories (every Phase B cell maps to one):**
+
+- **Strong winner ("deployable").** Cell clears Δ ≥ 0.015 vs **classical**
+  at p<0.05 paired cluster-bootstrap on aggregate MIREX **AND** σ(test-MIREX)
+  ≤ 0.015 across 3 seeds **AND** does not regress mono-tonal subset MIREX
+  below 0.80. Carried into Phase C.
+- **Modulation winner.** Cell clears Δ ≥ 0.015 vs classical specifically on
+  the modulating subset (18 comps, 70k frames) at p<0.05 paired bootstrap,
+  even if aggregate MIREX is below classical. This is the most scientifically
+  interesting outcome: it isolates neural's value proposition (per-frame
+  modulation tracking). Eligible for Paper 1's headline claim.
+- **Architecture winner.** Cell clears Δ ≥ 0.015 vs A1-corrected at p<0.05
+  but does NOT beat classical. Reported as architectural progress without
+  shipping a deployment claim. May or may not go to Phase C depending on
+  whether the architecture supports pretraining transfer.
+- **Null + ceiling.** No cell clears any of the above. Document A1-corrected
+  (0.50) and classical (0.62) as the dual ceilings of the current data
+  regime. Phase C pivots to testing whether pretraining moves either.
+- **Aggregate-only artefact.** Cell clears Δ at single-seed but σ > 0.015
+  across 3 seeds. Reported as seed noise; explicitly not a winner.
+
+**Phase B reporting requirements (every cell, every seed):**
+
+1. Test MIREX frame-weighted **and** composition-equal (Phase A Track 2 §3a).
+2. Test MIREX on **mono-tonal subset** (23 comps, 47k frames) and **modulating
+   subset** (18 comps, 70k frames) separately, plus aggregate.
+3. Class-rebalanced auxiliary MIREX (18 present classes, each weight 1/18) per Track 2 §3b.
+4. Comparison against BOTH A1-corrected AND classical baselines, with paired-
+   bootstrap CI for each comparison.
+5. Per-class accuracy table with σ across 3 seeds.
+6. Causality block (already in payload via Phase A guardrail).
 
 ## 2. Pre-registered grid
 

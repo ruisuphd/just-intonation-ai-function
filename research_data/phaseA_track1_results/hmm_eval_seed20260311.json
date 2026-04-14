@@ -1,0 +1,299 @@
+{
+  "original_mirex": 0.49455812985582925,
+  "hmm_mirex": 0.5033465420367428,
+  "original_accuracy": 0.3582521157047725,
+  "hmm_accuracy": 0.3655573668146504,
+  "mirex_improvement": 0.008788412180913531,
+  "total_predictions": 230656,
+  "self_transition": 0.95,
+  "tau": 5.0,
+  "per_composition": [
+    {
+      "composition_id": 7,
+      "mirex": 0.9017728365384581,
+      "accuracy": 0.8722956730769231,
+      "n_predictions": 3328,
+      "original_mirex": 0.8805288461538416
+    },
+    {
+      "composition_id": 60,
+      "mirex": 0.6676618303571333,
+      "accuracy": 0.43526785714285715,
+      "n_predictions": 3584,
+      "original_mirex": 0.6567243303571347
+    },
+    {
+      "composition_id": 77,
+      "mirex": 0.6539843749999974,
+      "accuracy": 0.413671875,
+      "n_predictions": 2560,
+      "original_mirex": 0.6379296874999982
+    },
+    {
+      "composition_id": 120,
+      "mirex": 0.37901204427084717,
+      "accuracy": 0.2903645833333333,
+      "n_predictions": 12288,
+      "original_mirex": 0.374739583333346
+    },
+    {
+      "composition_id": 122,
+      "mirex": 0.19093424479166732,
+      "accuracy": 0.10921223958333333,
+      "n_predictions": 6144,
+      "original_mirex": 0.1999348958333338
+    },
+    {
+      "composition_id": 215,
+      "mirex": 0.7324218750000352,
+      "accuracy": 0.615828804347826,
+      "n_predictions": 5888,
+      "original_mirex": 0.7111922554348152
+    },
+    {
+      "composition_id": 515,
+      "mirex": 0.798828125,
+      "accuracy": 0.59765625,
+      "n_predictions": 768,
+      "original_mirex": 0.7809895833333332
+    },
+    {
+      "composition_id": 541,
+      "mirex": 0.42695312500000193,
+      "accuracy": 0.20078125,
+      "n_predictions": 1280,
+      "original_mirex": 0.4274218750000019
+    },
+    {
+      "composition_id": 546,
+      "mirex": 0.87255859375,
+      "accuracy": 0.7451171875,
+      "n_predictions": 1024,
+      "original_mirex": 0.8417968749999998
+    },
+    {
+      "composition_id": 547,
+      "mirex": 0.87060546875,
+      "accuracy": 0.7412109375,
+      "n_predictions": 1024,
+      "original_mirex": 0.8671875
+    },
+    {
+      "composition_id": 550,
+      "mirex": 0.47702414772726515,
+      "accuracy": 0.27379261363636365,
+      "n_predictions": 2816,
+      "original_mirex": 0.4655894886363565
+    },
+    {
+      "composition_id": 602,
+      "mirex": 0.6330078124999979,
+      "accuracy": 0.5384114583333334,
+      "n_predictions": 1536,
+      "original_mirex": 0.6161458333333321
+    },
+    {
+      "composition_id": 610,
+      "mirex": 0.5003515624999997,
+      "accuracy": 0.403125,
+      "n_predictions": 2560,
+      "original_mirex": 0.5012890624999995
+    },
+    {
+      "composition_id": 650,
+      "mirex": 0.19414062499999632,
+      "accuracy": 0.0829326923076923,
+      "n_predictions": 3328,
+      "original_mirex": 0.2168269230769191
+    },
+    {
+      "composition_id": 670,
+      "mirex": 0.11337139423077212,
+      "accuracy": 0.010516826923076924,
+      "n_predictions": 3328,
+      "original_mirex": 0.11799879807692569
+    },
+    {
+      "composition_id": 672,
+      "mirex": 0.3965820312500009,
+      "accuracy": 0.166015625,
+      "n_predictions": 1024,
+      "original_mirex": 0.34902343750000114
+    },
+    {
+      "composition_id": 728,
+      "mirex": 0.32180606617647395,
+      "accuracy": 0.20863970588235295,
+      "n_predictions": 8704,
+      "original_mirex": 0.3093175551470627
+    },
+    {
+      "composition_id": 876,
+      "mirex": 0.70640625,
+      "accuracy": 0.64296875,
+      "n_predictions": 1280,
+      "original_mirex": 0.6771874999999999
+    },
+    {
+      "composition_id": 907,
+      "mirex": 0.34367897727272506,
+      "accuracy": 0.20445667613636365,
+      "n_predictions": 11264,
+      "original_mirex": 0.33364701704545224
+    },
+    {
+      "composition_id": 910,
+      "mirex": 0.5315463362068872,
+      "accuracy": 0.40045797413793105,
+      "n_predictions": 7424,
+      "original_mirex": 0.5134294181034381
+    },
+    {
+      "composition_id": 1076,
+      "mirex": 0.31651278409089245,
+      "accuracy": 0.044389204545454544,
+      "n_predictions": 2816,
+      "original_mirex": 0.30916193181816537
+    },
+    {
+      "composition_id": 1128,
+      "mirex": 0.7305419921874952,
+      "accuracy": 0.521728515625,
+      "n_predictions": 4096,
+      "original_mirex": 0.7264648437499952
+    },
+    {
+      "composition_id": 1132,
+      "mirex": 0.6778262867646998,
+      "accuracy": 0.5579044117647058,
+      "n_predictions": 4352,
+      "original_mirex": 0.662798713235289
+    },
+    {
+      "composition_id": 1144,
+      "mirex": 0.7966517857142856,
+      "accuracy": 0.6333705357142857,
+      "n_predictions": 1792,
+      "original_mirex": 0.7806919642857143
+    },
+    {
+      "composition_id": 1147,
+      "mirex": 0.8842737268518621,
+      "accuracy": 0.8414351851851852,
+      "n_predictions": 6912,
+      "original_mirex": 0.8683738425925974
+    },
+    {
+      "composition_id": 1164,
+      "mirex": 0.7848828124999984,
+      "accuracy": 0.583984375,
+      "n_predictions": 2560,
+      "original_mirex": 0.7606640624999983
+    },
+    {
+      "composition_id": 1190,
+      "mirex": 0.7827105978260852,
+      "accuracy": 0.6377377717391305,
+      "n_predictions": 5888,
+      "original_mirex": 0.7694633152173893
+    },
+    {
+      "composition_id": 1200,
+      "mirex": 0.6150855654761908,
+      "accuracy": 0.4330357142857143,
+      "n_predictions": 5376,
+      "original_mirex": 0.6050409226190476
+    },
+    {
+      "composition_id": 1212,
+      "mirex": 0.8292258522727267,
+      "accuracy": 0.7794744318181818,
+      "n_predictions": 2816,
+      "original_mirex": 0.8123579545454537
+    },
+    {
+      "composition_id": 1215,
+      "mirex": 0.6240234375,
+      "accuracy": 0.5634765625,
+      "n_predictions": 1024,
+      "original_mirex": 0.6162109375
+    },
+    {
+      "composition_id": 1227,
+      "mirex": 0.6061147836538455,
+      "accuracy": 0.41947115384615385,
+      "n_predictions": 6656,
+      "original_mirex": 0.5893028846153847
+    },
+    {
+      "composition_id": 1240,
+      "mirex": 0.6430013020833327,
+      "accuracy": 0.4319661458333333,
+      "n_predictions": 3072,
+      "original_mirex": 0.6332682291666661
+    },
+    {
+      "composition_id": 1248,
+      "mirex": 0.7567708333333358,
+      "accuracy": 0.5686383928571429,
+      "n_predictions": 5376,
+      "original_mirex": 0.7351748511904785
+    },
+    {
+      "composition_id": 1256,
+      "mirex": 0.8889973958333334,
+      "accuracy": 0.8294270833333334,
+      "n_predictions": 1536,
+      "original_mirex": 0.8722656250000002
+    },
+    {
+      "composition_id": 1257,
+      "mirex": 0.3301897321428515,
+      "accuracy": 0.0078125,
+      "n_predictions": 1792,
+      "original_mirex": 0.3276785714285661
+    },
+    {
+      "composition_id": 1259,
+      "mirex": 0.8097530241935463,
+      "accuracy": 0.7123235887096774,
+      "n_predictions": 7936,
+      "original_mirex": 0.8069682459677402
+    },
+    {
+      "composition_id": 1263,
+      "mirex": 0.7434053308823517,
+      "accuracy": 0.5680147058823529,
+      "n_predictions": 4352,
+      "original_mirex": 0.7349264705882346
+    },
+    {
+      "composition_id": 1495,
+      "mirex": 0.3784749999999817,
+      "accuracy": 0.2640625,
+      "n_predictions": 32000,
+      "original_mirex": 0.3773062499999826
+    },
+    {
+      "composition_id": 1512,
+      "mirex": 0.23340435606062115,
+      "accuracy": 0.10807291666666667,
+      "n_predictions": 16896,
+      "original_mirex": 0.2312322443181949
+    },
+    {
+      "composition_id": 1518,
+      "mirex": 0.5565204326923184,
+      "accuracy": 0.3215144230769231,
+      "n_predictions": 13312,
+      "original_mirex": 0.5378756009615503
+    },
+    {
+      "composition_id": 1542,
+      "mirex": 0.3675781250000105,
+      "accuracy": 0.23917863175675674,
+      "n_predictions": 18944,
+      "original_mirex": 0.36026710304055004
+    }
+  ]
+}

@@ -77,8 +77,13 @@ def classical_score_distribution(notes: List[Dict]) -> np.ndarray:
     """
     histogram = build_pitch_class_histogram(notes)
     scores = np.zeros(24)
-    for name, profile in PROFILES.items():
-        weight = ENSEMBLE_WEIGHTS[name]
+    # Iterate ENSEMBLE_WEIGHTS, not PROFILES — PROFILES was extended in commit
+    # 2fb8271 (v0.9.2) with bellman_budge + aarden_essen but ENSEMBLE_WEIGHTS
+    # remains the legacy 3-profile dict (KK + TE + AS) for backward compatibility
+    # with Phase 1/2 results. Iterating PROFILES instead would KeyError on the
+    # two new profiles. (Bug surfaced 2026-04-14 during Phase A Track 1.)
+    for name, weight in ENSEMBLE_WEIGHTS.items():
+        profile = PROFILES[name]
         for root in range(12):
             rotated = [histogram[(root + i) % 12] for i in range(12)]
             corr_major = pearson_correlation(rotated, profile['major'])
@@ -159,15 +164,27 @@ def evaluate_ensemble_on_compositions(
         print('WARNING: Prediction file has no softmax. Falling back to one-hot '
               'neural predictions — ensemble quality will be limited.')
 
-    # Load records for classical detection from the requested split
-    with open(splits_path, 'r') as f:
-        splits = json.load(f)
-    test_ids = {str(item['composition_id']) for item in splits['splits'][split_name]}
+    # Phase A Track 1 fix (2026-04-14): the test composition set comes from the
+    # predictions JSON itself, NOT from composition_splits.json. The audited
+    # findings doc §4.2 attributed the "15.6% of test set" symptom to label-dir
+    # resolution; the multi-dir fix in 7bcf9ab was necessary but not sufficient.
+    # The deeper issue is that the predictions JSON is keyed on whichever split
+    # the evaluator used (manifest-mode test = 41 ATEPP files; legacy split =
+    # 58 compositions), and the two split sources disagree on which composition
+    # IDs are "test". Filtering predictions through composition_splits.json
+    # collapses the intersection to ~5 compositions. By using the predictions'
+    # own composition IDs we evaluate the same set the underlying neural eval
+    # already reported on. The `splits_path` arg is now informational only and
+    # may be omitted; it is kept for backwards compatibility.
+    pred_comp_ids = [str(c['composition_id']) for c in neural_data['compositions']]
 
     test_records = {}
     missing_ids: List[int] = []
-    for cid_str in sorted(test_ids):
-        cid_int = int(cid_str)
+    for cid_str in pred_comp_ids:
+        try:
+            cid_int = int(cid_str)
+        except (TypeError, ValueError):
+            continue
         path = _resolve_label_path(dirs, cid_int)
         if path is None:
             missing_ids.append(cid_int)
@@ -176,9 +193,13 @@ def evaluate_ensemble_on_compositions(
             test_records[cid_str] = json.load(f)
     if missing_ids:
         print(
-            f'NOTE: {len(missing_ids)} of {len(test_ids)} {split_name} compositions had no '
-            f'label file across {dirs}; they are excluded from the ensemble eval.'
+            f'NOTE: {len(missing_ids)} of {len(pred_comp_ids)} compositions in the '
+            f'predictions file have no label file across {dirs}; they are excluded.'
         )
+    print(
+        f'Evaluating ensemble on {len(test_records)} compositions '
+        f'(from predictions JSON; splits_path={splits_path} is informational only).'
+    )
 
     total_mirex = {'neural': 0.0, 'classical': 0.0, 'ensemble': 0.0}
     total_correct = {'neural': 0, 'classical': 0, 'ensemble': 0}

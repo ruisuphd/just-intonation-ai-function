@@ -1,0 +1,341 @@
+{
+  "alpha": 0.45,
+  "has_softmax": true,
+  "neural_mirex": 0.5085035724196564,
+  "classical_mirex": 0.6201043978912968,
+  "ensemble_mirex": 0.6220861369312626,
+  "neural_accuracy": 0.3717960946170921,
+  "classical_accuracy": 0.5368774278579356,
+  "ensemble_accuracy": 0.5372329356270811,
+  "total_predictions": 230656,
+  "per_composition": [
+    {
+      "composition_id": "7",
+      "mirex": 1.0,
+      "neural_mirex": 0.8091346153846106,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 3328
+    },
+    {
+      "composition_id": "60",
+      "mirex": 1.0,
+      "neural_mirex": 0.8246930803571411,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 3584
+    },
+    {
+      "composition_id": "77",
+      "mirex": 1.0,
+      "neural_mirex": 0.7239453124999987,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 2560
+    },
+    {
+      "composition_id": "120",
+      "mirex": 0.26943359374995185,
+      "neural_mirex": 0.3973307291666757,
+      "classical_mirex": 0.26943359374995185,
+      "accuracy": 0.0,
+      "n_predictions": 12288
+    },
+    {
+      "composition_id": "122",
+      "mirex": 0.19428710937502144,
+      "neural_mirex": 0.24041341145833325,
+      "classical_mirex": 0.20000000000002316,
+      "accuracy": 0.001953125,
+      "n_predictions": 6144
+    },
+    {
+      "composition_id": "215",
+      "mirex": 0.9879415760869565,
+      "neural_mirex": 0.7382133152174183,
+      "classical_mirex": 0.9879415760869565,
+      "accuracy": 0.9758831521739131,
+      "n_predictions": 5888
+    },
+    {
+      "composition_id": "515",
+      "mirex": 1.0,
+      "neural_mirex": 0.7959635416666666,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 768
+    },
+    {
+      "composition_id": "541",
+      "mirex": 1.0,
+      "neural_mirex": 0.43218750000000145,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1280
+    },
+    {
+      "composition_id": "546",
+      "mirex": 1.0,
+      "neural_mirex": 0.9274414062499996,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1024
+    },
+    {
+      "composition_id": "547",
+      "mirex": 1.0,
+      "neural_mirex": 0.94716796875,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1024
+    },
+    {
+      "composition_id": "550",
+      "mirex": 1.0,
+      "neural_mirex": 0.4556463068181778,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 2816
+    },
+    {
+      "composition_id": "602",
+      "mirex": 1.0,
+      "neural_mirex": 0.5621744791666652,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1536
+    },
+    {
+      "composition_id": "610",
+      "mirex": 0.9138671875,
+      "neural_mirex": 0.5187890624999993,
+      "classical_mirex": 1.0,
+      "accuracy": 0.830078125,
+      "n_predictions": 2560
+    },
+    {
+      "composition_id": "650",
+      "mirex": 0.5160456730769017,
+      "neural_mirex": 0.4601862980769203,
+      "classical_mirex": 0.38076923076921315,
+      "accuracy": 0.32602163461538464,
+      "n_predictions": 3328
+    },
+    {
+      "composition_id": "670",
+      "mirex": 0.12205528846154066,
+      "neural_mirex": 0.13332331730769445,
+      "classical_mirex": 0.14819711538461927,
+      "accuracy": 0.0021033653846153845,
+      "n_predictions": 3328
+    },
+    {
+      "composition_id": "672",
+      "mirex": 0.1083984375,
+      "neural_mirex": 0.4484375000000006,
+      "classical_mirex": 0.0,
+      "accuracy": 0.0,
+      "n_predictions": 1024
+    },
+    {
+      "composition_id": "728",
+      "mirex": 0.22115119485293286,
+      "neural_mirex": 0.31955422794118177,
+      "classical_mirex": 0.2287224264705788,
+      "accuracy": 0.0008042279411764705,
+      "n_predictions": 8704
+    },
+    {
+      "composition_id": "876",
+      "mirex": 1.0,
+      "neural_mirex": 0.6303124999999998,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1280
+    },
+    {
+      "composition_id": "907",
+      "mirex": 1.0,
+      "neural_mirex": 0.35419921874999827,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 11264
+    },
+    {
+      "composition_id": "910",
+      "mirex": 0.7999057112068513,
+      "neural_mirex": 0.4997171336206797,
+      "classical_mirex": 0.8006465517240926,
+      "accuracy": 0.7493265086206896,
+      "n_predictions": 7424
+    },
+    {
+      "composition_id": "1076",
+      "mirex": 0.29999999999998694,
+      "neural_mirex": 0.3451349431818031,
+      "classical_mirex": 0.29999999999998694,
+      "accuracy": 0.0,
+      "n_predictions": 2816
+    },
+    {
+      "composition_id": "1128",
+      "mirex": 1.0,
+      "neural_mirex": 0.7036132812499958,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 4096
+    },
+    {
+      "composition_id": "1132",
+      "mirex": 1.0,
+      "neural_mirex": 0.6801240808823467,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 4352
+    },
+    {
+      "composition_id": "1144",
+      "mirex": 0.912109375,
+      "neural_mirex": 0.7940848214285714,
+      "classical_mirex": 1.0,
+      "accuracy": 0.82421875,
+      "n_predictions": 1792
+    },
+    {
+      "composition_id": "1147",
+      "mirex": 0.8634259259259259,
+      "neural_mirex": 0.8741319444444523,
+      "classical_mirex": 0.8634259259259259,
+      "accuracy": 0.8634259259259259,
+      "n_predictions": 6912
+    },
+    {
+      "composition_id": "1164",
+      "mirex": 0.9998046875,
+      "neural_mirex": 0.7354296874999997,
+      "classical_mirex": 1.0,
+      "accuracy": 0.999609375,
+      "n_predictions": 2560
+    },
+    {
+      "composition_id": "1190",
+      "mirex": 0.9089673913043478,
+      "neural_mirex": 0.7657099184782589,
+      "classical_mirex": 0.9089673913043478,
+      "accuracy": 0.9089673913043478,
+      "n_predictions": 5888
+    },
+    {
+      "composition_id": "1200",
+      "mirex": 0.8962053571428571,
+      "neural_mirex": 0.576543898809523,
+      "classical_mirex": 0.9456845238095238,
+      "accuracy": 0.8469122023809523,
+      "n_predictions": 5376
+    },
+    {
+      "composition_id": "1212",
+      "mirex": 1.0,
+      "neural_mirex": 0.8060014204545464,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 2816
+    },
+    {
+      "composition_id": "1215",
+      "mirex": 1.0,
+      "neural_mirex": 0.68251953125,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1024
+    },
+    {
+      "composition_id": "1227",
+      "mirex": 0.9390324519230779,
+      "neural_mirex": 0.6369891826923074,
+      "classical_mirex": 1.0,
+      "accuracy": 0.8810096153846154,
+      "n_predictions": 6656
+    },
+    {
+      "composition_id": "1240",
+      "mirex": 0.6910807291666666,
+      "neural_mirex": 0.6266601562499989,
+      "classical_mirex": 0.5,
+      "accuracy": 0.3821614583333333,
+      "n_predictions": 3072
+    },
+    {
+      "composition_id": "1248",
+      "mirex": 1.0,
+      "neural_mirex": 0.7160900297619076,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 5376
+    },
+    {
+      "composition_id": "1256",
+      "mirex": 1.0,
+      "neural_mirex": 0.8328125000000002,
+      "classical_mirex": 1.0,
+      "accuracy": 1.0,
+      "n_predictions": 1536
+    },
+    {
+      "composition_id": "1257",
+      "mirex": 0.3000000000000055,
+      "neural_mirex": 0.3242745535714238,
+      "classical_mirex": 0.3000000000000055,
+      "accuracy": 0.0,
+      "n_predictions": 1792
+    },
+    {
+      "composition_id": "1259",
+      "mirex": 0.9089339717741909,
+      "neural_mirex": 0.8228200604838688,
+      "classical_mirex": 0.9186995967741909,
+      "accuracy": 0.8962953629032258,
+      "n_predictions": 7936
+    },
+    {
+      "composition_id": "1263",
+      "mirex": 0.9974724264705882,
+      "neural_mirex": 0.70930606617647,
+      "classical_mirex": 1.0,
+      "accuracy": 0.9949448529411765,
+      "n_predictions": 4352
+    },
+    {
+      "composition_id": "1495",
+      "mirex": 0.3328249999999914,
+      "neural_mirex": 0.38291562499998116,
+      "classical_mirex": 0.3318874999999912,
+      "accuracy": 0.21334375,
+      "n_predictions": 32000
+    },
+    {
+      "composition_id": "1512",
+      "mirex": 0.06783262310605666,
+      "neural_mirex": 0.2526100852272893,
+      "classical_mirex": 0.03156960227272789,
+      "accuracy": 0.02479876893939394,
+      "n_predictions": 16896
+    },
+    {
+      "composition_id": "1518",
+      "mirex": 0.9998873197115384,
+      "neural_mirex": 0.5622521033653929,
+      "classical_mirex": 1.0,
+      "accuracy": 0.9997746394230769,
+      "n_predictions": 13312
+    },
+    {
+      "composition_id": "1542",
+      "mirex": 0.22782939189189025,
+      "neural_mirex": 0.34652660472974023,
+      "classical_mirex": 0.22782939189189025,
+      "accuracy": 0.040223817567567564,
+      "n_predictions": 18944
+    }
+  ]
+}
