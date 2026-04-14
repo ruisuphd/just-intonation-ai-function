@@ -376,6 +376,17 @@ def parse_args() -> argparse.Namespace:
         '--compare', default=None,
         help='Path to another prediction file for McNemar\'s test (pairwise significance)',
     )
+    parser.add_argument(
+        '--causal-only', action='store_true', default=False,
+        help='Refuse to load a checkpoint trained with bidirectional=True. '
+             'The <20ms real-time tuning path requires fully causal inference; '
+             'bidirectional results are offline-only oracle bounds (pass --allow-oracle to opt in).',
+    )
+    parser.add_argument(
+        '--allow-oracle', action='store_true', default=False,
+        help='Explicit opt-in to evaluate a bidirectional (non-causal) checkpoint. '
+             'Ignored unless --causal-only is also set. Flags the output filename with an "_ORACLE" suffix.',
+    )
     return parser.parse_args()
 
 
@@ -437,12 +448,23 @@ def main() -> None:
         # Read model config from checkpoint metadata (backwards-compatible)
         bidirectional = checkpoint.get('bidirectional', False)
         gru_pcp = checkpoint.get('gru_pcp', False)
-        model = HarmonicContextGRU(
-            bidirectional=bidirectional,
-            use_pcp=gru_pcp,
-        ).to(device)
+
+        # --- Causal-only guardrail (Phase A rigor restoration) ---
+        # Bidirectional GRUs see future context and therefore violate the real-time
+        # <20ms no-lookahead constraint. Bidirectional numbers are valid as offline
+        # oracle bounds but must not be mixed with causal deployment results.
+        if bidirectional and args.causal_only and not args.allow_oracle:
+            raise SystemExit(
+                f'[--causal-only] Refusing to load bidirectional checkpoint {args.checkpoint!r}.\n'
+                '  Bidirectional GRUs see future notes and are not deployable in the <20ms\n'
+                '  real-time tuning path. To evaluate as an offline oracle bound, pass\n'
+                '  --allow-oracle (output will be tagged "_ORACLE").'
+            )
         if bidirectional:
-            print(f'  Model: bidirectional GRU')
+            if args.causal_only and args.allow_oracle:
+                print('  Model: bidirectional GRU [ORACLE — offline-only, not a deployable result]')
+            else:
+                print('  Model: bidirectional GRU')
         if gru_pcp:
             print(f'  Model: GRU with PCP feature')
     model.load_state_dict(checkpoint['model_state_dict'])
@@ -486,28 +508,46 @@ def main() -> None:
     # --- Tonicization-subset evaluation ---
     # Schubert and Debussy are the most tonicization-heavy composers in ATEPP.
     # Evaluate separately to measure performance on chromatic passages.
+    # Works under both --manifest and legacy modes by filtering already-loaded records.
+    tonic_composers = {'schubert', 'debussy'}
     tonic_metrics = None
-    if not args.manifest:
-        tonic_composers = {'schubert', 'debussy'}
-        tonic_ids = _find_composer_ids(args.label_dir, split_ids['test'], tonic_composers)
-        if tonic_ids:
-            tonic_records = load_records(args.label_dir, tonic_ids)
-            tonic_dataset = HarmonicLabelDataset(
-                tonic_records, augment=False,
-                window_size=args.window_size, window_hop=args.window_hop,
-            )
-            tonic_loader = DataLoader(
-                tonic_dataset, batch_size=args.batch_size,
-                shuffle=False, collate_fn=collate_harmonic_batch,
-            )
-            tonic_metrics = evaluate_extended(model, tonic_loader, loss_fn, str(device))
-            print(
-                f'\nTonicization subset ({len(tonic_ids)} compositions, '
-                f'{", ".join(sorted(tonic_composers))}): '
-                f'accuracy={tonic_metrics["accuracy"]:.4f}, '
-                f'MIREX={tonic_metrics["mirex_weighted_score"]:.4f}, '
-                f'n={tonic_metrics["total_predictions"]}'
-            )
+    tonic_ids: list = []
+
+    def _composer_matches(record, targets):
+        composer = record.get('composer')
+        if not isinstance(composer, str):
+            return False
+        low = composer.lower()
+        return any(c in low for c in targets)
+
+    tonic_records = [r for r in test_records if _composer_matches(r, tonic_composers)]
+    tonic_ids = [
+        int(r['composition_id']) for r in tonic_records
+        if 'composition_id' in r and r['composition_id'] is not None
+    ]
+
+    if tonic_records:
+        tonic_dataset = HarmonicLabelDataset(
+            tonic_records, augment=False,
+            window_size=args.window_size, window_hop=args.window_hop,
+        )
+        tonic_loader = DataLoader(
+            tonic_dataset, batch_size=args.batch_size,
+            shuffle=False, collate_fn=collate_harmonic_batch,
+        )
+        tonic_metrics = evaluate_extended(model, tonic_loader, loss_fn, str(device))
+        print(
+            f'\nTonicization subset ({len(tonic_ids)} compositions, '
+            f'{", ".join(sorted(tonic_composers))}): '
+            f'accuracy={tonic_metrics["accuracy"]:.4f}, '
+            f'MIREX={tonic_metrics["mirex_weighted_score"]:.4f}, '
+            f'n={tonic_metrics["total_predictions"]}'
+        )
+    else:
+        print(
+            f'\nTonicization subset ({", ".join(sorted(tonic_composers))}): '
+            'no matching compositions found in test set — skipping.'
+        )
 
     # --- Bootstrap confidence interval (composition-level resampling) ---
     bootstrap_result = None
@@ -615,10 +655,26 @@ def main() -> None:
         payload['tonicization_subset']['composers'] = sorted(tonic_composers)
         payload['tonicization_subset']['composition_ids'] = tonic_ids
 
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
-    with open(args.output, 'w', encoding='utf-8') as f:
+    # --- Causal/oracle provenance (Phase A rigor restoration) ---
+    is_bidirectional = bool(checkpoint.get('bidirectional', False)) if args.model_type != 'transformer' else False
+    payload['causality'] = {
+        'bidirectional': is_bidirectional,
+        'is_oracle_result': is_bidirectional,
+        'causal_only_flag': bool(args.causal_only),
+        'allow_oracle_flag': bool(args.allow_oracle),
+    }
+
+    output_path = args.output
+    if is_bidirectional and not output_path.endswith('_ORACLE.json'):
+        # Auto-tag filename so oracle results are not mistaken for deployable causal numbers.
+        root, ext = os.path.splitext(output_path)
+        output_path = f'{root}_ORACLE{ext or ".json"}'
+        print(f'  [--causal-only] Retagged output with ORACLE suffix: {output_path}')
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(payload, f, indent=2)
-    print(f'\nSaved to {args.output}')
+    print(f'\nSaved to {output_path}')
 
 
 if __name__ == '__main__':

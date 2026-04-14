@@ -73,6 +73,15 @@ def parse_args() -> argparse.Namespace:
         help='Beta for ENS weighting (default: 0.999). Only used with --weight-mode ens.',
     )
     parser.add_argument(
+        '--selection-metric', choices=['val_loss', 'val_mirex', 'val_accuracy'],
+        default='val_mirex',
+        help='Metric used to select the best checkpoint. Default val_mirex, because '
+             'with class-weighted loss the minimum val_loss need not coincide with the '
+             'maximum val-MIREX. Phase A rigor restoration (2026-04-14): previously '
+             'val_loss was hardcoded, contributing to large val-to-test drift (−0.09 '
+             'MIREX on A1). See PHASE2_POSTDOC_FINDINGS_2026-04-14.md §4.5.',
+    )
+    parser.add_argument(
         '--warmup-epochs', type=int, default=5,
         help='Linear warmup epochs before cosine decay (default: 5)',
     )
@@ -86,7 +95,21 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '--bidirectional', action='store_true', default=False,
-        help='Use bidirectional GRU (doubles hidden state, non-causal)',
+        help='Use bidirectional GRU (doubles hidden state, non-causal). '
+             'NOTE: bidirectional training violates the <20ms no-lookahead real-time '
+             'constraint. Use only for offline oracle bounds; pair with --allow-oracle '
+             'when --require-causal is active.',
+    )
+    parser.add_argument(
+        '--require-causal', action='store_true', default=False,
+        help='Abort training if --bidirectional is set (enforces real-time deployability). '
+             'Pair with --allow-oracle to explicitly opt into an offline oracle run.',
+    )
+    parser.add_argument(
+        '--allow-oracle', action='store_true', default=False,
+        help='When --require-causal is active, explicitly permit a bidirectional '
+             'training run as an offline oracle bound. Checkpoint metadata records '
+             'the oracle status so downstream evaluation can filter it out.',
     )
     parser.add_argument(
         '--gru-pcp', action='store_true', default=False,
@@ -731,6 +754,59 @@ def masked_accuracy(logits: torch.Tensor, labels: torch.Tensor) -> float:
     return 0.0 if total == 0 else correct / total
 
 
+# Phase A: MIREX scoring for val-MIREX checkpoint selection. Mirrors the canonical
+# version in evaluate_harmonic_context_model.py:74–104; imports are blocked by a
+# reverse dependency. Key indices: 0–11 = C..B major, 12–23 = Cm..Bm minor.
+def _mirex_score_int(pred_idx: int, true_idx: int) -> float:
+    if pred_idx == true_idx:
+        return 1.0
+    pred_pc = pred_idx % 12
+    true_pc = true_idx % 12
+    pred_minor = pred_idx >= 12
+    true_minor = true_idx >= 12
+    pc_diff = (pred_pc - true_pc) % 12
+    if pred_pc == true_pc and pred_minor != true_minor:
+        return 0.2
+    if pred_minor == true_minor and pc_diff in (5, 7):
+        return 0.5
+    if pred_minor != true_minor and pc_diff in (3, 9):
+        return 0.3
+    return 0.0
+
+
+_MIREX_LUT: torch.Tensor | None = None
+
+
+def _mirex_lookup_table(device: torch.device) -> torch.Tensor:
+    """24x24 lookup table of MIREX scores; computed once and cached per device."""
+    global _MIREX_LUT
+    if _MIREX_LUT is None or _MIREX_LUT.device != device:
+        table = torch.tensor(
+            [[_mirex_score_int(p, t) for t in range(24)] for p in range(24)],
+            dtype=torch.float32, device=device,
+        )
+        _MIREX_LUT = table
+    return _MIREX_LUT
+
+
+def masked_mirex(logits: torch.Tensor, labels: torch.Tensor) -> Tuple[float, int]:
+    """Compute mean MIREX weighted score over non-masked positions.
+
+    Returns (sum_score, count). Sum (not mean) so aggregation across batches
+    is a simple total_sum / total_count — identical to what `run_evaluation`
+    does for accuracy.
+    """
+    predictions = logits.argmax(dim=-1)
+    mask = labels != -100
+    if mask.sum().item() == 0:
+        return 0.0, 0
+    lut = _mirex_lookup_table(logits.device)
+    flat_pred = predictions[mask]
+    flat_true = labels[mask]
+    scores = lut[flat_pred, flat_true]
+    return float(scores.sum().item()), int(flat_true.numel())
+
+
 def _get_key_logits(output: object) -> torch.Tensor:
     """Get key logits from model output (GRU returns tensor, Transformer returns dict)."""
     if isinstance(output, dict):
@@ -745,6 +821,8 @@ def run_evaluation(
     model.eval()
     total_loss = 0.0
     total_accuracy = 0.0
+    mirex_sum = 0.0
+    mirex_count = 0
     batches = 0
 
     with torch.no_grad():
@@ -755,14 +833,19 @@ def run_evaluation(
                 loss = loss_fn(logits.view(-1, logits.shape[-1]), batch['labels'].view(-1))
             total_loss += loss.item()
             total_accuracy += masked_accuracy(logits, batch['labels'])
+            bs_sum, bs_count = masked_mirex(logits, batch['labels'])
+            mirex_sum += bs_sum
+            mirex_count += bs_count
             batches += 1
 
     if batches == 0:
-        return {'loss': math.nan, 'accuracy': math.nan}
+        return {'loss': math.nan, 'accuracy': math.nan, 'mirex_weighted_score': math.nan}
 
     return {
         'loss': total_loss / batches,
         'accuracy': total_accuracy / batches,
+        'mirex_weighted_score': mirex_sum / mirex_count if mirex_count > 0 else math.nan,
+        'mirex_n_frames': mirex_count,
     }
 
 
@@ -808,6 +891,22 @@ def train_epoch(
 
 def main() -> None:
     args = parse_args()
+
+    # --- Causal-only guardrail (Phase A rigor restoration) ---
+    # Bidirectional GRUs see future notes and therefore violate the real-time
+    # <20ms no-lookahead tuning constraint. Permit bidirectional training only
+    # when the user explicitly opts in as an offline oracle run.
+    if args.require_causal and args.bidirectional and not args.allow_oracle:
+        raise SystemExit(
+            '[--require-causal] Refusing to train with --bidirectional.\n'
+            '  Bidirectional GRUs are not deployable in the real-time tuning path.\n'
+            '  To produce an offline oracle bound, pass --allow-oracle; the checkpoint\n'
+            '  will be tagged as an oracle result in its metadata.'
+        )
+    if args.bidirectional and args.require_causal and args.allow_oracle:
+        print('[--require-causal --allow-oracle] Bidirectional training permitted '
+              'as ORACLE run — not a deployable result.')
+
     seed = args.seed if args.seed is not None else SEED
     set_seed(seed, deterministic=args.deterministic)
     print(f'Random seed: {seed}'
@@ -998,9 +1097,32 @@ def main() -> None:
 
     print(f'Weight decay: {args.weight_decay}')
 
-    best_validation = float('inf')
+    # Phase A selection-metric handling (rigor restoration).
+    # Higher-is-better for val_mirex / val_accuracy; lower-is-better for val_loss.
+    if args.selection_metric == 'val_loss':
+        best_score = float('inf')
+        def _is_better(new_score: float, best: float) -> bool:
+            return new_score < best
+        def _metric_of(m: Dict[str, float]) -> float:
+            return float(m.get('loss', float('inf')))
+    elif args.selection_metric == 'val_accuracy':
+        best_score = float('-inf')
+        def _is_better(new_score: float, best: float) -> bool:
+            return new_score > best
+        def _metric_of(m: Dict[str, float]) -> float:
+            return float(m.get('accuracy', float('-inf')))
+    else:  # val_mirex — default
+        best_score = float('-inf')
+        def _is_better(new_score: float, best: float) -> bool:
+            return new_score > best
+        def _metric_of(m: Dict[str, float]) -> float:
+            return float(m.get('mirex_weighted_score', float('-inf')))
+    best_validation = best_score  # kept name for backwards-compatible checkpoint field
+    print(f'Checkpoint selection metric: {args.selection_metric}')
+
     best_epoch = 0
     epochs_without_improvement = 0
+    per_epoch_log: List[Dict[str, float]] = []
     os.makedirs(os.path.dirname(args.checkpoint), exist_ok=True)
 
     for epoch in range(1, args.epochs + 1):
@@ -1021,11 +1143,23 @@ def main() -> None:
             f"train_acc={train_metrics['accuracy']:.4f} "
             f"val_loss={validation_metrics['loss']:.4f} "
             f"val_acc={validation_metrics['accuracy']:.4f} "
+            f"val_mirex={validation_metrics.get('mirex_weighted_score', float('nan')):.4f} "
             f"lr={current_lr:.2e}"
         )
 
-        if validation_metrics['loss'] < best_validation:
-            best_validation = validation_metrics['loss']
+        per_epoch_log.append({
+            'epoch': epoch,
+            'train_loss': float(train_metrics['loss']),
+            'train_accuracy': float(train_metrics['accuracy']),
+            'val_loss': float(validation_metrics['loss']),
+            'val_accuracy': float(validation_metrics['accuracy']),
+            'val_mirex_weighted_score': float(validation_metrics.get('mirex_weighted_score', float('nan'))),
+            'learning_rate': float(current_lr),
+        })
+
+        current_score = _metric_of(validation_metrics)
+        if _is_better(current_score, best_validation):
+            best_validation = current_score
             best_epoch = epoch
             epochs_without_improvement = 0
             torch.save(
@@ -1033,6 +1167,9 @@ def main() -> None:
                     'model_state_dict': model.state_dict(),
                     'validation_loss': validation_metrics['loss'],
                     'validation_accuracy': validation_metrics['accuracy'],
+                    'validation_mirex_weighted_score': validation_metrics.get('mirex_weighted_score'),
+                    'selection_metric': args.selection_metric,
+                    'selection_metric_value': float(current_score),
                     'seed': SEED,
                     'epoch': epoch,
                     'weight_mode': args.weight_mode,
@@ -1045,6 +1182,9 @@ def main() -> None:
                     'warmup_epochs': args.warmup_epochs,
                     'patience': args.patience,
                     'bidirectional': args.bidirectional,
+                    'is_oracle_result': bool(args.bidirectional),
+                    'require_causal_flag': bool(args.require_causal),
+                    'allow_oracle_flag': bool(args.allow_oracle),
                     'gru_pcp': args.gru_pcp,
                     'focal_loss': args.focal_loss,
                     'focal_gamma': args.focal_gamma if args.focal_loss else None,
@@ -1061,7 +1201,25 @@ def main() -> None:
                 print(f'Early stopping: no improvement for {args.patience} epochs')
                 break
 
-    print(f'Saved best checkpoint to {args.checkpoint} (best epoch={best_epoch})')
+    # Persist the per-epoch training log alongside the checkpoint for Phase A provenance.
+    log_path = os.path.splitext(args.checkpoint)[0] + '_training_log.json'
+    try:
+        with open(log_path, 'w', encoding='utf-8') as fh:
+            json.dump({
+                'selection_metric': args.selection_metric,
+                'best_epoch': best_epoch,
+                'best_selection_metric_value': float(best_validation),
+                'seed': SEED,
+                'weight_mode': args.weight_mode,
+                'bidirectional': args.bidirectional,
+                'per_epoch': per_epoch_log,
+            }, fh, indent=2)
+        print(f'Saved training log to {log_path}')
+    except OSError as exc:
+        print(f'WARNING: could not persist training log to {log_path}: {exc}')
+
+    print(f'Saved best checkpoint to {args.checkpoint} (best epoch={best_epoch}, '
+          f'selection={args.selection_metric}={best_validation:.4f})')
 
 
 if __name__ == '__main__':

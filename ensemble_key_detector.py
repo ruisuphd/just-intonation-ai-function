@@ -26,7 +26,30 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from typing import Dict, List, Tuple
+from typing import Dict, List, Sequence, Tuple
+
+
+def _resolve_label_path(label_dirs: Sequence[str], cid_int: int) -> str | None:
+    """Search label_dirs in order for a per-composition label file.
+
+    Returns the first matching path, or None if not found. Mirrors the
+    training-time search order used in load_records_from_manifest().
+    """
+    filename = f'{cid_int:04d}.json'
+    for d in label_dirs:
+        candidate = os.path.join(d, filename)
+        if os.path.isfile(candidate):
+            return candidate
+    return None
+
+
+def _coerce_label_dirs(label_dirs, label_dir: str | None = None) -> List[str]:
+    """Accept either a list, a comma-separated string, a single dir, or None."""
+    if label_dirs is None or label_dirs == '':
+        return [label_dir] if label_dir else []
+    if isinstance(label_dirs, str):
+        return [d.strip() for d in label_dirs.split(',') if d.strip()]
+    return list(label_dirs)
 
 import numpy as np
 
@@ -105,7 +128,7 @@ def ensemble_evaluate_composition(
 
 def evaluate_ensemble_on_compositions(
     neural_pred_file: str,
-    label_dir: str,
+    label_dirs,
     splits_path: str,
     alpha: float,
     split_name: str = 'test',
@@ -114,7 +137,9 @@ def evaluate_ensemble_on_compositions(
 
     Args:
         neural_pred_file: Path to JSON with neural predictions and optional softmax.
-        label_dir: Directory containing per-composition label JSON files.
+        label_dirs: Label source(s). Accepts a list of directories, a
+            comma-separated string, or a single directory path. The first
+            matching file wins (training-time search order).
         splits_path: Path to composition_splits.json.
         alpha: Weight for neural model (1.0 = neural only, 0.0 = classical only).
         split_name: Which split to evaluate on ('test' or 'validation').
@@ -122,6 +147,10 @@ def evaluate_ensemble_on_compositions(
     Returns:
         Dict with MIREX scores, accuracy, and per-composition breakdown.
     """
+    dirs = _coerce_label_dirs(label_dirs)
+    if not dirs:
+        raise ValueError('evaluate_ensemble_on_compositions: no label directory supplied')
+
     with open(neural_pred_file, 'r') as f:
         neural_data = json.load(f)
 
@@ -136,12 +165,20 @@ def evaluate_ensemble_on_compositions(
     test_ids = {str(item['composition_id']) for item in splits['splits'][split_name]}
 
     test_records = {}
+    missing_ids: List[int] = []
     for cid_str in sorted(test_ids):
         cid_int = int(cid_str)
-        path = os.path.join(label_dir, f'{cid_int:04d}.json')
-        if os.path.isfile(path):
-            with open(path, 'r') as f:
-                test_records[cid_str] = json.load(f)
+        path = _resolve_label_path(dirs, cid_int)
+        if path is None:
+            missing_ids.append(cid_int)
+            continue
+        with open(path, 'r') as f:
+            test_records[cid_str] = json.load(f)
+    if missing_ids:
+        print(
+            f'NOTE: {len(missing_ids)} of {len(test_ids)} {split_name} compositions had no '
+            f'label file across {dirs}; they are excluded from the ensemble eval.'
+        )
 
     total_mirex = {'neural': 0.0, 'classical': 0.0, 'ensemble': 0.0}
     total_correct = {'neural': 0, 'classical': 0, 'ensemble': 0}
@@ -218,7 +255,7 @@ def evaluate_ensemble_on_compositions(
 
 def search_alpha_on_validation(
     val_pred_file: str,
-    val_label_dir: str,
+    val_label_dirs,
     splits_path: str,
 ) -> Tuple[float, float]:
     """Grid-search for the best ensemble alpha on the validation split.
@@ -246,7 +283,7 @@ def search_alpha_on_validation(
     for alpha_int in range(0, 105, 5):
         alpha = alpha_int / 100.0
         result = evaluate_ensemble_on_compositions(
-            val_pred_file, val_label_dir, splits_path, alpha,
+            val_pred_file, val_label_dirs, splits_path, alpha,
             split_name='validation',
         )
         print(f'{alpha:>8.2f} {result["neural_mirex"]:>10.4f} '
@@ -269,22 +306,44 @@ def main() -> None:
                              'When provided, alpha is tuned on validation and evaluated once '
                              'on test, preventing data leakage.')
     parser.add_argument('--splits', default=os.path.join(BASE_DIR, 'research_data', 'composition_splits.json'))
-    parser.add_argument('--label-dir', default=os.path.join(BASE_DIR, 'research_data', 'score_key_labels'))
+    parser.add_argument(
+        '--label-dir',
+        default=os.path.join(BASE_DIR, 'research_data', 'score_key_labels'),
+        help='Single label directory (backwards-compatible). Use --label-dirs for multi-corpus eval.',
+    )
+    parser.add_argument(
+        '--label-dirs', default=None,
+        help='Comma-separated list of label directories, searched in order '
+             '(training-time search order). When set, overrides --label-dir.',
+    )
     parser.add_argument('--val-label-dir', default=None,
-                        help='Label directory for validation compositions. '
-                             'Defaults to --label-dir if not specified.')
+                        help='Single label directory for validation compositions. '
+                             'Defaults to --label-dir / --label-dirs if not specified.')
+    parser.add_argument('--val-label-dirs', default=None,
+                        help='Comma-separated list of validation label directories. '
+                             'When set, overrides --val-label-dir.')
     parser.add_argument('--alpha', type=float, default=None,
                         help='Neural weight (0-1). If not set, grid-searches for best alpha.')
     parser.add_argument('--output', default=os.path.join(BASE_DIR, 'research_data', 'ensemble_eval.json'))
     args = parser.parse_args()
 
-    # Default val-label-dir to label-dir
-    val_label_dir = args.val_label_dir if args.val_label_dir else args.label_dir
+    # Resolve test label dirs. Prefer --label-dirs plural if provided.
+    test_label_dirs = _coerce_label_dirs(args.label_dirs, args.label_dir)
+    # Resolve val label dirs. Fall back to test dirs if nothing specified.
+    if args.val_label_dirs:
+        val_label_dirs = _coerce_label_dirs(args.val_label_dirs, None)
+    elif args.val_label_dir:
+        val_label_dirs = _coerce_label_dirs(None, args.val_label_dir)
+    else:
+        val_label_dirs = test_label_dirs
+
+    print(f'Test label dirs:       {test_label_dirs}')
+    print(f'Validation label dirs: {val_label_dirs}')
 
     if args.alpha is not None:
         # ---- Fixed alpha: evaluate directly on test ----
         result = evaluate_ensemble_on_compositions(
-            args.neural_predictions, args.label_dir, args.splits, args.alpha,
+            args.neural_predictions, test_label_dirs, args.splits, args.alpha,
         )
         print(f'Alpha={args.alpha:.2f}:')
         print(f'  Neural MIREX:    {result["neural_mirex"]:.4f}')
@@ -294,12 +353,12 @@ def main() -> None:
     elif args.val_predictions is not None:
         # ---- Proper workflow: tune on validation, evaluate once on test ----
         best_alpha, val_mirex = search_alpha_on_validation(
-            args.val_predictions, val_label_dir, args.splits,
+            args.val_predictions, val_label_dirs, args.splits,
         )
 
         print(f'\nEvaluating on TEST set with alpha={best_alpha:.2f} ...')
         result = evaluate_ensemble_on_compositions(
-            args.neural_predictions, args.label_dir, args.splits, best_alpha,
+            args.neural_predictions, test_label_dirs, args.splits, best_alpha,
         )
         print(f'  Neural MIREX:    {result["neural_mirex"]:.4f}')
         print(f'  Classical MIREX: {result["classical_mirex"]:.4f}')
@@ -320,7 +379,7 @@ def main() -> None:
         for alpha_int in range(0, 105, 5):
             alpha = alpha_int / 100.0
             result = evaluate_ensemble_on_compositions(
-                args.neural_predictions, args.label_dir, args.splits, alpha,
+                args.neural_predictions, test_label_dirs, args.splits, alpha,
             )
             print(f'{alpha:>8.2f} {result["neural_mirex"]:>10.4f} '
                   f'{result["classical_mirex"]:>10.4f} {result["ensemble_mirex"]:>10.4f}')
@@ -330,7 +389,7 @@ def main() -> None:
 
         print(f'\nBest alpha={best_alpha:.2f}, Ensemble MIREX={best_mirex:.4f}')
         result = evaluate_ensemble_on_compositions(
-            args.neural_predictions, args.label_dir, args.splits, best_alpha,
+            args.neural_predictions, test_label_dirs, args.splits, best_alpha,
         )
 
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
