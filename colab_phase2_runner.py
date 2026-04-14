@@ -75,7 +75,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_MANIFEST = os.path.join(BASE_DIR, 'research_data', 'unified_training_manifest.json')
 DEFAULT_LABEL_DIRS = ','.join([
-    os.path.join(BASE_DIR, 'research_data', 'all_key_labels'),
+    # Per-corpus label directories. Together they cover the full
+    # unified_training_manifest.json (ATEPP + WiR + DCML), which is what the
+    # Phase A ensemble fix (3d) requires — the audited Phase 2 run loaded only
+    # `score_key_labels` (ATEPP-only, N=41) and missed WiR/DCML test records.
+    # The flat union `all_key_labels/` also exists but the per-corpus split
+    # preserves provenance for stratified reporting (per-corpus MIREX).
+    os.path.join(BASE_DIR, 'research_data', 'wir_key_labels'),
+    os.path.join(BASE_DIR, 'research_data', 'dcml_key_labels'),
     os.path.join(BASE_DIR, 'research_data', 'score_key_labels'),
 ])
 DEFAULT_SPLITS = os.path.join(BASE_DIR, 'research_data', 'composition_splits.json')
