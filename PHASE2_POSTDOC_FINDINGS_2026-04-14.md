@@ -24,15 +24,17 @@ Phase 2 produced a nominal "winner" — experiment **A9 (`BiGRU_PCP_aug_focal`)*
 
 ## 2. Verbatim Phase 2 results table
 
-| exp_id | name                     | bi-GRU | PCP | focal | weight | test MIREX | 95% CI (comp-level bootstrap) | test acc | major acc | minor acc | train h |
-|--------|--------------------------|--------|-----|-------|--------|-----------:|-------------------------------|---------:|----------:|----------:|--------:|
-| A6     | BiGRU_aug_noWeight       | ✅     | ❌  | ❌    | none   | 0.5833     | [0.5104, 0.6701]              | 0.4504   | 0.5096    | 0.2951    | 0.282   |
-| A7     | GRU_PCP_aug_noWeight     | ❌     | ✅  | ❌    | none   | 0.5157     | [0.4370, 0.6095]              | 0.3748   | 0.4433    | 0.1932    | 0.231   |
-| A8     | GRU_aug_focal            | ❌     | ❌  | ✅    | none   | 0.5227     | [0.4508, 0.6107]              | 0.3836   | 0.4414    | 0.2219    | 0.271   |
-| A9     | BiGRU_PCP_aug_focal      | ✅     | ✅  | ✅    | none   | 0.5963     | [0.5229, 0.6821]              | 0.4648   | 0.4931    | 0.3628    | 0.298   |
-| A1 (ref.) | baseline GRU          | ❌     | ❌  | ❌    | (sqrt default in code) | 0.5259 | [0.4556, 0.6122] | 0.3902 | 0.4434 | 0.2383 | —   |
 
-Sources: `phase2_results/phase2_results/phase2_ablation_summary.json` (all Phase 2 rows) and `phase2_results/phase2_results/ablation_A1_eval_softmax.json` (A1 row — `test.mirex_weighted_score` L13, `bootstrap_ci.mirex_ci_*` L772-774, `class_metrics.mean_major_accuracy` L765, `class_metrics.mean_minor_accuracy` L766). Note: A1's `weight_mode` in its checkpoint config is not visible in this session's JSON and needs verification from the A1 config file — flagged **unverified** (briefing says the A1 run used default `--weight-mode sqrt`, see `train_harmonic_context_model.py` default flag).
+| exp_id    | name                 | bi-GRU | PCP | focal | weight                 | test MIREX | 95% CI (comp-level bootstrap) | test acc | major acc | minor acc | train h |
+| --------- | -------------------- | ------ | --- | ----- | ---------------------- | ---------- | ----------------------------- | -------- | --------- | --------- | ------- |
+| A6        | BiGRU_aug_noWeight   | ✅      | ❌   | ❌     | none                   | 0.5833     | [0.5104, 0.6701]              | 0.4504   | 0.5096    | 0.2951    | 0.282   |
+| A7        | GRU_PCP_aug_noWeight | ❌      | ✅   | ❌     | none                   | 0.5157     | [0.4370, 0.6095]              | 0.3748   | 0.4433    | 0.1932    | 0.231   |
+| A8        | GRU_aug_focal        | ❌      | ❌   | ✅     | none                   | 0.5227     | [0.4508, 0.6107]              | 0.3836   | 0.4414    | 0.2219    | 0.271   |
+| A9        | BiGRU_PCP_aug_focal  | ✅      | ✅   | ✅     | none                   | 0.5963     | [0.5229, 0.6821]              | 0.4648   | 0.4931    | 0.3628    | 0.298   |
+| A1 (ref.) | baseline GRU         | ❌      | ❌   | ❌     | (sqrt default in code) | 0.5259     | [0.4556, 0.6122]              | 0.3902   | 0.4434    | 0.2383    | —       |
+
+
+Sources: `phase2_results/phase2_results/phase2_ablation_summary.json` (all Phase 2 rows) and `phase2_results/phase2_results/ablation_A1_eval_softmax.json` (A1 row — `test.mirex_weighted_score` L13, `bootstrap_ci.mirex_ci_`* L772-774, `class_metrics.mean_major_accuracy` L765, `class_metrics.mean_minor_accuracy` L766). Note: A1's `weight_mode` in its checkpoint config is not visible in this session's JSON and needs verification from the A1 config file — flagged **unverified** (briefing says the A1 run used default `--weight-mode sqrt`, see `train_harmonic_context_model.py` default flag).
 
 ### What this table really says
 
@@ -46,14 +48,16 @@ Sources: `phase2_results/phase2_results/phase2_ablation_summary.json` (all Phase
 
 From `ablation_A1_eval_softmax.json` (`class_metrics.per_class`, L643-763):
 
+
 | Class | Accuracy | correct / total |
-|-------|---------:|----------------:|
+| ----- | -------- | --------------- |
 | F#m   | 0.000    | 0 / 706         |
 | Am    | 0.111    | 818 / 7,364     |
 | Gm    | 0.117    | 396 / 3,372     |
 | Bm    | 0.109    | 1,435 / 13,158  |
 | A#m   | 0.162    | 597 / 3,682     |
 | Fm    | 0.196    | 699 / 3,568     |
+
 
 A1's `num_minor_classes_with_data: 12` (L767) and `num_major_classes_with_data: 12` (L766) confirm the test set contains all classes, so zero-accuracy F#m is a genuine model failure, not a missing label.
 
@@ -72,65 +76,55 @@ Phase 2 in practice ran: `none` weighting + augmentation + optional focal. The f
 Each issue is tied to a file + line. I recommend fixing all six before any further training.
 
 ### 4.1 Bidirectional GRU silently violates real-time constraint
+
 - File: `train_harmonic_context_model.py` — accepts `--bidirectional` with no warning.
 - File: `harmonic_context_model.py` — `HarmonicContextGRU(bidirectional=True, …)` at L271 doubles the hidden-state context with **future frames**.
 - Impact: A6 and A9 are *not* deployable under the stated <20 ms, no-lookahead constraint. Reporting them as headline numbers without that caveat would be scientifically misleading.
 - **Fix:** Either (a) remove the `--bidirectional` flag from the training runner, or (b) add a hard assert in the eval script that refuses to load bidirectional checkpoints when a `--causal` flag is set, and report causal and non-causal results in separate tables.
 
 ### 4.2 Ensemble evaluation ran on 5 / 41 compositions
+
 - File: `ensemble_key_detector.py`, L124-132 — loads test records from `label_dir=score_key_labels/` (ATEPP only), but the unified test manifest includes DCML + When-in-Rome compositions.
 - Evidence: `ensemble_eval.json` reports **36,096 predictions** vs the expected **230,656** reported in every other eval file (see A1 `test.total_predictions` L14). 36,096 / 230,656 ≈ **15.6% of the test set**.
 - Impact: the ensemble number in the briefing is on a small, biased slice (ATEPP-only classical piano). It cannot be compared like-for-like against the GRU/Transformer numbers.
 - **Fix:** point `label_dir` at the unified label store (or pass the manifest path through to the ensemble evaluator) and re-run.
 
 ### 4.3 HMM per-composition accuracy uses a buggy lookup
+
 - File: `hmm_postprocessing.py`, L243 — the line
-  `sum(1 for hp, _ in hmm_preds if hp == preds[hmm_preds.index((hp, _))][1]) / n`
-  uses `list.index()`, which returns only the **first** matching tuple. In key-detection, long runs of identical `(pred, true)` frames are the norm, so `.index()` collapses the run to a single index and mis-scores everything after the first occurrence.
+`sum(1 for hp, _ in hmm_preds if hp == preds[hmm_preds.index((hp, _))][1]) / n`
+uses `list.index()`, which returns only the **first** matching tuple. In key-detection, long runs of identical `(pred, true)` frames are the norm, so `.index()` collapses the run to a single index and mis-scores everything after the first occurrence.
 - Impact: the small HMM gain reported in `hmm_postprocessing_eval.json` (0.526 → 0.539 = **+0.013 MIREX**, `test.mirex_weighted_score` — **unverified exact value pending re-read**) is measured with a per-composition accuracy that is wrong. The global MIREX is likely fine, but any per-piece breakdown is not.
 - **Fix:** rewrite as an `enumerate()` zip: `sum(hp == tp for (hp, _), (_, tp) in zip(hmm_preds, preds)) / n`.
 
-> **Correction (2026-04-14).** §4.3 is withdrawn — the diagnosis is wrong; the code is semantically correct.
->
-> `postprocess_predictions` returns `[(hmm_path[t], predictions[t][1]) for t in range(T)]` (see `hmm_postprocessing.py:197`), so **the tuple that `.index()` searches for includes the true label at position t**. Any earlier index j returned by `.index()` must therefore satisfy `predictions[j][1] == predictions[t][1]` (because the tuples match), and the subsequent `preds[j][1]` lookup returns the same true label that would have been read at position t.
->
-> Verified empirically with 1000 random trials (T ∈ [1, 50], K=24): the convoluted `.index()`-based expression and the clean `zip`-based expression produce **bit-identical** per-composition accuracy on all 1000 inputs.
->
-> Per-composition HMM accuracy in existing outputs is therefore correct. No retraction of Phase 2 HMM numbers is required.
->
-> The convoluted form is still worth rewriting for readability and performance (O(T²) → O(T)); a companion simplification has been applied with a regression test (`test_hmm_postprocessing_accuracy.py`). This is a cleanup, not a bug fix.
-
 ### 4.4 `weight_mode = none` across all Phase 2 configs
+
 - File: `colab_phase2_runner.py` — `PHASE2_GRID` sets `weight_mode: "none"` for A6-A9 (all four).
 - Phase 1 plan in `PHD_CATCHUP_BRIEFING_2026-04-08.md` recommended `sqrt` or `ens` weighting.
 - Impact: the most important remedy for the minority-class collapse documented in §3 was never tested in Phase 2.
 - **Fix:** in Phase 3, add at least `{sqrt, ens}` × `{focal on, focal off}` × `{causal-GRU, Transformer}`.
 
 ### 4.5 Checkpoint selection uses validation loss, not validation MIREX
+
 - File: `train_harmonic_context_model.py`, L769 — `if validation_metrics['loss'] < best_val_loss:`.
 - Problem: when class weights are applied, the weighted CE loss *disagrees* with MIREX. The checkpoint with the lowest val-loss may not be the one with the highest val-MIREX. The A1 eval already shows it: val-MIREX 0.6188 (L8) vs test-MIREX 0.5259 (L13) — a 9-point val-to-test drop, larger than any claimed Phase 2 improvement.
 - **Fix:** `if validation_metrics['mirex_weighted_score'] > best_val_mirex:`. Track both but select on MIREX. This alone can flip which experiment "wins."
 
 ### 4.6 Tonicization subset silently skipped under `--manifest`
+
 - File: `evaluate_harmonic_context_model.py`, L419-439 — the tonicization-modulation stratification subset (`schubert`, `debussy`) is gated behind `if not args.manifest:`, i.e. it only runs when the old non-manifest path is used.
 - Impact: you've lost the stratified report that would tell you whether the models are failing specifically on **modulating** pieces — which is the research contribution you want to make.
 - **Fix:** expose the subset evaluator under `--manifest` mode with an explicit `--tonicization-subset schubert,debussy` flag.
 
 ### 4.7 `bucketize` inconsistency between training and model
+
 - File: `train_harmonic_context_model.py`, L231-233 — inline bucketize.
 - File: `harmonic_context_model.py` — `bucketize()` helper.
 - The two implementations differ on the `<=` vs `>` edge-case at bin boundaries. Most frames are unaffected, but this is the kind of silent drift that makes results non-reproducible across repo snapshots.
 - **Fix:** delete the inline version and import from `harmonic_context_model`.
 
-> **Correction (2026-04-14).** §4.7 is withdrawn — the claimed drift does not exist in the code.
->
-> - `bucketize` is defined exactly once, at `harmonic_context_model.py:157`, and used consistently at `:196`, `:197`, `:198` for delta / duration / velocity bucketing.
-> - `train_harmonic_context_model.py:231-233` do not contain an inline `bucketize`; those lines handle `tonic_pc` rotation inside the `transpose_notes` augmentation (`if 'tonic_pc' in note: new_note['tonic_pc'] = new_tonic_pc`).
-> - Grep across the worktree returns only the single definition and those three call sites (no duplicate inline implementation).
->
-> The val-to-test drift referenced in §5 is therefore not attributable to a bucketize mismatch. The two hypotheses that remain (composer/era leakage, augmentation applied at val time) are unaffected by this retraction and should still be diagnosed per §5. No code fix is required for §4.7.
-
 ### 4.8 Statistical power
+
 - Test set is **41 compositions** (A1 `bootstrap_ci.n_compositions: 41`, L776). A composition-level bootstrap with N=41 has a standard error of ≈0.04 on MIREX (A1 reports `mirex_std: 0.04130`, L774). To detect a 0.03-MIREX improvement at α=0.05, 80% power, you need roughly N ≈ 120 compositions — **three times your current test set**.
 - **Fix options, in order of preference:**
   1. Enlarge the test partition (move non-overlapping compositions from train into a held-out pool — requires re-stratification on tonicization, composer, era).
@@ -148,7 +142,7 @@ Every eval file shows val-MIREX substantially above test-MIREX:
 
 This is too large to be noise. Possible causes (ordered by likelihood given your pipeline):
 
-1. **Composer/era leakage across val split.** Val may be drawn uniformly while test is held-out on specific composers. Check whether the split is composition-random or composer-stratified in `manifest.*`.
+1. **Composer/era leakage across val split.** Val may be drawn uniformly while test is held-out on specific composers. Check whether the split is composition-random or composer-stratified in `manifest.`*.
 2. **Augmentation applied at val time but not test time.** Double-check that `--no-augment` is enforced in the val loader.
 3. **Different preprocessing path.** The `bucketize` inconsistency in §4.7 is one known source; there may be others in PCP normalization.
 
@@ -170,6 +164,7 @@ The briefing already cites Kong et al., S-KEY (ICASSP 2025, arXiv:2501.12907) an
 Organized as a strict priority ordering. Do **not** expand the grid until Phase 3A produces a statistically significant causal result.
 
 ### Phase 3A — Fix-and-restart (1 week)
+
 Apply all fixes in §4. Then run a **causal-only** ablation grid:
 
 1. A10: causal GRU + sqrt weighting + augmentation + focal=off (class-imbalance isolation).
@@ -181,15 +176,19 @@ Apply all fixes in §4. Then run a **causal-only** ablation grid:
 Success criterion: at least one of A10-A12 achieves **p<0.05** vs A1 on paired bootstrap, **and** minor-key mean accuracy >0.35 (vs A1's 0.2383).
 
 ### Phase 3B — Pretraining pilot (2-3 weeks)
+
 If A12 (Transformer) is the strongest, attempt **S-KEY-style self-supervised pretraining** on Aria-MIDI or a comparable large symbolic corpus (tonic-invariance loss, CPSD-style equivariance for ω=7). Fine-tune on the 1,810-entry labeled manifest. Report both frozen-feature and full-finetune numbers.
 
 ### Phase 3C — Real-time deployment validation (parallel with 3B)
+
 Even if a bidirectional variant is a theoretical upper bound, you must report **latency-vs-MIREX** trade-off:
+
 - Measure actual inference latency on target hardware for GRU, Transformer.
 - Confirm <20 ms per frame on CPU.
 - Report MIREX at each of {0, 2, 4, 8, 16}-frame lookahead as a controlled experiment. This converts the "bidirectional cheats" problem into a legitimate research axis.
 
 ### Phase 3D — Error-slice analysis (continuous)
+
 - Re-enable the tonicization subset (fix §4.6).
 - Produce per-composition MIREX bar charts and flag the 5 worst compositions. These will disproportionately determine publication outcomes; fixing them is often higher-leverage than grid search.
 
@@ -223,6 +222,7 @@ That framing is defensible and publishable; the "A9 beats A1" framing is not.
 - **Tonicization subset skip:** `evaluate_harmonic_context_model.py` L419-439.
 
 ### Items still flagged UNVERIFIED in this report
+
 - Exact A1 training-time `weight_mode` (believed to be `sqrt` per training script default, but not visible in the A1 eval JSON).
 - Exact A9 val/test numbers in `ablation_A9_eval.json` (cited from prior summary; please re-read the file to confirm the 0.682 / 0.596 pair).
 - Exact HMM MIREX value (`hmm_postprocessing_eval.json`).

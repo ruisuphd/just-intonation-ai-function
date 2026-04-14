@@ -1,14 +1,36 @@
 # Phase B Pre-Registration — Clean Causal Ablation
 
 **Date written:** 2026-04-14 (to be finalized and frozen **before** any Phase B run begins)
+**Finalization date:** 2026-04-14 (amended with measured A1-corrected baseline from `phaseA_consolidation_2026-04-14.md`)
 **Plan reference:** `/Users/ruisu/.claude/plans/quizzical-toasting-rainbow.md` — Phase B (M3–M4)
-**Branch:** `phase3-rigor` (to be created from `phase2-final-2026-04-14` tag)
+**Branch:** `main` (sequence `7bcf9ab` → `9c1ddca` → `2faf7b9` → `10d8524`)
 
 This document is the commitment device for Phase B. Experiments that deviate
 from this spec require a companion diff + rationale committed alongside the
 results. The pre-registration is frozen once the first Phase B run kicks off;
 any subsequent change is documented as a **Phase B-prime** amendment rather
 than edited in place.
+
+## 0. A1-corrected baseline (finalized 2026-04-14)
+
+Measured on 3 seeds (20260309, 20260310, 20260311) under `--weight-mode sqrt`,
+`--selection-metric val_mirex`, `--require-causal`, `--deterministic`,
+30 epochs with patience=10:
+
+| Aggregation | MIREX | 95% CI | σ_bootstrap |
+|---|---:|---:|---:|
+| **Frame-weighted (canonical)** | **0.5026** | [0.4336, 0.5889] | 0.0400 |
+| Composition-equal | 0.5802 | [0.5186, 0.6390] | 0.0310 |
+
+- σ(test-MIREX across seeds) = **0.0088** (meets Phase A target σ ≤ 0.01)
+- Minor mean accuracy = **0.3245** (σ = 0.0120)
+- Major mean accuracy = **0.3979** (σ = 0.0132)
+- Val MIREX = **0.6109** (σ = 0.0020, extremely stable)
+- Val-to-test drift = **−0.1126** (systematic across seeds, not seed noise)
+
+**This is the baseline every Phase B cell is compared against.** Per-composition
+MIREX arrays for all 3 seeds are persisted in `phase_a_seeds_2026-04-14/*_predictions.json`;
+paired bootstrap against A1-corrected does not require re-running A1.
 
 ---
 
@@ -22,16 +44,20 @@ at least Δ=0.015 MIREX at p<0.05?
 
 Three outcomes are all Phase B successes:
 
-- **Winner.** A specific architecture + loss configuration clears Δ=0.015 at
-  p<0.05 with σ(test-MIREX) ≤ 0.01 across 3 seeds. That configuration is
-  carried into Phase C for pretraining.
-- **Null + ceiling.** No configuration clears the bar. This is published as
-  "the causal ceiling on this data at this compute scale is approximately
-  <X>" — a defensible Paper 1 contribution on its own. Phase C pivots to
-  testing whether pretraining can move the ceiling.
-- **Partial.** One configuration clears the bar on main test (N=58) but not
-  on `ext-test` (held-out ATEPP 20–40 pieces). Report both, flag as limited
-  generalisation, and treat as a conditional winner.
+- **Winner.** A specific architecture + loss configuration clears Δ=0.015
+  MIREX vs A1-corrected at p<0.05 paired cluster-bootstrap **AND** σ(test-MIREX)
+  ≤ 0.015 across 3 seeds **AND** minor mean accuracy ≥ 0.32 (no regression vs
+  A1-corrected). That configuration is carried into Phase C for pretraining.
+- **Null + ceiling.** No configuration clears the bar. Ceiling ~ 0.50 MIREX
+  (frame-weighted, causal, sqrt-weighted, val-MIREX-selected, 3-seed mean) is
+  reported as the defensible upper bound at this data and compute scale.
+  Phase C pivots to testing whether pretraining can move the ceiling.
+- **Partial.** One configuration clears (1) and (2) but not (3) — i.e. higher
+  aggregate MIREX with minor-class regression. Reported as a design tradeoff,
+  not a win. May still go to Phase C if the minor regression is <0.02.
+- **Aggregate-only.** Cell clears Δ=0.015 single-seed at p<0.05 but σ > 0.015
+  across 3 seeds, i.e. seed noise inflated the single-seed number. Reported
+  as "single-seed artefact" — explicitly not a winner.
 
 ## 2. Pre-registered grid
 
@@ -79,9 +105,11 @@ Compute budget: ~60–90 A100-h at ~1.5 h/run average.
 ## 4. Datasets and splits
 
 - Manifest: `research_data/unified_training_manifest.json` (SHA recorded at run start).
-- Label dirs: `all_key_labels/` + `score_key_labels/` (plural; no ATEPP-only restriction).
-- Splits: `research_data/composition_splits.json` (train 217 / val 44 / test 58). Compositions verified non-overlapping.
+- Label dirs: `wir_key_labels/` + `dcml_key_labels/` + `score_key_labels/` (three per-corpus dirs; see commit `2faf7b9`).
+- **Manifest-mode effective splits (verified in Phase A):** 250 train / 28 val / 41 test files. Strategy A (WiR real-score) entries load 0 files in current manifest — split fields missing for WiR/DCML entries. A Phase B preparatory task is to enrich the manifest with `split` fields for WiR/DCML to expand beyond the ATEPP-only 250/28/41. **If that expansion doesn't land before the first Phase B cell runs, all cells use N_test=41.**
+- `composition_splits.json` (train 217 / val 44 / test 58) is for legacy non-manifest mode and is not the authoritative Phase B split.
 - Ext-test: 20–40 held-out ATEPP pieces never used in train/val/test. Sampled once at Phase B entry and persisted in `research_data/ext_test_composition_ids.json`.
+- Systematic val-to-test drift of −0.1126 MIREX was measured in Phase A. Before any Phase B cell, run `--dump-split-stats` diagnostic to characterize val vs test on key-class histograms, composition sizes, and composer distributions. Commit the output as `research_data/val_test_diagnostic_2026-04-14.json`.
 
 ## 5. Metrics
 

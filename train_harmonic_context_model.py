@@ -1170,7 +1170,7 @@ def main() -> None:
                     'validation_mirex_weighted_score': validation_metrics.get('mirex_weighted_score'),
                     'selection_metric': args.selection_metric,
                     'selection_metric_value': float(current_score),
-                    'seed': SEED,
+                    'seed': seed,  # actual runtime seed — bug fix 2026-04-14, was SEED constant
                     'epoch': epoch,
                     'weight_mode': args.weight_mode,
                     'ens_beta': args.ens_beta if args.weight_mode == 'ens' else None,
@@ -1209,7 +1209,7 @@ def main() -> None:
                 'selection_metric': args.selection_metric,
                 'best_epoch': best_epoch,
                 'best_selection_metric_value': float(best_validation),
-                'seed': SEED,
+                'seed': seed,  # actual runtime seed — bug fix 2026-04-14, was SEED constant
                 'weight_mode': args.weight_mode,
                 'bidirectional': args.bidirectional,
                 'per_epoch': per_epoch_log,
