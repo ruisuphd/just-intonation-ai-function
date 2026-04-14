@@ -1,0 +1,872 @@
+{
+  "date": "2026-04-14",
+  "scope": "ATEPP-only (atepp-heuristic source), matches loader manifest-mode behaviour",
+  "val_files": 28,
+  "test_files": 41,
+  "val_total_frames": 51822,
+  "test_total_frames": 89390,
+  "val_class_histogram": {
+    "C": 13160,
+    "C#": 822,
+    "D": 582,
+    "D#": 0,
+    "E": 1330,
+    "F": 9559,
+    "F#": 1210,
+    "G": 3925,
+    "G#": 0,
+    "A": 2910,
+    "A#": 0,
+    "B": 3764,
+    "Cm": 868,
+    "C#m": 724,
+    "Dm": 0,
+    "D#m": 0,
+    "Em": 499,
+    "Fm": 1393,
+    "F#m": 2308,
+    "Gm": 762,
+    "G#m": 6474,
+    "Am": 227,
+    "A#m": 0,
+    "Bm": 1305
+  },
+  "test_class_histogram": {
+    "C": 19891,
+    "C#": 0,
+    "D": 11412,
+    "D#": 0,
+    "E": 7783,
+    "F": 3793,
+    "F#": 6029,
+    "G": 2818,
+    "G#": 0,
+    "A": 6066,
+    "A#": 0,
+    "B": 4323,
+    "Cm": 7422,
+    "C#m": 276,
+    "Dm": 1746,
+    "D#m": 0,
+    "Em": 569,
+    "Fm": 1799,
+    "F#m": 353,
+    "Gm": 1686,
+    "G#m": 3070,
+    "Am": 3775,
+    "A#m": 0,
+    "Bm": 6579
+  },
+  "val_class_probability": {
+    "C": 0.25394620045540506,
+    "C#": 0.01586198911659141,
+    "D": 0.011230751418316545,
+    "D#": 0.0,
+    "E": 0.02566477557793987,
+    "F": 0.18445833815753926,
+    "F#": 0.023349156728802438,
+    "G": 0.07574003319053683,
+    "G#": 0.0,
+    "A": 0.056153757091582726,
+    "A#": 0.0,
+    "B": 0.07263324456794412,
+    "Cm": 0.016749643008760758,
+    "C#m": 0.01397090038979584,
+    "Dm": 0.0,
+    "D#m": 0.0,
+    "Em": 0.009629115047663155,
+    "Fm": 0.026880475473737023,
+    "F#m": 0.04453706919840994,
+    "Gm": 0.014704179692022694,
+    "G#m": 0.12492763691096445,
+    "Am": 0.004380378989618309,
+    "A#m": 0.0,
+    "Bm": 0.025182354984369573
+  },
+  "test_class_probability": {
+    "C": 0.22251929746056606,
+    "C#": 0.0,
+    "D": 0.1276652869448484,
+    "D#": 0.0,
+    "E": 0.0870679046873252,
+    "F": 0.042432039378006485,
+    "F#": 0.06744602304508335,
+    "G": 0.031524779058060184,
+    "G#": 0.0,
+    "A": 0.06785993959055822,
+    "A#": 0.0,
+    "B": 0.04836111421859268,
+    "Cm": 0.0830294216355297,
+    "C#m": 0.003087593690569415,
+    "Dm": 0.019532386172949993,
+    "D#m": 0.0,
+    "Em": 0.006365365253384048,
+    "Fm": 0.020125293657008613,
+    "F#m": 0.003948987582503636,
+    "Gm": 0.01886117015326099,
+    "G#m": 0.034343886340754,
+    "Am": 0.04223067457209979,
+    "A#m": 0.0,
+    "Bm": 0.0735988365588992
+  },
+  "jensen_shannon_divergence_log2": 0.20076781313241962,
+  "classes_missing_from_val": [
+    "Dm"
+  ],
+  "classes_missing_from_test": [
+    "C#"
+  ],
+  "val_composer_distribution": {
+    "Sergei Rachmaninoff": 1,
+    "Franz Liszt": 1,
+    "Robert Schumann": 1,
+    "Johann Sebastian Bach": 6,
+    "Claude Debussy": 2,
+    "Maurice Ravel": 1,
+    "Franz Schubert": 2,
+    "Wolfgang Amadeus Mozart": 5,
+    "Ludwig van Beethoven": 9
+  },
+  "test_composer_distribution": {
+    "Sergei Rachmaninoff": 3,
+    "Franz Liszt": 3,
+    "Robert Schumann": 2,
+    "Johann Sebastian Bach": 7,
+    "Claude Debussy": 3,
+    "Maurice Ravel": 2,
+    "Franz Schubert": 3,
+    "Franz Joseph Haydn": 1,
+    "Wolfgang Amadeus Mozart": 5,
+    "Ludwig van Beethoven": 11,
+    "Alexander Scriabin": 1
+  },
+  "val_size_stats": {
+    "n_compositions": 28,
+    "min_notes": 582,
+    "median_notes": 2030,
+    "max_notes": 9245,
+    "total_notes": 65299
+  },
+  "test_size_stats": {
+    "n_compositions": 41,
+    "min_notes": 508,
+    "median_notes": 1752,
+    "max_notes": 16098,
+    "total_notes": 117990
+  },
+  "per_composition_detail": {
+    "val": [
+      {
+        "composition_id": 57,
+        "composer": "Sergei Rachmaninoff",
+        "piece_id": "57",
+        "n_notes": 2597,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          0
+        ]
+      },
+      {
+        "composition_id": 116,
+        "composer": "Franz Liszt",
+        "piece_id": "116",
+        "n_notes": 3299,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          6,
+          18
+        ]
+      },
+      {
+        "composition_id": 220,
+        "composer": "Robert Schumann",
+        "piece_id": "220",
+        "n_notes": 1194,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          5
+        ]
+      },
+      {
+        "composition_id": 517,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "517",
+        "n_notes": 643,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          17
+        ]
+      },
+      {
+        "composition_id": 552,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "552",
+        "n_notes": 822,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          1
+        ]
+      },
+      {
+        "composition_id": 555,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "555",
+        "n_notes": 1300,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          9
+        ]
+      },
+      {
+        "composition_id": 600,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "600",
+        "n_notes": 906,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          7
+        ]
+      },
+      {
+        "composition_id": 625,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "625",
+        "n_notes": 938,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          18
+        ]
+      },
+      {
+        "composition_id": 632,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "632",
+        "n_notes": 1041,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          23
+        ]
+      },
+      {
+        "composition_id": 647,
+        "composer": "Claude Debussy",
+        "piece_id": "647",
+        "n_notes": 2271,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          20,
+          21
+        ]
+      },
+      {
+        "composition_id": 673,
+        "composer": "Claude Debussy",
+        "piece_id": "673",
+        "n_notes": 2734,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          20
+        ]
+      },
+      {
+        "composition_id": 723,
+        "composer": "Maurice Ravel",
+        "piece_id": "723",
+        "n_notes": 7901,
+        "n_unique_keys": 8,
+        "unique_keys": [
+          0,
+          6,
+          9,
+          11,
+          12,
+          17,
+          20,
+          23
+        ]
+      },
+      {
+        "composition_id": 862,
+        "composer": "Franz Schubert",
+        "piece_id": "862",
+        "n_notes": 2669,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          13
+        ]
+      },
+      {
+        "composition_id": 865,
+        "composer": "Franz Schubert",
+        "piece_id": "865",
+        "n_notes": 2655,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          0,
+          7
+        ]
+      },
+      {
+        "composition_id": 1116,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1116",
+        "n_notes": 2988,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          5
+        ]
+      },
+      {
+        "composition_id": 1123,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1123",
+        "n_notes": 1492,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1124,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1124",
+        "n_notes": 2796,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1153,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1153",
+        "n_notes": 2242,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          5
+        ]
+      },
+      {
+        "composition_id": 1161,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1161",
+        "n_notes": 1451,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          9
+        ]
+      },
+      {
+        "composition_id": 1176,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1176",
+        "n_notes": 1657,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          7
+        ]
+      },
+      {
+        "composition_id": 1181,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1181",
+        "n_notes": 631,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          5,
+          17
+        ]
+      },
+      {
+        "composition_id": 1187,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1187",
+        "n_notes": 1829,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          4,
+          16
+        ]
+      },
+      {
+        "composition_id": 1233,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1233",
+        "n_notes": 2030,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          21
+        ]
+      },
+      {
+        "composition_id": 1235,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1235",
+        "n_notes": 3133,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          5
+        ]
+      },
+      {
+        "composition_id": 1247,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1247",
+        "n_notes": 3491,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1250,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1250",
+        "n_notes": 582,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          2
+        ]
+      },
+      {
+        "composition_id": 1303,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1303",
+        "n_notes": 762,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          19
+        ]
+      },
+      {
+        "composition_id": 1307,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1307",
+        "n_notes": 9245,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          0,
+          12
+        ]
+      }
+    ],
+    "test": [
+      {
+        "composition_id": 7,
+        "composer": "Sergei Rachmaninoff",
+        "piece_id": "7",
+        "n_notes": 1752,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          20
+        ]
+      },
+      {
+        "composition_id": 60,
+        "composer": "Sergei Rachmaninoff",
+        "piece_id": "60",
+        "n_notes": 1845,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 77,
+        "composer": "Sergei Rachmaninoff",
+        "piece_id": "77",
+        "n_notes": 1325,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 120,
+        "composer": "Franz Liszt",
+        "piece_id": "120",
+        "n_notes": 6264,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          0
+        ]
+      },
+      {
+        "composition_id": 122,
+        "composer": "Franz Liszt",
+        "piece_id": "122",
+        "n_notes": 3103,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 215,
+        "composer": "Robert Schumann",
+        "piece_id": "215",
+        "n_notes": 2959,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 515,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "515",
+        "n_notes": 508,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          4
+        ]
+      },
+      {
+        "composition_id": 541,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "541",
+        "n_notes": 648,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          21
+        ]
+      },
+      {
+        "composition_id": 546,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "546",
+        "n_notes": 619,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          0
+        ]
+      },
+      {
+        "composition_id": 547,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "547",
+        "n_notes": 638,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 550,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "550",
+        "n_notes": 1423,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          17
+        ]
+      },
+      {
+        "composition_id": 602,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "602",
+        "n_notes": 831,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          14
+        ]
+      },
+      {
+        "composition_id": 610,
+        "composer": "Johann Sebastian Bach",
+        "piece_id": "610",
+        "n_notes": 1318,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          20
+        ]
+      },
+      {
+        "composition_id": 650,
+        "composer": "Claude Debussy",
+        "piece_id": "650",
+        "n_notes": 1725,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          21
+        ]
+      },
+      {
+        "composition_id": 670,
+        "composer": "Claude Debussy",
+        "piece_id": "670",
+        "n_notes": 1707,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          13,
+          21
+        ]
+      },
+      {
+        "composition_id": 672,
+        "composer": "Claude Debussy",
+        "piece_id": "672",
+        "n_notes": 534,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          14
+        ]
+      },
+      {
+        "composition_id": 728,
+        "composer": "Maurice Ravel",
+        "piece_id": "728",
+        "n_notes": 4381,
+        "n_unique_keys": 3,
+        "unique_keys": [
+          4,
+          6,
+          7
+        ]
+      },
+      {
+        "composition_id": 876,
+        "composer": "Franz Schubert",
+        "piece_id": "876",
+        "n_notes": 739,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          9
+        ]
+      },
+      {
+        "composition_id": 907,
+        "composer": "Franz Schubert",
+        "piece_id": "907",
+        "n_notes": 5660,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          0
+        ]
+      },
+      {
+        "composition_id": 910,
+        "composer": "Franz Schubert",
+        "piece_id": "910",
+        "n_notes": 3792,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          0,
+          12
+        ]
+      },
+      {
+        "composition_id": 1076,
+        "composer": "Franz Joseph Haydn",
+        "piece_id": "1076",
+        "n_notes": 1413,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          2
+        ]
+      },
+      {
+        "composition_id": 1128,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1128",
+        "n_notes": 2167,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          2
+        ]
+      },
+      {
+        "composition_id": 1132,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1132",
+        "n_notes": 2203,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          12
+        ]
+      },
+      {
+        "composition_id": 1144,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1144",
+        "n_notes": 1002,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1147,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1147",
+        "n_notes": 3500,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          0,
+          9
+        ]
+      },
+      {
+        "composition_id": 1164,
+        "composer": "Wolfgang Amadeus Mozart",
+        "piece_id": "1164",
+        "n_notes": 1375,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          0
+        ]
+      },
+      {
+        "composition_id": 1190,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1190",
+        "n_notes": 3060,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          4
+        ]
+      },
+      {
+        "composition_id": 1200,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1200",
+        "n_notes": 2724,
+        "n_unique_keys": 2,
+        "unique_keys": [
+          2,
+          5
+        ]
+      },
+      {
+        "composition_id": 1212,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1212",
+        "n_notes": 1478,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          2
+        ]
+      },
+      {
+        "composition_id": 1215,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1215",
+        "n_notes": 518,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          5
+        ]
+      },
+      {
+        "composition_id": 1227,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1227",
+        "n_notes": 3338,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1240,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1240",
+        "n_notes": 1622,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          9
+        ]
+      },
+      {
+        "composition_id": 1248,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1248",
+        "n_notes": 2775,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          2
+        ]
+      },
+      {
+        "composition_id": 1256,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1256",
+        "n_notes": 847,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1257,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1257",
+        "n_notes": 999,
+        "n_unique_keys": 0,
+        "unique_keys": []
+      },
+      {
+        "composition_id": 1259,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1259",
+        "n_notes": 4070,
+        "n_unique_keys": 3,
+        "unique_keys": [
+          0,
+          4,
+          16
+        ]
+      },
+      {
+        "composition_id": 1263,
+        "composer": "Ludwig van Beethoven",
+        "piece_id": "1263",
+        "n_notes": 2191,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          6
+        ]
+      },
+      {
+        "composition_id": 1495,
+        "composer": "Franz Liszt",
+        "piece_id": "1495",
+        "n_notes": 16098,
+        "n_unique_keys": 10,
+        "unique_keys": [
+          0,
+          2,
+          6,
+          11,
+          13,
+          16,
+          17,
+          18,
+          19,
+          23
+        ]
+      },
+      {
+        "composition_id": 1512,
+        "composer": "Alexander Scriabin",
+        "piece_id": "1512",
+        "n_notes": 8496,
+        "n_unique_keys": 5,
+        "unique_keys": [
+          4,
+          6,
+          11,
+          12,
+          19
+        ]
+      },
+      {
+        "composition_id": 1518,
+        "composer": "Robert Schumann",
+        "piece_id": "1518",
+        "n_notes": 6776,
+        "n_unique_keys": 1,
+        "unique_keys": [
+          0
+        ]
+      },
+      {
+        "composition_id": 1542,
+        "composer": "Maurice Ravel",
+        "piece_id": "1542",
+        "n_notes": 9567,
+        "n_unique_keys": 10,
+        "unique_keys": [
+          0,
+          2,
+          4,
+          5,
+          9,
+          12,
+          14,
+          19,
+          21,
+          23
+        ]
+      }
+    ]
+  }
+}
