@@ -448,6 +448,7 @@ def main() -> None:
         # Read model config from checkpoint metadata (backwards-compatible)
         bidirectional = checkpoint.get('bidirectional', False)
         gru_pcp = checkpoint.get('gru_pcp', False)
+        hidden_size = checkpoint.get('hidden_size', 96)
 
         # --- Causal-only guardrail (Phase A rigor restoration) ---
         # Bidirectional GRUs see future context and therefore violate the real-time
@@ -462,10 +463,12 @@ def main() -> None:
             )
 
         model = HarmonicContextGRU(
+            hidden_size=hidden_size,
             bidirectional=bidirectional,
             use_pcp=gru_pcp,
         ).to(device)
 
+        print(f'  Model: GRU hidden_size={hidden_size}')
         if bidirectional:
             if args.causal_only and args.allow_oracle:
                 print('  Model: bidirectional GRU [ORACLE — offline-only, not a deployable result]')

@@ -116,6 +116,10 @@ def parse_args() -> argparse.Namespace:
         help='Add PCP (pitch-class profile) feature to GRU input (like Transformer branch 1)',
     )
     parser.add_argument(
+        '--hidden-size', type=int, default=96,
+        help='GRU hidden-state size (default 96 = Phase A config; 192 for Phase B h=192 cells).',
+    )
+    parser.add_argument(
         '--focal-loss', action='store_true', default=False,
         help='Use focal loss (Lin et al., ICCV 2017) instead of cross-entropy',
     )
@@ -1019,13 +1023,15 @@ def main() -> None:
         print(f'Transformer mode: LR={args.learning_rate}, epochs={args.epochs}')
     else:
         model = HarmonicContextGRU(
+            hidden_size=args.hidden_size,
             bidirectional=args.bidirectional,
             use_pcp=args.gru_pcp,
         ).to(device)
+        print(f'GRU mode: hidden_size={args.hidden_size}')
         if args.bidirectional:
-            print(f'GRU mode: bidirectional (output dim = {96 * 2})')
+            print(f'GRU mode: bidirectional (output dim = {args.hidden_size * 2})')
         if args.gru_pcp:
-            print(f'GRU mode: PCP feature enabled (input dim = {96})')
+            print(f'GRU mode: PCP feature enabled (input dim = {args.hidden_size})')
 
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay,
@@ -1186,6 +1192,7 @@ def main() -> None:
                     'require_causal_flag': bool(args.require_causal),
                     'allow_oracle_flag': bool(args.allow_oracle),
                     'gru_pcp': args.gru_pcp,
+                    'hidden_size': args.hidden_size,
                     'focal_loss': args.focal_loss,
                     'focal_gamma': args.focal_gamma if args.focal_loss else None,
                     'clip_grad': args.clip_grad,
