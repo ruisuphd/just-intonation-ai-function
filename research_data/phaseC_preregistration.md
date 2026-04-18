@@ -250,7 +250,33 @@ Composer-level counts are expected and not a leakage concern (different pieces b
 
 ## 11. Amendments log
 
-(Empty until Phase C is running. Any deviation from §2–§9 gets a dated entry with rationale and commit link.)
+### 2026-04-18 — Path B execution complete, null result
+
+**Cells executed:** C5 (composition-level 2× upweight) and C6 (frame-level 3× upweight within ±8 notes). Both × 3 seeds on NVIDIA L4 Colab Pro, ~2.2 h total wall-clock.
+
+**Result:** both cells fail to clear STRONG_WINNER, MODULATION_WINNER, or TRANSFER_WINNER criteria. See [`phaseC_pathB_consolidation_2026-04-18.md`](phaseC_pathB_consolidation_2026-04-18.md).
+
+**Key findings documented in the consolidation:**
+- C5 vs B9 on mono-tonal subset: Δ=−0.010 at p=0.02 (composition upweighting significantly hurts the subset where the model has usable signal).
+- C6 vs B9: Δ<0.001 on all strata — surgical null, no damage but no gain.
+- Both vs classical on modu: wide CI (n=9 power limit), cannot reject null.
+- C6 vs C5: +0.007 at p=0.02 — transition-window targeting strictly dominates composition-level upweighting (negative sub-finding).
+- C5 σ=0.0009 — tightest seed stability in the study (loss-weight redistribution stabilises training at cost of performance).
+
+**C7 dropped from scope.** Pre-reg §2b C7 requires `ens + focal + modulation-transition-upweight`. Current `--modulation-upweight` path uses plain CE + class weights (pre-reg §10.5). Extending FocalLoss to per-sample reduction would be required; deferred as Phase B/C post-mortem work, not worth pursuing given C5/C6 null.
+
+**Path B verdict: H2 (representation-limited for modulation via loss design) is FALSIFIED.** Phase C Path A (Moonbeam pretraining transfer) becomes the sole remaining experimental lever in Phase C.
+
+### 2026-04-18 (pending) — Path A prerequisites
+
+Before C1/C2/C3/C4 launch, `finetune_moonbeam_key_detection.py` requires:
+- Per-note classifier head (not window-majority).
+- `--seed` flag + 3-seed reproducibility.
+- `--save-predictions` / `--save-val-predictions` output in the format `evaluate_harmonic_context_model.py` uses (so paired bootstrap against B9 works unchanged).
+- `--config` switch between 309M / 839M checkpoints.
+- Effective parameter count + LoRA trainable count reported to stdout per run.
+
+Estimated 2 hours of code changes + local smoke test. Tracked in `phaseC_preregistration.md` §10.4. Next commit will land this.
 
 ---
 
