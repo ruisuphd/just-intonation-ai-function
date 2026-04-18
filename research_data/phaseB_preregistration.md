@@ -177,5 +177,30 @@ No headline number ships without a committed result JSON containing all of the a
 
 ## 9. Amendments log
 
-(This section remains empty until Phase B is running. Any deviation from §2–§7
-must be recorded here with date, diff link, and rationale.)
+### 2026-04-18 — Phase B execution record
+
+**Completed as written.** All 12 cells × 3 seeds executed per §2 grid. No deviations from §3 hyperparameters, §4 splits, or §6 decision rules. Full result in [`phaseB_consolidation_2026-04-18.md`](phaseB_consolidation_2026-04-18.md) and [`phaseB_results_2026-04-18/`](phaseB_results_2026-04-18/).
+
+**Efficiency decisions (pre-reg-compatible, not deviations):**
+
+1. **B7 mirrored from B1 rather than retrained** — B7's config (`gru 96 sqrt focal=off`) is identical to B1 by construction (pre-reg §2a/§2b both list it; footnote in registry read "redundant with B1; kept for bookkeeping"). Checkpoints, eval, predictions, HMM and ensemble outputs were copied rather than recomputed. Saved ~1.5 GPU-h. Verified at Δ = 0.0000 on paired bootstrap (mirror integrity ✓).
+2. **B11 mirrored from B9 rather than retrained** — B11's config (the feature block's baseline row) was set to `gru 96 ens focal=off` post-hoc after B9 won 2b main-effects, which is identical to B9. Same mirror procedure. Saved ~1.5 GPU-h. Mirror integrity ✓.
+
+**Pre-reg §2b weight-mode axis amendment (documented post-execution):**
+
+§2b fixed weight ∈ {sqrt, ens}. Phase A's findings did NOT identify ens or sqrt as dominant — the pre-reg assumed one of those two would win. In fact the 2a main-effects block surfaced **weight_mode = `none`** as a competitive option (B2 at 0.5187 > B1 at 0.4984). The 2b grid did not include `none` + focal; this combination was NOT tested. Honoring the pre-reg as written. If Phase C's modulation-specialist work wants to revisit focal, the `none + focal` combination is the natural add-on (call it B13 under the B-prime amendment convention).
+
+**Pre-reg §2c feature-block amendment (post-execution):**
+
+§2c set B11/B12 to `gru 96 sqrt` (no focal, no PCP / with PCP). Post-2b, the best arch+loss was **`gru 96 ens` (B9)**, not sqrt. B11/B12 were re-keyed on B9's winner config (`ens, no focal`) at runtime, which is the pre-reg's stated intent ("best arch+loss from 2b"). This is **not a deviation** — it is the pre-reg's explicit rule applied to the measured winner. B11 = ens + no PCP (mirror of B9); B12 = ens + PCP.
+
+**Findings for the amended pre-registration (to inform Phase C):**
+
+- **ENS class-balanced weighting (β=0.999) strictly dominates sqrt** at Δ = +0.020, p = 0.04 (B9 vs B1 paired cluster bootstrap). Phase C should default to ENS weighting unless it is specifically comparing weight schemes.
+- **Focal loss as a standalone add-on hurts** (B8 vs B1: −0.008, p < 0.001). Do not default-enable focal loss in Phase C.
+- **Explicit PCP features hurt an ENS-weighted baseline** at Δ = −0.010, p = 0.04 (B12 vs B11 paired cluster bootstrap). Do not re-introduce engineered pitch-class features; the GRU's learned note embedding is sufficient.
+- **h=192 is data-starved at n=250 train.** Do not increase model capacity before pretraining transfer.
+- **Transformer requires pretraining to compete** (B5/B6 were 2.4–5.5 % MIREX below best GRU). If Phase C Path A uses Moonbeam or Aria, transformer with pretrained weights becomes the relevant comparator.
+- **Phase B verdict is "Null + ceiling" per §1.** Phase C's primary success criterion is now: Δ ≥ 0.015 vs B9 (= 0.5235 plain / 0.5345 +HMM) at p < 0.05, OR Δ ≥ 0.015 vs classical on the modulating subset (MODULATION_WINNER category).
+
+**Status: Phase B pre-registration closed. No further amendments.** Phase C pre-registration begins as `phaseC_preregistration.md`.
