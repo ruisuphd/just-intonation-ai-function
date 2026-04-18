@@ -127,6 +127,25 @@ def parse_args() -> argparse.Namespace:
         '--focal-gamma', type=float, default=2.0,
         help='Gamma parameter for focal loss (default: 2.0)',
     )
+    # --- Phase C Path B: modulation-specialist loss weighting ---
+    parser.add_argument(
+        '--modulation-upweight', type=float, default=1.0,
+        help='Per-note loss weight multiplier for compositions where n_unique_keys>=2 '
+             '(modulating pieces). Default 1.0 = no upweight. Phase C cell C5 uses 2.0. '
+             'Applied on top of --weight-mode class weights.',
+    )
+    parser.add_argument(
+        '--modulation-transition-upweight', type=float, default=1.0,
+        help='Additional loss weight multiplier for notes within '
+             '--modulation-transition-window notes of any annotated key change. '
+             'Default 1.0 = no upweight. Phase C cells C6/C7 use 3.0. '
+             'Composes multiplicatively with --modulation-upweight.',
+    )
+    parser.add_argument(
+        '--modulation-transition-window', type=int, default=0,
+        help='Window size (in notes) around each key-change boundary to receive '
+             '--modulation-transition-upweight. 0 disables transition-level upweight.',
+    )
     # --- Research-grade training improvements ---
     parser.add_argument(
         '--clip-grad', type=float, default=1.0,
@@ -285,7 +304,55 @@ def maybe_scale_time(notes: Sequence[Dict[str, object]]) -> List[Dict[str, objec
     return scaled
 
 
-def notes_to_training_example(notes: Sequence[Dict[str, object]], augment: bool) -> Dict[str, object]:
+def _compute_sample_weights(
+    notes: Sequence[Dict[str, object]],
+    composition_is_modulating: bool,
+    comp_upweight: float,
+    transition_upweight: float,
+    transition_window: int,
+) -> List[float]:
+    """Compute per-note loss-weight multipliers for Phase C Path B.
+
+    weight[i] = 1.0
+        * (comp_upweight if composition_is_modulating else 1.0)
+        * (transition_upweight if note i is within ±transition_window of a key change else 1.0)
+    """
+    n = len(notes)
+    if n == 0:
+        return []
+    base = comp_upweight if composition_is_modulating else 1.0
+    weights = [base] * n
+
+    if transition_window > 0 and n > 1:
+        keys = [str(note.get('key', '')) for note in notes]
+        # Identify key-change indices: i where keys[i] != keys[i-1] and both non-empty.
+        change_indices = [
+            i for i in range(1, n)
+            if keys[i] and keys[i-1] and keys[i] != keys[i-1]
+        ]
+        if change_indices:
+            # Mark notes within ±transition_window of any change index.
+            near_transition = [False] * n
+            for ci in change_indices:
+                lo = max(0, ci - transition_window)
+                hi = min(n, ci + transition_window + 1)
+                for j in range(lo, hi):
+                    near_transition[j] = True
+            for j in range(n):
+                if near_transition[j]:
+                    weights[j] *= transition_upweight
+
+    return weights
+
+
+def notes_to_training_example(
+    notes: Sequence[Dict[str, object]],
+    augment: bool,
+    composition_is_modulating: bool = False,
+    modulation_upweight: float = 1.0,
+    modulation_transition_upweight: float = 1.0,
+    modulation_transition_window: int = 0,
+) -> Dict[str, object]:
     if augment:
         # Pitch-transposition augmentation: shift by ±5 semitones
         semitones = random.randint(-5, 6)
@@ -332,6 +399,17 @@ def notes_to_training_example(notes: Sequence[Dict[str, object]], augment: bool)
 
     pcp = compute_pcp(pitch_class, window_size=32)
 
+    # Phase C Path B: compute per-note sample weights if modulation upweighting is on.
+    # Weights default to 1.0 (no upweight). Multiplies class weights downstream.
+    if modulation_upweight != 1.0 or modulation_transition_window > 0:
+        sample_weight = _compute_sample_weights(
+            notes, composition_is_modulating,
+            modulation_upweight, modulation_transition_upweight,
+            modulation_transition_window,
+        )
+    else:
+        sample_weight = [1.0] * len(labels)
+
     return {
         'pitch_class': pitch_class,
         'register': register,
@@ -341,6 +419,7 @@ def notes_to_training_example(notes: Sequence[Dict[str, object]], augment: bool)
         'active_mask': active_mask,
         'pcp': pcp,
         'labels': labels,
+        'sample_weight': sample_weight,
     }
 
 
@@ -537,32 +616,50 @@ class HarmonicLabelDataset(Dataset):
         augment: bool = False,
         window_size: int = 256,
         window_hop: int = 128,
+        modulation_upweight: float = 1.0,
+        modulation_transition_upweight: float = 1.0,
+        modulation_transition_window: int = 0,
     ):
+        # self.windows is now a list of (notes_list, composition_is_modulating) tuples
         self.windows = []
         self.augment = augment
         self.window_size = window_size
         self.window_hop = window_hop
+        self.modulation_upweight = modulation_upweight
+        self.modulation_transition_upweight = modulation_transition_upweight
+        self.modulation_transition_window = modulation_transition_window
 
         for record in records:
             notes = list(record['notes'])
             if not notes:
                 continue
 
+            # Composition-level modulation flag (Phase C Path B): compute once per record.
+            unique_keys = {str(n.get('key', '')) for n in notes if str(n.get('key', ''))}
+            is_modulating = len(unique_keys) >= 2
+
             if len(notes) <= window_size:
-                self.windows.append(notes)
+                self.windows.append((notes, is_modulating))
                 continue
 
             for start_idx in range(0, len(notes) - window_size + 1, window_hop):
-                self.windows.append(notes[start_idx:start_idx + window_size])
+                self.windows.append((notes[start_idx:start_idx + window_size], is_modulating))
 
             if (len(notes) - window_size) % window_hop != 0:
-                self.windows.append(notes[-window_size:])
+                self.windows.append((notes[-window_size:], is_modulating))
 
     def __len__(self) -> int:
         return len(self.windows)
 
     def __getitem__(self, index: int) -> Dict[str, object]:
-        return notes_to_training_example(self.windows[index], augment=self.augment)
+        notes, is_modu = self.windows[index]
+        return notes_to_training_example(
+            notes, augment=self.augment,
+            composition_is_modulating=is_modu,
+            modulation_upweight=self.modulation_upweight,
+            modulation_transition_upweight=self.modulation_transition_upweight,
+            modulation_transition_window=self.modulation_transition_window,
+        )
 
 
 def load_records(label_dir: str, composition_ids: set) -> List[Dict[str, object]]:
@@ -858,18 +955,45 @@ def train_epoch(
     clip_grad: float = 0.0,
     use_amp: bool = False,
     scaler: object = None,
+    use_sample_weight: bool = False,
 ) -> Dict[str, float]:
+    """Run one training epoch.
+
+    When `use_sample_weight=True` and `batch['sample_weight']` is present
+    (Phase C Path B), loss is computed as a sample-weighted cross-entropy.
+    Class weights from `loss_fn.weight` are preserved and compose multiplicatively
+    with the per-sample modulation weights. Not currently compatible with
+    --focal-loss or --label-smoothing (those paths use the standard aggregation).
+    """
     model.train()
     total_loss = 0.0
     total_accuracy = 0.0
     batches = 0
+
+    # Extract class weights once (may be None)
+    class_weights = getattr(loss_fn, 'weight', None)
 
     for batch in loader:
         batch = {key: value.to(device) if torch.is_tensor(value) else value for key, value in batch.items()}
         optimizer.zero_grad()
         with torch.amp.autocast('cuda', enabled=use_amp):
             logits = _get_key_logits(model(batch))
-            loss = loss_fn(logits.view(-1, logits.shape[-1]), batch['labels'].view(-1))
+            if use_sample_weight and 'sample_weight' in batch:
+                # Phase C Path B: sample-weighted cross-entropy.
+                flat_logits = logits.view(-1, logits.shape[-1])
+                flat_labels = batch['labels'].view(-1)
+                flat_weights = batch['sample_weight'].view(-1)
+                per_sample = nn.functional.cross_entropy(
+                    flat_logits, flat_labels,
+                    weight=class_weights,
+                    ignore_index=-100,
+                    reduction='none',
+                )
+                valid_mask = (flat_labels != -100).float()
+                weighted = per_sample * flat_weights * valid_mask
+                loss = weighted.sum() / valid_mask.sum().clamp(min=1)
+            else:
+                loss = loss_fn(logits.view(-1, logits.shape[-1]), batch['labels'].view(-1))
         if scaler is not None:
             scaler.scale(loss).backward()
             if clip_grad > 0:
@@ -969,18 +1093,29 @@ def main() -> None:
         print(f'Loaded {len(validation_records)} validation records from {args.label_dir}')
 
     use_augment = not args.no_augment
+    # Phase C Path B: pass modulation upweight params. Training set applies them;
+    # validation uses uniform weights (all 1.0) to keep val MIREX comparable to Phase B.
     train_dataset = HarmonicLabelDataset(
         train_records,
         augment=use_augment,
         window_size=args.window_size,
         window_hop=args.window_hop,
+        modulation_upweight=args.modulation_upweight,
+        modulation_transition_upweight=args.modulation_transition_upweight,
+        modulation_transition_window=args.modulation_transition_window,
     )
+    if args.modulation_upweight != 1.0 or args.modulation_transition_window > 0:
+        print(
+            f'Modulation upweight: composition={args.modulation_upweight}×, '
+            f'transition={args.modulation_transition_upweight}× within ±{args.modulation_transition_window} notes'
+        )
     print(f'Augmentation: {"enabled" if use_augment else "DISABLED"}')
     validation_dataset = HarmonicLabelDataset(
         validation_records,
         augment=False,
         window_size=args.window_size,
         window_hop=args.window_hop,
+        # Validation uses default (uniform) weights — see comment above.
     )
 
     train_loader = DataLoader(
@@ -1131,10 +1266,22 @@ def main() -> None:
     per_epoch_log: List[Dict[str, float]] = []
     os.makedirs(os.path.dirname(args.checkpoint), exist_ok=True)
 
+    use_sample_weight = (
+        args.modulation_upweight != 1.0
+        or args.modulation_transition_window > 0
+    )
+    if use_sample_weight and (args.focal_loss or args.label_smoothing > 0):
+        print(
+            'WARNING: --modulation-upweight currently applied with plain cross-entropy '
+            '+ class weights. --focal-loss and --label-smoothing are ignored on the '
+            'modulation path for this run. File a feature request if you need composition.'
+        )
+
     for epoch in range(1, args.epochs + 1):
         train_metrics = train_epoch(
             model, train_loader, optimizer, loss_fn, str(device),
             clip_grad=clip_grad, use_amp=use_amp, scaler=scaler,
+            use_sample_weight=use_sample_weight,
         )
         # Step scheduler once per epoch (epoch-level is standard for warmup+cosine)
         scheduler.step()
@@ -1195,6 +1342,9 @@ def main() -> None:
                     'hidden_size': args.hidden_size,
                     'focal_loss': args.focal_loss,
                     'focal_gamma': args.focal_gamma if args.focal_loss else None,
+                    'modulation_upweight': args.modulation_upweight,
+                    'modulation_transition_upweight': args.modulation_transition_upweight,
+                    'modulation_transition_window': args.modulation_transition_window,
                     'clip_grad': args.clip_grad,
                     'weight_decay': args.weight_decay,
                     'label_smoothing': args.label_smoothing,

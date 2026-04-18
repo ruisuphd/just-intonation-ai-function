@@ -177,13 +177,84 @@ Per Phase B rule: **no headline number ships without a committed result JSON con
 
 ---
 
-## 10. Amendments log
+## 10. Pre-execution findings (2026-04-18 audit)
+
+Before any Phase C cell runs, the following infrastructure audit has been completed and persisted:
+
+### 10.1 Moonbeam causality — confirmed causal ✓
+
+Moonbeam is a decoder-only Llama architecture with `self.is_causal = True` in every attention layer (`Moonbeam-MIDI-Foundation-Model-main/src/llama_recipes/transformers_minimal/src/transformers/models/llama/modeling_llama.py:263, 397, 563`). Attention mask applies a lower-triangular causal mask at all inference steps. **Phase C Path A cells can claim causal deployable numbers** — no `--allow-oracle` tag needed. Confirmed against both 309M and 839M configs (both `LlamaForCausalLM`, hidden∈{1536, 1920}, 9 and 15 layers respectively).
+
+### 10.2 Memory feasibility on Colab Pro — 839M is usable ✓
+
+User subscribed to Colab Pro (access to A100 40 GB and L4 24 GB). Estimated memory footprint:
+
+| Scenario | Weights | Optimizer | Activations (seq=1024 bs=2 grad-accum=4) | Total | L4 24 GB | A100 40 GB |
+|---|---:|---:|---:|---:|:-:|:-:|
+| 309M LoRA r=16 | 0.62 GB (bf16, frozen) | ~15 MB | ~2 GB | ~3 GB | ✓ | ✓ |
+| 839M LoRA r=16 | 1.68 GB (bf16, frozen) | ~30 MB | ~3–4 GB | ~5–6 GB | ✓ | ✓ |
+| 309M full fine-tune | 0.62 GB | 2.5 GB | ~3 GB | ~6–8 GB | ✓ | ✓ |
+| 839M full fine-tune | 1.68 GB | 6.7 GB | ~4 GB (with grad ckpt) | ~13–16 GB | tight | ✓ |
+
+**Decision:** Use 839M for all Path A cells where feasible. LoRA (C1/C2) is safe on both GPUs; 839M full fine-tune (C3 if needed) should be scheduled on A100.
+
+### 10.3 Dataset scaling — not a Phase C bottleneck
+
+Audit of current note-level training data:
+- ATEPP (score_key_labels/): 319 files with real-note annotations (319/319 = 100%).
+- WiR Strategy A (real-score parsed, converted): 88 files. Present in `research_data/all_key_labels/` alongside 1491 Strategy B synthetic files (synthetic = all pitch=60, filtered by loader per Phase A §1.2).
+- DCML Strategy A: 0 (DCML has annotations but no parseable score files in the current tree).
+
+**Practical expansion ceiling is ~319 + 88 = ~407 files (1.3× scaling).** Insufficient to plausibly close a −0.10 MIREX gap to classical.
+
+**Scientific implication:** Phase B's data-limited hypothesis (H1) is best tested via **pretraining transfer** (Path A uses Moonbeam's 81.6k-file pretraining — 250× more data than any local corpus expansion could offer). Raw data-scaling into Phase C is therefore **out of scope**. If Path A fails, a proper dataset expansion (rewriting WiR score parser to handle more formats, integrating POP909/MAESTRO/ASAP) is a Phase D–F task.
+
+Phase C proceeds on the same manifest-effective split as Phase A/B: 250/28/41.
+
+### 10.4 Moonbeam head rewrite required for Path A cells
+
+**Current state of [`finetune_moonbeam_key_detection.py`](../finetune_moonbeam_key_detection.py):** does WINDOW-LEVEL classification — each window produces one 24-way logit via mean-pooling of hidden states, then majority-vote on window labels. **This is not comparable to B9** (which produces one 24-way logit per NOTE). Paired bootstrap against B9 requires per-note outputs.
+
+**Required rewrite (before C1/C2/C3 kick off):** replace the mean-pool classifier head with a per-token linear head. Hidden states (B, T, 1920) → nn.Linear(1920, 24) → (B, T, 24) per-note logits. Training loss becomes per-note cross-entropy. Evaluation output becomes per-note predictions, compatible with `evaluate_harmonic_context_model.py`'s `--save-predictions` JSON format. ~50 lines of code change. **Status: pending; flagged to the human for approval.**
+
+### 10.5 Phase C Path B infrastructure — READY
+
+- `--modulation-upweight`, `--modulation-transition-upweight`, `--modulation-transition-window` CLI flags implemented in `train_harmonic_context_model.py`.
+- Per-note sample weights threaded through Dataset → collate → train_epoch.
+- Checkpoint metadata records the modulation hyperparameters for full provenance.
+- Smoke-tested: 2-key composition with upweight=2.0 produces weight 2.0 for all notes; transition window 2 correctly upweights indices within ±2 of key-change boundary.
+- **Currently incompatible with `--focal-loss` and `--label-smoothing`** — the modulation path uses plain CE + class weights. Cell C7 (ens + focal + modulation-transition-upweight) requires FocalLoss per-sample mode; deferred as a follow-up if C5/C6 show signal.
+
+### 10.6 Phase C Path A leakage check — PASS
+
+Piece-level overlap check between the 41 ATEPP test compositions and 371,053 Aria-MIDI metadata entries: **0 piece-level overlaps** via filename substring match. Composer-level overlap counts (informational):
+
+| ATEPP test composer | Aria entries |
+|---|---:|
+| Bach | 8,029 |
+| Beethoven | 3,916 |
+| Mozart | 2,215 |
+| Liszt | 1,986 |
+| Schubert | 1,671 |
+| Schumann | 788 |
+| Debussy | 612 |
+| Rachmaninoff | 609 |
+| Haydn | 306 |
+| Scriabin | 233 |
+
+Composer-level counts are expected and not a leakage concern (different pieces by the same composer). Report persisted at [`research_data/phaseC_leakage_check_2026-04-18.json`](phaseC_leakage_check_2026-04-18.json). Cell C4 (Aria pretrain + fine-tune) is unblocked.
+
+**Caveat:** definitive MIDI-hash-level dedup would require hashing all 371k Aria MIDIs against ATEPP MIDI files (expensive). This script relies on Aria's `v1-deduped-ext` internal dedup guarantee.
+
+---
+
+## 11. Amendments log
 
 (Empty until Phase C is running. Any deviation from §2–§9 gets a dated entry with rationale and commit link.)
 
 ---
 
-## 11. Out-of-scope for Phase C
+## 12. Out-of-scope for Phase C
 
 - Audio-domain baselines (Chordino, NNLS-Chroma) — remain in Phase E.
 - Extended test set (20–40 held-out ATEPP pieces) — remain in Phase E.
