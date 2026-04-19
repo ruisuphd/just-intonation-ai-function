@@ -323,6 +323,34 @@ Full protocol 3 seeds × 30 epochs on `mode-only`. Plain test MIREX = **0.5037 �
 1. CA1F significantly underperforms B9 on mono-tonal (p=0.004) but is **statistically indistinguishable from B9 on modulating** (p=0.284). Pretraining's trade-off is structural: it doesn't hurt modulating performance, only mono-tonal.
 2. Aggregate σ = 0.00015 (near-deterministic) is the tightest seed stability in the entire Phase A/B/C study. Methodologically, this suggests pretrained fine-tunes need fewer seeds to converge on aggregate metrics.
 
+### 2026-04-19 (afternoon) — Demo runtime fallback upgraded to B9
+
+**Context:** Preparing the demo video; noticed the runtime's default neural
+fallback checkpoint (`research_data/harmonic_context_model.pt`) was a pre-
+Phase-A file dated 2026-03-30 with minimal metadata (`model_type`, `weight_mode`,
+`hidden_size`, `bidirectional`, `causal` all absent or unknown).
+
+**Action:** copied `research_data_041826/phase_b_checkpoints_2026-04-17/B9_seed20260309.pt`
+over `research_data/harmonic_context_model.pt`. Old file preserved as
+`harmonic_context_model.pt.pre-phase-a-backup`.
+
+**New runtime fallback metadata:**
+- `model_type: gru`, `hidden_size: 96`, `bidirectional: False`, `causal: True`
+- `weight_mode: ens` (β=0.999), `selection_metric: val_mirex`
+- Best epoch 20, val MIREX = 0.6265 (per-seed training-time high)
+- 3-seed mean test MIREX: **0.5235 ± 0.0030** (see `phaseB_consolidation_2026-04-18.md`)
+
+**Verified end-to-end:** `HarmonicContextRuntime.load()` returns True, strict
+state_dict load has 0 missing / 0 unexpected, 67,016 params.
+
+**Important clarification — the primary demo path is UNCHANGED:**
+The client-side 3-way classical ensemble (Albrecht-Shanahan + Temperley + Krumhansl-
+Kessler in `js/key-detection.js`) benchmarks at 0.6201 MIREX and remains the
+best-documented detector. No neural method in Phase A/B/C has beaten it. The
+swap ONLY affects the fallback path used when piece-fingerprint identification
+fails (no score match). In that path, B9 replaces a pre-Phase-A checkpoint →
+strict improvement, zero risk.
+
 ### 2026-04-19 (remaining) — C-A2 Aria pretraining deferred to next Colab session
 
 Step 2B: `pretrain_aria_midi.py --limit 50000 --epochs 8` (~10–15 GPU-h) → 3-seed fine-tune on ATEPP (~5 GPU-h). Paired bootstrap vs B9 + classical + CA1F-FULL. Total est. ~15–20 GPU-h. Tests whether 170× corpus scaling (50k Aria files vs ~300 ATEPP) closes the classical gap. If null, dual-null across two orders of magnitude of pretraining scale is the strongest possible H1 disconfirmation. If STRONG_WINNER or MODULATION_WINNER, Phase C delivers the deployable-above-classical result.
