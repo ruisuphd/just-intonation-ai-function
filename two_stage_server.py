@@ -462,24 +462,38 @@ class TwoStageSystem:
             # Extract key signatures from MusicXML
             self.key_signature_map = self._extract_key_signatures(part)
             print(f"  ✓ Extracted {len(self.key_signature_map)} key signature(s)")
-            
+
+            # Assign current_score BEFORE querying initial key, so _get_key_at_position
+            # can look up the onset of the actual first note (not hypothetical onset=0).
+            self.current_score = score_array
+
             # Log key signature information
             if self.key_signature_map:
-                first_key = self.key_signature_map[0]
-                self.current_key = first_key[1]
-                self.current_key_tonic = first_key[2]
-                self.current_key_is_minor = first_key[3]
-                print(f"  ✓ Initial key: {self.current_key} ({'minor' if self.current_key_is_minor else 'major'})")
-                
+                # Query partitura's interpolation-aware callable at the FIRST NOTE's onset,
+                # not at the arbitrary key_signature_map[0] — some engravers emit a spurious
+                # (onset=0, fifths=0, mode=major) default right before the real key signature,
+                # which made pieces like K.331/III.Alla Turca (A major, 3 sharps) show as
+                # "initial key: C major" here. See engine_review_2026-04-19.md §A7.
+                initial_key_name, initial_tonic, initial_is_minor = self._get_key_at_position(0)
+                self.current_key = initial_key_name
+                self.current_key_tonic = initial_tonic
+                self.current_key_is_minor = initial_is_minor
+                print(f"  ✓ Initial key (at first note): {self.current_key} ({'minor' if self.current_key_is_minor else 'major'})")
+
+                # Warn when list[0] disagrees with the actual first-note lookup — this is the
+                # spurious-default signal we care about.
+                list_head = self.key_signature_map[0]
+                if list_head[1] != self.current_key or list_head[3] != self.current_key_is_minor:
+                    print(f"  ⚠️  key_signature_map[0] = {list_head[1]} ({'minor' if list_head[3] else 'major'}) disagrees with first-note lookup — likely a spurious leading default; using first-note lookup.")
+
                 if len(self.key_signature_map) > 1:
                     print(f"  ✓ Key changes in piece:")
                     for onset, key_name, tonic, is_minor in self.key_signature_map[:5]:
                         print(f"      Beat {onset:.1f}: {key_name}")
-            
+
             # Initialize Parangonar RL matcher
             # This aligns user's live performance → MusicXML score
             self.score_follower = pa.OnlineTransformerMatcher(score_array)
-            self.current_score = score_array
             self.current_position = 0
             self.performance_note_counter = 0
             self.parangonar_prepared = False

@@ -379,3 +379,80 @@ Replaces the previous generic "Low confidence" message.
 - Are used at restore time with a two-step match: first try `stickyId` exactly; if the device was re-enumerated with a new ID (rare), fall back to a match by device NAME (stable across re-plugs).
 
 After this change, the FP-10 can sleep/wake arbitrarily without losing the user's dropdown selection, as long as the device name stays the same.
+
+---
+
+### A7 — Score-following key desync: main display stuck on initial key while panel shows correct current key
+
+**Symptom (2026-04-19, K.331/III Alla Turca demo):** User plays a section of Mozart's Rondo alla Turca. The score-following panel correctly shows `Current Key: A major` with updating percentages, but the main tuning display above stays on `C` indefinitely. Console log shows:
+
+```
+Piece identified: ... K. 331: III. Alla turca. Allegretto
+Score following started
+Main display updated to MusicXML key: C          ← initial set
+Initial key from MusicXML: C (major)
+MusicXML key stored: A (major)                    ← key changed on position_update…
+MusicXML key stored: C (major)                    ← …again…
+MusicXML key stored: A (major)                    ← …but main display never re-rendered
+```
+
+Two independent bugs cause the symptom.
+
+#### Bug 1 (client) — `position_update` never writes back to the main `keyName` display
+
+**Mechanism:** in `two_stage_client.js` the main tuning display (`#keyName`, `#keyConfidence`, `#keyMethod`, `#detectionStatus`) is updated exactly once, inside the `score_following_started` handler when `data.initial_key` arrives. The `position_update` handler (which fires on every server-side position advance and carries `data.current_key`, `data.current_key_is_minor`) renders the Current Key only into the score-following panel's inner HTML at `#scoreProgress`. So the user sees the correct live key in the lower "Score Following Active" panel but not in the large header key display.
+
+**Fix:** in the `position_update` handler, sync the main display to `data.current_key` whenever it differs from a cached `this._lastMainDisplayKey`. The cache is seeded in `score_following_started` with `data.initial_key` and reset in `clearAllUI()` / `reset()` so it doesn't persist across piece changes. DOM writes are gated by the inequality check so position updates that don't change the key (the common case) are no-ops.
+
+```js
+// position_update handler — new block after updatePositionDisplay(data):
+if (data.current_key && data.current_key !== this._lastMainDisplayKey) {
+    this._lastMainDisplayKey = data.current_key;
+    // Update keyName / keyConfidence / keyMethod / detectionStatus
+    // (see two_stage_client.js for full DOM update code)
+}
+```
+
+No other code path contends for these DOM nodes during score-following:
+- `js/main.js:287` (ensemble-detection update during Stage 1) is already gated by `if (!scoreFollowingActive)`.
+- `js/main.js:766` (backend harmonic prediction) is already gated with an early return on `scoreFollowingActive`.
+
+So the new write is the only authoritative updater during score-following — no races.
+
+#### Bug 2 (server) — initial key taken from `key_signature_map[0]` instead of the actual first-note lookup
+
+**Mechanism:** in `two_stage_server.py:467-472`, the initial key is set from `self.key_signature_map[0]`, which is the first element of the list extracted from partitura's `score_part.key_sigs`. Some engravers (including MuseScore auto-export, and several commercial MusicXML sources in the ATEPP dataset) emit a **spurious leading** `<key><fifths>0</fifths></key>` default at onset=0 immediately before the real key signature defined at measure 1 (also at onset=0 but with `<fifths>3</fifths><mode>major</mode>` for an A-major piece). After `key_map.sort(key=lambda x: x[0])`, Python's stable sort preserves the input order for ties — and the spurious "C" entry wins the tie.
+
+For the Alla Turca case, `key_signature_map` looked like:
+```
+[(0.0, 'C', 0, False),    ← spurious default, wins key_signature_map[0]
+ (0.0, 'A', 9, False),    ← the real A-major at the same onset
+ (..., 'F#m', ...),        ← (middle section modulation, if present)
+ (..., 'A', 9, False)]
+```
+
+So the old code set `self.current_key = 'C'`. Then during score-following, `_get_key_at_position(position)` called partitura's **interpolation-aware** `key_signature_map` callable, which (correctly) returned the A-major ks at the first note's onset — hence the server did stream `current_key: 'A'` on every `position_update`, but `self.current_key` (the field reported at init in `score_following_started.initial_key`) was wrong.
+
+**Fix:** assign `self.current_score = score_array` BEFORE computing the initial key, then call `self._get_key_at_position(0)` to query partitura's interpolation-aware callable at the **first note's** onset instead of taking `key_signature_map[0]` naively. The callable handles the spurious-default case because partitura's internal lookup is onset-based (not list-index-based). Also emit a warning log when list[0] disagrees with the first-note lookup — useful diagnostic signal for future pieces.
+
+```python
+# Before:
+first_key = self.key_signature_map[0]
+self.current_key = first_key[1]  # list index — wrong for spurious-default case
+
+# After:
+self.current_score = score_array  # must be set first so _get_key_at_position can index it
+initial_key_name, initial_tonic, initial_is_minor = self._get_key_at_position(0)
+self.current_key = initial_key_name  # partitura interpolation — correct
+```
+
+Both fixes are independent: client-side Bug 1 would have left the main display stuck on `C` even if the server sent `initial_key: 'A'`; server-side Bug 2 would have made even a correctly-updating client render `C` at first before `position_update` corrected it. Together they deliver the expected UX: the main display shows the correct initial key from MusicXML, and keeps in sync with every key-signature change during playback.
+
+#### Verification
+
+1. **Alla Turca (K.331/III):** after fix, console should show `Initial key (at first note): A (major)` at score_following_started, main display shows `A`. When score position crosses the middle-section modulation, both the score-panel's Current Key AND the main display should switch in sync.
+2. **WTC C-maj Prelude:** no change expected (only one ks, `fifths=0`, no spurious default present); main display stays on `C` throughout. Console should NOT print the disagreement warning.
+3. **Generalisation:** the disagreement warning is structured so any future piece where this pattern recurs is immediately visible in the server log.
+
+---
+

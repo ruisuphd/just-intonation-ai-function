@@ -148,7 +148,9 @@ class TwoStageClient {
                     const tuningPart = currentText.includes('|') ? currentText.split('|')[1] : '';
                     statusEl.textContent = `Status: Using MusicXML key (${data.initial_key})${tuningPart ? ' |' + tuningPart : ''}`;
                 }
-                
+
+                // Cache the last-rendered main-display key so position_update can detect changes
+                this._lastMainDisplayKey = data.initial_key;
                 console.log(`Main display updated to MusicXML key: ${data.initial_key}`);
             }
             
@@ -181,19 +183,42 @@ class TwoStageClient {
         // Position updates (real-time)
         this.socket.on('position_update', (data) => {
             this.currentPosition = data.position;
-            
+
             if (this.onPositionUpdate) {
                 this.onPositionUpdate(data);
             }
-            
+
             // Update position display
             this.updatePositionDisplay(data);
-            
+
+            // Sync the main key display when score-following crosses a key-signature change.
+            // Without this, the main display remains stuck on the piece's initial key even though
+            // position_update already reports the correct current_key inside the score-follow panel.
+            // See research_data/engine_review_2026-04-19.md §A7.
+            if (data.current_key && data.current_key !== this._lastMainDisplayKey) {
+                this._lastMainDisplayKey = data.current_key;
+                const keyNameEl = document.getElementById('keyName');
+                const keyConfEl = document.getElementById('keyConfidence');
+                const keyMethodEl = document.getElementById('keyMethod');
+                const statusEl = document.getElementById('detectionStatus');
+
+                const modeLabel = data.current_key_is_minor ? 'minor' : 'major';
+                if (keyNameEl) keyNameEl.textContent = data.current_key;
+                if (keyConfEl) keyConfEl.textContent = `from MusicXML score (${modeLabel})`;
+                if (keyMethodEl) keyMethodEl.textContent = 'Source: MusicXML Key Signature';
+                if (statusEl) {
+                    const currentText = statusEl.textContent;
+                    const tuningPart = currentText.includes('|') ? currentText.split('|')[1] : '';
+                    statusEl.textContent = `Status: Following score — key ${data.current_key} (${modeLabel})${tuningPart ? ' |' + tuningPart : ''}`;
+                }
+                console.log(`Main display synced to score-follow key: ${data.current_key} (${modeLabel})`);
+            }
+
             // Display predicted notes
             if (data.predicted_notes) {
                 this.displayPredictedNotes(data.predicted_notes);
             }
-            
+
             // Apply JI tuning (if callback provided)
             if (data.ji_ratios && window.applyJITuning) {
                 window.applyJITuning(data.ji_ratios);
@@ -288,6 +313,7 @@ class TwoStageClient {
     
     clearAllUI() {
         this.harmonicPrediction = null;
+        this._lastMainDisplayKey = null;
         const statusEl = document.getElementById('stage1Status');
         if (statusEl) {
             statusEl.textContent = 'Connected — Start playing to identify the piece';
