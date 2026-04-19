@@ -456,3 +456,50 @@ Both fixes are independent: client-side Bug 1 would have left the main display s
 
 ---
 
+### A8 — MPE download format: recordings labelled "MPE" actually contained MTS SysEx (fixed)
+
+**Symptom (2026-04-19, post-demo investigation):** user downloaded two recordings of the WTC C-major Prelude — one with the live-tuning mode set to MTS and one with it set to MPE — expecting to be able to diff them for the MIDI monitor / examiner. Byte-level inspection revealed both files were **byte-identical in tuning content** and contained neither per-channel pitch bends nor MPE Configuration Message nor RPN 0 init. Both files simply embedded an MTS Scale/Octave 2-byte Realtime SysEx (`F0 7F 7F 08 09 …`) at the top and streamed the notes on MIDI channel 0 with no detuning.
+
+**Mechanism:** the live MTS/MPE radio in the Tuning panel only controls the real-time routing to the MIDI output device (what `tuning-mts.js` vs `tuning-mpe.js` sends during playback). The Recording section's download-format radio (in `index.html`) was `MIDI 1.0 (.mid) | MIDI 2.0 (.midi2)` — no MPE option — and `downloadRecording()` in `js/midi-recorder.js` unconditionally routed MIDI-1.0 downloads through `exportMIDI1WithMTS()`. So regardless of the user's live-mode selection, the downloaded `.mid` always received MTS SysEx, never MPE.
+
+**Why this matters for research:** the downloaded file is the one external examiners, reviewers, or collaborators will open in a MIDI monitor / DAW to verify the prototype's claims. If the "MPE" file actually contains MTS bytes, the entire MPE path becomes unverifiable from the artefact. Auditable demo = research-grade demo.
+
+**Fix (commit TBD):** added a real MPE export path.
+
+Files touched:
+- `js/midi-writer.js` — new `exportMIDI1WithMPE()` (~140 LOC). Generates a 2-track SMF:
+  - **Track 0:** MPE Configuration Message (`CC 127 = 15` on channel 0) + full RPN 0 init sequence (MSB=0, LSB=0, Data Entry=2 st, fine=0, null-reset) on each of the 15 member channels 1-15, followed by tempo/time-signature meta events.
+  - **Track 1:** per-note events produced by `allocateMPEEvents()` which mirrors the runtime `js/tuning-mpe.js` allocator — LRU pool of member channels, voice-stealing when all 15 are busy, strict `pitch-bend → note-on` ordering per note (and `note-off → pitch-bend reset` on release). CC passthrough (e.g. sustain pedal) lands on channel 0 per MPE convention.
+- `js/midi-writer.js` — extended `createTrack0WithMTS` with a `controlChange` case, and `createNoteTrack` with a `pitchBend` case (LSB-first 14-bit, matching the spec and the live path).
+- `js/midi-recorder.js` — added `exportAsMIDI1MPE()` and a new `'midi1-mpe'` format string in `downloadRecording()`. Filenames encode the format as a tag: `recording_JI_MPE_<ts>.mid` vs `recording_JI_MTS_<ts>.mid`.
+- `index.html` — download radio group is now 3-way: `MIDI 1.0 MTS (.mid)` / `MIDI 1.0 MPE (.mid)` / `MIDI 2.0 (.midi2)`. Each label has a `title="…"` tooltip explaining the format's compatibility.
+
+**Verification (`research_data/mpe_export_verification.mjs`):** a stand-alone Node test builds a synthetic C-E-G triad + follow-up F5 recording, invokes `exportMIDI1WithMPE` via dynamic import of the browser module, parses the resulting binary with an embedded SMF parser, and asserts:
+
+- SMF format 1, 480 ticks/quarter, 2 tracks.
+- MCM present on channel 0 with value 15.
+- Full RPN 0 init (6-CC sequence) on every member channel 1-15.
+- Exactly 4 note-on + 4 note-off events.
+- For every note-on, a pitch-bend event on the same channel is emitted at or before the note-on tick, and its raw value matches `round(JI_cents / 200 × 8192)` exactly.
+- Zero notes on channel 0 (master never carries notes).
+- Every note-off is followed by a pitch-bend reset to 0 on the same channel.
+
+Result: **36/36 assertions pass.** The C-major triad serialises to:
+- ch1 pitch-bend = 0    (C, 0 ¢)
+- ch2 pitch-bend = −573 (E, −14 ¢)
+- ch3 pitch-bend = +82  (G, +2 ¢)
+- ch4 pitch-bend = −82  (F, −2 ¢ — the follow-up F5)
+
+which matches the 5-limit JI table documented in `js/TUNING-ENGINE.md` §1 within round-off.
+
+**Stress test — 16 simultaneous notes at the same tick:** forces voice stealing on the 16th. The allocator correctly emits `note-off (stolen) → pitch-bend (new) → note-on (new)` in that order via the `order` tag on events (0 = note-off, 1 = pitch-bend, 2 = note-on) with stable sort at equal ticks. In a degenerate 16-same-tick case the note that gets stolen may receive a note-on (from its allocation) AND a stolen note-off in the same tick — harmless for most synths but cluttered. Real live performances never produce 16+ notes at exactly the same tick (MIDI recording resolution is ~4 ms per tick at 480 PPQ + 120 BPM) so this corner case doesn't occur in practice.
+
+**Usage guidance (added as tooltips in the UI):**
+- **MIDI 1.0 MTS** (default) — most portable. Opens correctly in Pianoteq, Surge XT, Logic's Sampler, any MTS-aware synth. Does NOT use per-channel pitch bend.
+- **MIDI 1.0 MPE** — opens correctly in Pianoteq MPE mode, Ableton 12 MPE tracks, ROLI Equator². Non-MPE synths apply the pitch bends per channel anyway (RPN 0 is universal MIDI 1.0, not an MPE extension), so the retune is still audible — you just lose the polyphonic-per-note behaviour.
+- **MIDI 2.0** — UMP clip file with per-note Pitch 7.25 tuning. Requires a MIDI-2.0-capable host.
+
+**Research benefit:** an examiner can now download both the MTS and MPE variants of the same recording, open them in a MIDI monitor, and visually confirm the prototype's MPE implementation by inspecting the MCM + RPN + per-note pitch-bend stream. The two `.mid` files are diffable and tell the whole story — no trust in the author required.
+
+---
+

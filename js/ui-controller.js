@@ -220,7 +220,13 @@ function downloadRecordingFile() {
     const format = document.querySelector('input[name="recordingFormat"]:checked').value;
     try {
         recorder.downloadRecording(format);
-        console.log(`Downloaded as ${format === 'midi2' ? 'MIDI 2.0' : 'MIDI 1.0'}`);
+        const label = {
+            'midi2': 'MIDI 2.0 (Pitch 7.25)',
+            'midi1-mpe': 'MIDI 1.0 MPE (per-channel pitch bend)',
+            'midi1-mts': 'MIDI 1.0 MTS (Scale/Octave SysEx)',
+            'midi1': 'MIDI 1.0 MTS (legacy alias)',
+        }[format] || format;
+        console.log(`Downloaded as ${label}`);
     } catch (error) { alert('Download failed: ' + error.message); }
 }
 

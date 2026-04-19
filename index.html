@@ -119,8 +119,9 @@
         </div>
         <div id="downloadSection" class="hidden mt" style="padding-top: 10px; border-top: 1px solid black;">
             <div class="radio-group mb">
-                <label><input type="radio" name="recordingFormat" value="midi1" checked> MIDI 1.0 (.mid)</label>
-                <label><input type="radio" name="recordingFormat" value="midi2"> MIDI 2.0 (.midi2)</label>
+                <label title="MIDI 1.0 + MTS Scale/Octave SysEx. Universal format — one SysEx carries the 12 pitch-class detune for the current key. Works with Pianoteq, Surge XT, Logic Sampler, and any MTS-aware synth. Does not use per-channel pitch bends."><input type="radio" name="recordingFormat" value="midi1-mts" checked> MIDI 1.0 MTS (.mid)</label>
+                <label title="MIDI 1.0 + MPE per-channel pitch bend. Track 0 contains the MPE Configuration Message (CC 127, 15) on channel 1 and RPN 0 (pitch-bend range = ±2 semitones) on each of the 15 member channels. Each note is emitted on its own member channel (2..16) with a per-note pitch-bend that encodes its JI cents deviation — exactly what the live MPE path sends. Use an MPE-aware synth (Pianoteq MPE mode, Ableton 12 MPE tracks, ROLI Equator²) for best results."><input type="radio" name="recordingFormat" value="midi1-mpe"> MIDI 1.0 MPE (.mid)</label>
+                <label title="MIDI 2.0 UMP clip file with per-note Pitch 7.25 tuning. Requires a MIDI-2.0-capable host."><input type="radio" name="recordingFormat" value="midi2"> MIDI 2.0 (.midi2)</label>
             </div>
             <button id="downloadRecordingButton" onclick="downloadRecordingFile()">Download</button>
         </div>

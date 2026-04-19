@@ -2,7 +2,7 @@
 // Key changes tracked from MusicXML or ensemble detection
 
 import { processMIDIForJI, NOTE_NAMES } from './midi-file-tuner.js';
-import { exportMIDI1WithMTS, exportMIDI2WithPitch725, downloadFile } from './midi-writer.js';
+import { exportMIDI1WithMTS, exportMIDI1WithMPE, exportMIDI2WithPitch725, downloadFile } from './midi-writer.js';
 import { getKeyRoot, isMinorKey, JI_RATIOS, ratioToCentsDeviation } from './tuning-core.js';
 
 const CONFIG = {
@@ -382,30 +382,55 @@ export function exportAsMIDI1(options = {}) {
     return exportMIDI1WithMTS(tuningResult);
 }
 
+export function exportAsMIDI1MPE(options = {}) {
+    const tuningResult = processRecordingForExport(options);
+    return exportMIDI1WithMPE(tuningResult);
+}
+
 export function exportAsMIDI2(options = {}) {
     const tuningResult = processRecordingForExport(options);
     return exportMIDI2WithPitch725(tuningResult);
 }
 
+/**
+ * @param format One of:
+ *   'midi1'     — (legacy alias) MIDI 1.0 with MTS Scale/Octave SysEx
+ *   'midi1-mts' — MIDI 1.0 with MTS Scale/Octave SysEx (universal — any
+ *                 MTS-aware synth: Pianoteq, Surge XT, Logic Sampler, …)
+ *   'midi1-mpe' — MIDI 1.0 with MPE per-channel pitch bend (MCM + RPN 0
+ *                 init + per-note pitch-bend on channels 2..16). Works
+ *                 with Pianoteq MPE mode, Ableton 12 MPE tracks, ROLI
+ *                 Equator², and any lower-zone-MPE-aware synth. Falls
+ *                 back gracefully on non-MPE synths because RPN 0 is
+ *                 universal MIDI 1.0.
+ *   'midi2'     — MIDI 2.0 clip file with Pitch 7.25 per-note tuning
+ */
 export function downloadRecording(format = 'midi1', options = {}) {
     if (!hasRecording()) throw new Error('No recording to download');
-    
+
     const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
-    
-    let blob, defaultFilename;
-    
+
+    let blob, defaultFilename, formatLabel;
+
     if (format === 'midi2') {
         blob = exportAsMIDI2(options);
         defaultFilename = `recording_JI_${timestamp}.midi2`;
+        formatLabel = 'MIDI 2.0 Pitch 7.25';
+    } else if (format === 'midi1-mpe') {
+        blob = exportAsMIDI1MPE(options);
+        defaultFilename = `recording_JI_MPE_${timestamp}.mid`;
+        formatLabel = 'MIDI 1.0 MPE';
     } else {
+        // 'midi1' (legacy alias) and 'midi1-mts' → MTS SysEx
         blob = exportAsMIDI1(options);
-        defaultFilename = `recording_JI_${timestamp}.mid`;
+        defaultFilename = `recording_JI_MTS_${timestamp}.mid`;
+        formatLabel = 'MIDI 1.0 MTS';
     }
-    
+
     downloadFile(blob, options.filename || defaultFilename);
-    
+
     const stats = getRecordingStats();
-    console.log(`Downloaded: ${stats.completedNotes} notes, ${format.toUpperCase()}`);
+    console.log(`Downloaded: ${stats.completedNotes} notes, ${formatLabel}`);
 }
 
 export function getDetectedKeys() {
