@@ -303,6 +303,30 @@ After five consecutive Colab integration failures on the Moonbeam foundation-mod
 
 **Delta zip for Colab:** `phase_c_skey_variants_2026-04-19.zip` (8.1 MB, 6 pretrained checkpoints). To be uploaded to Drive `PhD/` folder. No new code changes needed — `train_harmonic_context_model.py` already supports `--model-type transformer --pretrained-checkpoint`.
 
+### 2026-04-19 (afternoon) — C-A1-screen EXECUTED + C-A1-FULL EXECUTED
+
+**C-A1-screen results** (`phaseC_A1_skey_screen_analysis_2026-04-19.md`):
+All 6 S-KEY pretrained variants screened negative vs B9 (Δ range −0.026 to −0.038 at single-seed). Best-screening variant: `mode-only` (test 0.4971). Homogeneity across variants was remarkable (range 0.012) — pretraining hyperparameter choice essentially orthogonal to outcome.
+
+**C-A1-FULL results** (`phaseC_A1_full_consolidation_2026-04-19.md`):
+Full protocol 3 seeds × 30 epochs on `mode-only`. Plain test MIREX = **0.5037 ± 0.00015** (tightest aggregate σ in the entire study). Paired cluster bootstrap B=10,000:
+
+- CA1F vs B9 [full n=41]:  Δ = −0.0250, 95% CI [−0.041, −0.009], **p = 0.001 ***
+- CA1F vs B9 [mono n=32]:  Δ = −0.0304, 95% CI [−0.050, −0.011], **p = 0.004 ***
+- CA1F vs B9 [modu n=9]:   Δ = −0.0058, 95% CI [−0.015, +0.006], **p = 0.284 (ns)**
+- CA1F vs classical [full]: Δ = −0.190, p < 0.001 ***
+- CA1F vs classical [modu]: Δ = −0.028, p = 0.692 (ns, n=9 underpowered)
+
+**Outcome: `null`** — no STRONG, MODULATION, or TRANSFER winner. H1 disconfirmed at ATEPP scale with paired-bootstrap rigor.
+
+**Two novel sub-findings** beyond the null:
+1. CA1F significantly underperforms B9 on mono-tonal (p=0.004) but is **statistically indistinguishable from B9 on modulating** (p=0.284). Pretraining's trade-off is structural: it doesn't hurt modulating performance, only mono-tonal.
+2. Aggregate σ = 0.00015 (near-deterministic) is the tightest seed stability in the entire Phase A/B/C study. Methodologically, this suggests pretrained fine-tunes need fewer seeds to converge on aggregate metrics.
+
+### 2026-04-19 (remaining) — C-A2 Aria pretraining deferred to next Colab session
+
+Step 2B: `pretrain_aria_midi.py --limit 50000 --epochs 8` (~10–15 GPU-h) → 3-seed fine-tune on ATEPP (~5 GPU-h). Paired bootstrap vs B9 + classical + CA1F-FULL. Total est. ~15–20 GPU-h. Tests whether 170× corpus scaling (50k Aria files vs ~300 ATEPP) closes the classical gap. If null, dual-null across two orders of magnitude of pretraining scale is the strongest possible H1 disconfirmation. If STRONG_WINNER or MODULATION_WINNER, Phase C delivers the deployable-above-classical result.
+
 ---
 
 ## 12. Out-of-scope for Phase C
