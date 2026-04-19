@@ -272,3 +272,45 @@ For demo video: check the box. The user will hear ONLY the JI-tuned notes (no do
 - **Ensemble-blend inspection** — this audit was scoped to the tuning output path, not the key-detection ensemble. Key detection is handled in `js/key-detection.js` (3-way classical: Albrecht-Shanahan + Temperley + Krumhansl-Kessler) and `harmonic_context_runtime.py` (neural fallback). No issues found in the spot-checks done during viability review; full audit not in scope today.
 - **Per-note tuning latency measurement** — `js/latency-metrics.js` instruments this but we didn't review its numbers. Demo-rehearsal smoke test should capture latency histograms.
 - **Note-off pitch-bend-reset path** — `main.js:477-480` sends pitch bend = 0 before releasing the channel. After F1, stolen-channel release is a no-op, but non-stolen release still resets. Verified logically correct; needs MIDI-monitor confirmation during the rehearsal.
+
+### A4 — Score-following never starts after successful piece identification
+
+**Symptom (2026-04-19 22:00):** Piece identification now correctly returns
+Bach WTC Prelude No. 1 at 100 % confidence, but the UI hangs at
+"Identified: ... — Loading score..." forever. Tuning continues but via the
+backend harmonic fallback ("Source: backend harmonic model") instead of the
+MusicXML score path.
+
+**Root cause:** in `two_stage_server.py:handle_midi_note`, the Stage-2 score-
+following initialization block was placed inside the **`elif result:` (FAILED
+identification)** branch AND gated on `result.get('score_available')`. But
+`score_available` is only populated on the SUCCESS return of
+`attempt_identification()`. The block was dead code — it could not execute
+under any input. Previous DB-hash-mismatch bug (A1) had been hiding this
+because identification always failed, and the failed-branch-with-no-score
+path was the one that visibly ran.
+
+After A1 was fixed and identification started succeeding, the client started
+receiving `piece_identified` and then waited for `score_following_started`
+(or `score_not_available` / `score_following_failed`) forever, because the
+server never emitted any of them.
+
+**Fix:** moved the Stage-2 block into the SUCCESS branch where
+`result.get('score_available')` actually has a value. Three outcomes now
+covered:
+  - `score_available=True`  AND `initialize_score_following()` succeeds →
+    emit `score_following_started` with piece/score_length/initial_key/
+    key_changes_count/tuning_source='musicxml'
+  - `score_available=True`  AND init fails → emit `score_following_failed`
+    with reason and reactive-tuning fallback hint
+  - `score_available=False` → emit `score_not_available` with piece name
+    and "43.6% of ATEPP has scores" informational note
+
+**Verified end-to-end:** simulated WTC C-major Prelude stream → events in
+order: piece_identified → score_following_started (score_length=549,
+initial_key populated) → 13+ position_update events with per-note
+predictions and MusicXML-sourced tuning. No errors.
+
+**Files:**
+- `two_stage_server.py` — Stage 2 moved into success branch (~45 lines moved,
+  no semantic change to the individual emit payloads, only control-flow).

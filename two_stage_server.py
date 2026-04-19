@@ -964,8 +964,39 @@ def handle_midi_note(data):
                     'confidence': result['confidence'],
                     'alternatives': result.get('alternatives', [])
                 })
+
+                # ----- Stage 2: Initialize score following (2026-04-19 fix) -----
+                # Previous versions had this block inside the `elif result:` (FAILED)
+                # branch and gated on `result.get('score_available')`, but
+                # `score_available` is only populated on the SUCCESS path — meaning
+                # the block was unreachable. Client hung on "Loading score..." forever
+                # because it never received `score_following_started` / `score_not_available`
+                # / `score_following_failed`. Moved into the SUCCESS branch where it
+                # actually runs.
+                if result.get('score_available'):
+                    if system.initialize_score_following():
+                        emit('score_following_started', {
+                            'piece': system.identified_piece['piece'],
+                            'score_length': len(system.current_score),
+                            'initial_key': system.current_key,
+                            'is_minor': system.current_key_is_minor,
+                            'key_changes_count': len(system.key_signature_map),
+                            'tuning_source': 'musicxml'
+                        })
+                    else:
+                        emit('score_following_failed', {
+                            'reason': 'Score loading failed (see server log)',
+                            'fallback': 'reactive_tuning'
+                        })
+                else:
+                    emit('score_not_available', {
+                        'piece': result['piece'],
+                        'message': 'MusicXML score not available for this piece',
+                        'fallback': 'Continuing with reactive Just Intonation tuning',
+                        'note': '43.6% of ATEPP has scores - piece may not have one'
+                    })
             elif result:
-                # Identification attempted but failed — inform client
+                # Identification attempted but failed — inform client and keep listening
                 best = result.get('best_guess')
                 emit('identification_attempt', {
                     'success': False,
@@ -975,32 +1006,6 @@ def handle_midi_note(data):
                     'buffer_size': len(system.midi_buffer),
                     'message': 'Keep playing — will retry in 10 seconds',
                 })
-                
-                # Stage 2: Initialize score following (if score available)
-                if result.get('score_available'):
-                    if system.initialize_score_following():
-                        emit('score_following_started', {
-                            'piece': system.identified_piece['piece'],
-                            'score_length': len(system.current_score),
-                            # Key signature information from MusicXML
-                            'initial_key': system.current_key,
-                            'is_minor': system.current_key_is_minor,
-                            'key_changes_count': len(system.key_signature_map),
-                            'tuning_source': 'musicxml'
-                        })
-                    else:
-                        emit('score_following_failed', {
-                            'reason': 'Score loading failed',
-                            'fallback': 'reactive_tuning'
-                        })
-                else:
-                    # No MusicXML score available - inform user
-                    emit('score_not_available', {
-                        'piece': result['piece'],
-                        'message': 'MusicXML score not available for this piece',
-                        'fallback': 'Continuing with reactive Just Intonation tuning',
-                        'note': '43.6% of ATEPP has scores - piece may not have one'
-                    })
         
         # If score following active, update position
         # Only send updates if clients are connected (prevents stale state issues)
