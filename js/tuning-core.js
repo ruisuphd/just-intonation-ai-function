@@ -75,9 +75,12 @@ export function ratioToCentsDeviation(ratio, interval) {
 export function calculateJICentsForNote(midiNote, keyName) {
     const keyRoot = getKeyRoot(keyName);
     const ratios = isMinorKey(keyName) ? JI_RATIOS.minor : JI_RATIOS.major;
-    const interval = (midiNote - keyRoot + 144) % 12;
+    // F4 polish (2026-04-19): canonical positive-modulo for (midiNote - keyRoot)
+    // over 12 pitch classes. Prior form used "+ 144" (12×12) as a safe offset;
+    // this idiom is more readable and has identical behaviour for any int input.
+    const interval = ((midiNote - keyRoot) % 12 + 12) % 12;
     const ratio = ratios[interval] || 1.0;
-    
+
     return ratioToCentsDeviation(ratio, interval);
 }
 

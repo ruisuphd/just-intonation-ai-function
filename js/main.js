@@ -427,11 +427,21 @@ function forwardNoteExternal(noteData, channel, isNoteOn) {
         if (!mpe.isPitchBendRangeInitialized() && isNoteOn) {
             mpe.initializePitchBendRange(selectedOutput);
         }
-        
+
         if (isNoteOn) {
-            const allocationResult = mpe.allocateChannel(noteData.noteId);
+            // F1 fix (2026-04-19): pass pitch so voice-stealing can emit a proper
+            // note-off for the stolen note (previously the stolen note hung
+            // silently on the synth, causing the "MPE sounds off" complaint).
+            const allocationResult = mpe.allocateChannel(noteData.noteId, noteData.note);
             if (allocationResult !== null && typeof allocationResult !== 'undefined') {
                 if (typeof allocationResult === 'object' && allocationResult.channel !== undefined) {
+                    // Voice stealing happened. Emit a note-off for the STOLEN pitch on this
+                    // channel BEFORE the new note-on, so the synth doesn't hang the old note.
+                    if (typeof allocationResult.stolenPitch === 'number') {
+                        selectedOutput.send([0x80 | allocationResult.channel, allocationResult.stolenPitch, 0]);
+                        totalBytesSent += 3;
+                    }
+                    // Reset pitch bend on the reused channel
                     totalBytesSent += mpe.sendPitchBend(selectedOutput, allocationResult.channel, 0);
                     outputChannel = allocationResult.channel;
                 } else if (typeof allocationResult === 'number') {
@@ -444,7 +454,14 @@ function forwardNoteExternal(noteData, channel, isNoteOn) {
             }
         } else if (noteData.noteId) {
             const ch = mpe.getChannelForNote(noteData.noteId);
-            if (ch !== null) outputChannel = ch;
+            if (ch === null) {
+                // F1 fix: the note was voice-stolen earlier, so the synth no
+                // longer holds it on any known channel. Silently skip the output
+                // — sending note-off to a wrong channel would kill the wrong note.
+                latency.cancelMeasurement();
+                return;
+            }
+            outputChannel = ch;
         }
     }
     
