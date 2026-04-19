@@ -303,7 +303,43 @@ class TwoStageSystem:
                 os.remove(temp_midi_path)
                 temp_midi_path = None
             
-            if results and results[0]['confidence'] >= self.confidence_threshold:
+            # Multi-criterion identification gate (2026-04-19 fix, tuned after
+            # discovering that ATEPP contains multiple recordings of the same
+            # piece — the naive margin gate wrongly rejected correct matches
+            # when rank 1 and rank 2 were TWO DIFFERENT PERFORMANCES of the
+            # same composition, e.g.:
+            #   rank 1 (100%): Bach: Das Wohltemperierte Klavier: BWV 846 Prelude
+            #   rank 2 ( 89%): Bach: The Well-Tempered Clavier: Prelude No. 1
+            # ← same piece, just different ATEPP metadata strings.
+            #
+            # Three gates required simultaneously:
+            #   1. confidence  >= 50%   (higher than the old 30% threshold —
+            #                            rejects low-confidence noise aggregations)
+            #   2. coverage    >= 25%   (≥25% of query fps matched SOMETHING)
+            #   3. match_count >= 50    (top piece must be voted by ≥50 fps —
+            #                            real matches have 1000s; noise has <20.
+            #                            Primary guard against the false-positive
+            #                            scenario where a piece NOT in the DB
+            #                            produces ~8 stray-hash matches to Schumann.)
+            #
+            # Validated:
+            #   - Full K.331/III real → conf 100, cov 100, matches 3188 → ACCEPT
+            #   - WTC C-maj Prelude  → conf 100, cov 100, matches 562  → ACCEPT
+            #   - 15-note fragment   → conf  67, cov 100, matches    8 → REJECT ← noise
+            MIN_CONFIDENCE  = 50.0
+            MIN_COVERAGE    = 25.0
+            MIN_MATCH_COUNT = 50
+
+            top = results[0] if results else None
+            runner_up = results[1] if results and len(results) > 1 else None
+            if top is not None:
+                confident   = (top['confidence'] >= MIN_CONFIDENCE)
+                high_coverage = (top.get('coverage', 0.0) >= MIN_COVERAGE)
+                enough_matches = (top.get('matches', 0) >= MIN_MATCH_COUNT)
+            else:
+                confident = high_coverage = enough_matches = False
+
+            if results and confident and high_coverage and enough_matches:
                 # Confident identification!
                 self.identified_piece = results[0]
                 self.state = SystemState.IDENTIFIED
@@ -324,10 +360,22 @@ class TwoStageSystem:
                     'score_available': has_score
                 }
             else:
-                # Not confident enough
+                # Not confident enough — explain WHICH gate failed so the
+                # client-side message is more informative than "Low confidence"
+                # when the real reason is "low coverage" (piece not in DB).
+                if top is None:
+                    reason = 'No fingerprint matches at all'
+                elif not confident:
+                    reason = f'Top-match confidence {top["confidence"]:.0f}% < threshold {MIN_CONFIDENCE:.0f}%'
+                elif not high_coverage:
+                    reason = f'Only {top.get("coverage", 0.0):.0f}% of notes matched the DB (piece likely not in the dataset)'
+                elif not enough_matches:
+                    reason = f'Only {top.get("matches", 0)} fingerprint matches (< {MIN_MATCH_COUNT} threshold) — noise-level, keep playing'
+                else:
+                    reason = 'Low confidence'
                 return {
                     'success': False,
-                    'reason': 'Low confidence',
+                    'reason': reason,
                     'best_guess': results[0] if results else None
                 }
                 

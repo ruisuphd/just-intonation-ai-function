@@ -58,42 +58,79 @@ async function initMIDI() {
     }
 }
 
-function updateMIDIDevices() {
-    const inputSelect = document.getElementById('midiInput');
-    const outputSelect = document.getElementById('midiOutput');
+// Sticky selection — persists across updateMIDIDevices() rebuilds even if the
+// device temporarily disappears from midiAccess.inputs/outputs (USB sleep/wake,
+// re-enumeration, state-change race). Only updated when the user makes a
+// DELIBERATE selection via the dropdown, not by the rebuild itself.
+let stickyInputId  = null;
+let stickyOutputId = null;
 
+function rememberMidiSelection() {
+    const inputSelect  = document.getElementById('midiInput');
+    const outputSelect = document.getElementById('midiOutput');
+    if (inputSelect  && inputSelect.value)  stickyInputId  = inputSelect.value;
+    if (outputSelect && outputSelect.value) stickyOutputId = outputSelect.value;
+}
+
+function updateMIDIDevices() {
+    const inputSelect  = document.getElementById('midiInput');
+    const outputSelect = document.getElementById('midiOutput');
     if (!inputSelect || !outputSelect) return;
 
-    // Preserve current user selection so midiAccess.onstatechange re-population
-    // doesn't reset the dropdown to the placeholder. (2026-04-19 fix for
-    // "selectors auto-deselect when I click Start" — MPE initialisation
-    // writes SysEx/CC messages which trigger onstatechange, re-entering this
-    // function mid-init.)
-    const prevInputId  = inputSelect.value;
-    const prevOutputId = outputSelect.value;
+    // Also capture name as a secondary-match key — IDs can change if the
+    // USB device is replugged, but the name typically stays stable (e.g.
+    // "FP-10 MIDI In").
+    const getNameById = (list, id) => {
+        for (const item of list) { if (item.id === id) return item.name; }
+        return null;
+    };
+    const stickyInputName  = stickyInputId  ? getNameById(midiAccess.inputs.values(),  stickyInputId)  : null;
+    const stickyOutputName = stickyOutputId ? getNameById(midiAccess.outputs.values(), stickyOutputId) : null;
 
-    inputSelect.innerHTML = '<option value="">Select MIDI Input...</option>';
+    inputSelect.innerHTML  = '<option value="">Select MIDI Input...</option>';
     outputSelect.innerHTML = '<option value="">Select MIDI Output...</option>';
 
-    for (let input of midiAccess.inputs.values()) {
+    for (const input of midiAccess.inputs.values()) {
         const option = document.createElement('option');
         option.value = input.id;
         option.textContent = input.name;
         inputSelect.appendChild(option);
     }
-
-    for (let output of midiAccess.outputs.values()) {
+    for (const output of midiAccess.outputs.values()) {
         const option = document.createElement('option');
         option.value = output.id;
         option.textContent = output.name;
         outputSelect.appendChild(option);
     }
 
-    // Restore previous selection if the device is still present.
-    // If the device was unplugged, the option won't exist and value stays ''.
-    if (prevInputId  && Array.from(inputSelect.options).some(o  => o.value === prevInputId))  inputSelect.value  = prevInputId;
-    if (prevOutputId && Array.from(outputSelect.options).some(o => o.value === prevOutputId)) outputSelect.value = prevOutputId;
+    // Restore sticky selection. Try exact ID first; if the device was
+    // re-enumerated and has a new ID, fall back to a same-name match.
+    const tryRestore = (select, stickyId, stickyName) => {
+        if (!stickyId) return;
+        const opts = Array.from(select.options);
+        if (opts.some(o => o.value === stickyId)) {
+            select.value = stickyId;
+            return;
+        }
+        if (stickyName) {
+            const m = opts.find(o => o.textContent === stickyName);
+            if (m) { select.value = m.value; stickyInputId = (select === document.getElementById('midiInput') ? m.value : stickyInputId); }
+        }
+    };
+    tryRestore(inputSelect,  stickyInputId,  stickyInputName);
+    tryRestore(outputSelect, stickyOutputId, stickyOutputName);
 }
+
+// Wire change events so the sticky captures user selection at the moment
+// of deliberate change, not only inside updateMIDIDevices. Without this,
+// if the user selects a device and an onstatechange fires before the
+// sticky gets captured, the selection vanishes.
+document.addEventListener('DOMContentLoaded', () => {
+    const inSel  = document.getElementById('midiInput');
+    const outSel = document.getElementById('midiOutput');
+    if (inSel)  inSel.addEventListener('change',  () => { stickyInputId  = inSel.value  || stickyInputId; });
+    if (outSel) outSel.addEventListener('change', () => { stickyOutputId = outSel.value || stickyOutputId; });
+});
 
 function startSystem() {
     const inputId = document.getElementById('midiInput').value;

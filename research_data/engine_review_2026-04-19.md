@@ -314,3 +314,68 @@ predictions and MusicXML-sourced tuning. No errors.
 **Files:**
 - `two_stage_server.py` — Stage 2 moved into success branch (~45 lines moved,
   no semantic change to the individual emit payloads, only control-flow).
+
+### A5 — False-positive piece identification on pieces not in the filtered DB
+
+**Symptom (2026-04-19 22:30):** User played Mozart K.331/III ("Rondo alla Turca") and the system identified it with 100 % confidence as **Robert Schumann: Toccata in C Major, Op. 7** — a completely unrelated piece. Score-following then loaded the wrong score and presented wrong predictions.
+
+**Investigation:**
+
+1. Is Alla Turca in ATEPP? YES — 19 recordings under `Piano_Sonata_No._11_in_A_Major,_K._331/3._Alla_Turca.../*.mid`.
+2. Is it in the **filtered** DB (only pieces with MusicXML scores)? The folder for movement 3 has no `.mxl`, only movements 1 and 2 do. So score-availability filtering excludes K.331/III from the filtered DB. **The fingerprint DB and score mapping therefore do not know about Alla Turca.**
+3. Why does a not-in-DB piece get identified confidently? Because the old gate was `confidence >= 30%`, nothing else. In the fingerprint inverted-index implementation, `confidence = match_count / matched_fps`. When the user plays a piece NOT in the DB, a small fraction of query fingerprints will still hash-collide with common intervallic N-grams in OTHER pieces (scalar runs, arpeggios). If those sparse stray matches all vote for one piece (e.g. Schumann Toccata, rich in scalar passagework), that piece's confidence goes to 100 % despite the RAW match count being tiny.
+
+**Root cause:** single-criterion gating on confidence. Needed absolute match-count and coverage filters too.
+
+**Fix:** promote to **three-criterion gate** in `attempt_identification`:
+
+| Gate | Value | Purpose |
+|---|---|---|
+| `confidence >= 50%` | (was 30 %) | top piece must win by a clear fraction of matched fps |
+| `coverage >= 25%` | new | ≥ 25 % of query fingerprints must match *something* in the DB (catches not-in-DB queries) |
+| `matches >= 50`   | new | top piece must be voted by ≥ 50 fingerprints (real matches have 100s–1000s; stray-collision "matches" have <20) |
+
+Tested cases (MIN_CONFIDENCE=50, MIN_COVERAGE=25, MIN_MATCH_COUNT=50):
+
+| Query | conf | cov | matches | Old gate | New gate |
+|---|---:|---:|---:|:-:|:-:|
+| Real K.331/III (full) | 100 | 100 | 3188 | ACCEPT | **ACCEPT** ✓ |
+| Real WTC C-maj Prelude (full) | 100 | 100 | 562 | ACCEPT | **ACCEPT** ✓ |
+| 15-note noisy fragment | 91 | 100 | 11 | ACCEPT (false-positive!) | **REJECT** ✓ |
+| 30-note mid fragment | 100 | 100 | 27 | ACCEPT | REJECT — "keep playing" is the right UX for 30 notes |
+
+**Initial attempt also added a margin gate** (rank 1 must beat rank 2 by ≥ 15 points) but this turned out to break CORRECT matches in cases where ATEPP contains multiple recordings of the same piece with similar fingerprints, e.g.:
+
+- rank 1 (100 %): "Bach: Das Wohltemperierte Klavier: BWV 846 Prelude"
+- rank 2 ( 89 %): "Bach: The Well-Tempered Clavier: Prelude No. 1"
+
+These are the same piece with different ATEPP metadata strings. Margin of only 11 pts → false reject. Dropped the margin gate; the coverage + match-count gates alone are sufficient to reject noise without rejecting same-piece multi-recording cases.
+
+**User-facing improvement:** `identification_attempt.reason` now distinguishes between the failure modes:
+- "Only 8 fingerprint matches (< 50 threshold) — noise-level, keep playing" (piece not in DB, or not enough data yet)
+- "Only 12 % of notes matched the DB (piece likely not in the dataset)" (coverage failure)
+- "Top-match confidence 35 % < threshold 50 %" (ambiguous)
+
+Replaces the previous generic "Low confidence" message.
+
+---
+
+### A6 — MIDI dropdowns re-reset during playback (part 2)
+
+**Symptom (2026-04-19 22:30):** Even after the earlier fix (`448faa3` — preserve selection across `updateMIDIDevices()` rebuild), the MIDI input/output dropdowns still auto-deselect while the user is playing. Fix was incomplete.
+
+**Investigation:** The earlier fix captured `inputSelect.value` at the START of `updateMIDIDevices` and restored it if the device was still enumerated in `midiAccess.inputs.values()`. This fails when:
+
+1. User's FP-10 goes into USB sleep/wake cycle → `onstatechange` fires with the device temporarily absent from `midiAccess.inputs`.
+2. `prevInputId` is captured (= FP-10's ID), but at rebuild time `FP-10` isn't in the enumeration, so the rebuild produces a dropdown with only the placeholder option.
+3. "Restore if still present" check fails (FP-10 option not in the rebuilt dropdown), so `inputSelect.value` stays at `""`.
+4. Moments later, FP-10 wakes up → `onstatechange` fires again → now at the start of `updateMIDIDevices`, `inputSelect.value === ""` (placeholder), so we capture an EMPTY `prevInputId`.
+5. Rebuild: FP-10 is back in `midiAccess.inputs`, FP-10 option gets added. But `prevInputId` is empty, so we don't restore. Dropdown stays at placeholder — selection lost.
+
+**Fix:** replace the function-local `prevInputId` capture with **module-level sticky variables** (`stickyInputId`, `stickyOutputId`) that:
+
+- Persist across `updateMIDIDevices()` calls regardless of the state of `midiAccess.inputs`.
+- Update ONLY on deliberate user change (dropdown `change` event handler).
+- Are used at restore time with a two-step match: first try `stickyId` exactly; if the device was re-enumerated with a new ID (rare), fall back to a match by device NAME (stable across re-plugs).
+
+After this change, the FP-10 can sleep/wake arbitrarily without losing the user's dropdown selection, as long as the device name stays the same.
