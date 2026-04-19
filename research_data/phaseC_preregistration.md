@@ -278,6 +278,31 @@ Before C1/C2/C3/C4 launch, `finetune_moonbeam_key_detection.py` requires:
 
 Estimated 2 hours of code changes + local smoke test. Tracked in `phaseC_preregistration.md` §10.4. Next commit will land this.
 
+### 2026-04-19 — Path A redirect from Moonbeam to project-native S-KEY pretraining
+
+After five consecutive Colab integration failures on the Moonbeam foundation-model transfer (full post-mortem in [`phaseC_path_viability_2026-04-19.md`](phaseC_path_viability_2026-04-19.md) §2), the Path A experimental plan is **redirected from Moonbeam to the project-native pretraining pipeline** (`pretrain_symbolic_key.py` + `pretrain_aria_midi.py` → `SymbolicKeyTransformer`). Moonbeam remains in-tree as future work.
+
+**Rationale.** The Moonbeam integration problem is structural, not incremental: Moonbeam's `transformers_minimal` has no `[build-system]` in pyproject.toml (not pip-installable); its stripped fork breaks peft (missing bloom, bert, t5); Colab's `tokenizers == 0.22.2` pin blocks `transformers == 4.41` downgrade. Fixing this properly is multi-day engineering work that doesn't advance the thesis. The project already has a self-contained pretraining pipeline that tests the **same scientific hypothesis** (H1: pretraining transfer closes the classical gap) with **dramatically lower engineering cost** and a **theoretically better-aligned objective** (S-KEY's equivariance + mode loss is key-specific, vs Moonbeam's generic next-token prediction).
+
+**Revised Path A cell registry (replaces pre-reg §2a):**
+
+| Cell | Description | Budget | Tests |
+|---|---|---|---|
+| **C-A1-screen** | Single-seed fine-tune of each of 6 existing `symbolic_key_pretrained_*.pt` variants on the audited pipeline. `--model-type transformer --pretrained-checkpoint {variant} --weight-mode ens --selection-metric val_mirex --require-causal --deterministic --epochs 10 --learning-rate 1e-4 --seed 20260309`. Evaluate with `evaluate_harmonic_context_model.py`. | ~2–3 GPU-h | Does ANY S-KEY ATEPP-pretrained variant beat B9 (0.5235) by Δ ≥ 0.005 in a single-seed screen? |
+| **C-A1-full** | ONLY if C-A1-screen has a positive variant: full 30-epoch × 3 seeds of that variant, paired bootstrap vs B9 + classical. | ~5 GPU-h | Confirm the lift at pre-reg significance thresholds. |
+| **C-A2-aria-pretrain** | ONLY if C-A1-screen is null (no variant beats B9 by Δ ≥ 0.005): run `pretrain_aria_midi.py` on 371k Aria-MIDI files. | ~10–15 GPU-h | Pretrains at ~1,500× ATEPP scale. |
+| **C-A2-aria-finetune** | Fine-tune `SymbolicKeyTransformer` with the Aria-pretrained checkpoint × 3 seeds using B9 protocol. Paired bootstrap vs B9 + classical. | ~5 GPU-h | Does scaling pretraining data 1500× close the gap? |
+
+**Decision gates (pre-registered):**
+
+- After C-A1-screen: if any variant lifts Δ ≥ 0.005 over B9 → proceed to C-A1-full. If all null → proceed to C-A2-aria-pretrain OR accept "H1 disconfirmed on ATEPP scale" and close Path A without C-A2.
+- After C-A1-full: standard outcome categories per pre-reg §4 (STRONG_WINNER, MODULATION_WINNER, TRANSFER_WINNER, UNSTABLE, null).
+- After C-A2: standard outcome categories; a definitive "null + ceiling" at 1,500× pretraining scale would be a notable negative result publishable in its own right.
+
+**Moonbeam cells C1/C2/C3/C4 are DEFERRED** to "future work, subject to improved release tooling." The `finetune_moonbeam_key_detection.py` + `evaluate_moonbeam_key_detection.py` scripts landed in commit `c178c40` remain in the tree as a starting point.
+
+**Delta zip for Colab:** `phase_c_skey_variants_2026-04-19.zip` (8.1 MB, 6 pretrained checkpoints). To be uploaded to Drive `PhD/` folder. No new code changes needed — `train_harmonic_context_model.py` already supports `--model-type transformer --pretrained-checkpoint`.
+
 ---
 
 ## 12. Out-of-scope for Phase C
