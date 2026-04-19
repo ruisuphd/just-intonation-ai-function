@@ -54,6 +54,13 @@
             <label><input type="radio" name="outputMode" value="external" checked> External MIDI</label>
             <label><input type="radio" name="outputMode" value="internal"> Internal Sound</label>
         </div>
+        <div class="radio-group" style="margin-top: 8px;">
+            <label title="Recommended when the MIDI output device is the same keyboard you are playing on (e.g. Roland FP-10, Yamaha P-series, Casio PX-S). Prevents the keyboard from playing notes directly from its own keybed in parallel with the tuned MIDI loop-back, which causes a doubled / 'echoey' sound. Sends CC 122 (Local Control Off) at Start and restores it at Stop.">
+                <input type="checkbox" id="localControlOff">
+                Local Control Off
+                <span style="font-size: 11px; color: #666;">(keyboards only — avoids doubled sound when routed back to itself)</span>
+            </label>
+        </div>
     </div>
     
     <div class="section">

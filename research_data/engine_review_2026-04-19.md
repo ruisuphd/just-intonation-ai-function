@@ -190,6 +190,82 @@ MTS path (`js/tuning-mts.js`, applySingleNoteTuning, bulk scale/octave sysex) UN
 
 ---
 
+## Addendum — 2026-04-19 evening fixes (three live-demo bugs)
+
+After committing the above, the user ran the demo end-to-end and reported three issues. Investigated + fixed today.
+
+### A1 — Piece identification fails on all ATEPP MIDIs
+
+**Symptom:** "500 notes — No matching pieces found" + `Server error: 'piece'` in console for every ATEPP piece the user played (including WTC C-major Prelude which IS in the DB).
+
+**Reproduction:** `fingerprinter.identify('ATEPP_JI_Dataset/.../02650.mid')` → `[]` (empty) — zero of 562 query fingerprints matched.
+
+**Root cause:** **hash-type mismatch between saved DB and current fingerprinter code.**
+- `atepp_filtered_database.pkl` (dated 2025-12-13, 177 MB) contains `int` keys like `7835653409623154255`, `-4192530531037985212` — these are Python `hash((int_tuple))` values.
+- Current `simple_ngram_fingerprinting._interval_hash` uses `hashlib.sha256(str(intervals).encode('ascii')).hexdigest()` — produces 64-char hex strings like `'bb72c5de99c0a98f...'`.
+- Query hashes are str, DB keys are int → zero possible intersection.
+- Hashing was switched to SHA-256-hex at some point after Dec-13 DB build, but DB was never rebuilt. System has been silently broken for months.
+
+**Fix:** rebuild the filtered fingerprint DB with the current `extract_fingerprints` hashing.
+
+    python3 create_filtered_database.py
+
+- New DB: 137 MB (vs 177 MB), 318,110 unique fingerprints across 5,091 pieces (all with MusicXML scores).
+- Old DB preserved as `atepp_filtered_database.pkl.old_sha256mismatch`.
+- Verified end-to-end: simulated MIDI stream from WTC C-major Prelude now produces `piece_identified` event with 100 % confidence, 100 % coverage, correct piece name.
+
+The `Server error: 'piece'` was a red herring — it was `str(KeyError('piece'))` emitted from the `try/except` in `handle_midi_note`, which fired when score-following initialisation tried to access `identified_piece['piece']` after the "score_available" branch was entered with a malformed result. With identification now returning the correct dict shape, this no longer triggers.
+
+### A2 — MIDI input/output dropdowns auto-deselect on Start click
+
+**Symptom:** User selects input + output device, clicks Start, both dropdowns visibly reset to the "Select MIDI..." placeholder.
+
+**Root cause:** `updateMIDIDevices()` at `js/main.js:61` rebuilds the `<option>` list from scratch with `innerHTML = '<option>...'`. It is wired to `midiAccess.onstatechange` (lines 40/52). When the user clicks Start, MPE initialisation sends RPN + MCM messages to the output device, which can trigger `onstatechange`, which re-enters `updateMIDIDevices()`, which wipes the dropdown. The internal `selectedInput`/`selectedOutput` JS variables still hold the correct device refs, but the visible dropdown shows the placeholder.
+
+**Fix:** preserve the currently-selected value before clearing `innerHTML` and restore it after rebuilding, falling back to placeholder only if the device was genuinely unplugged. Single function, ~8 LOC addition.
+
+Verified with manual re-test: user can now pick devices, click Start, and both dropdowns keep their selected value through the MPE init storm.
+
+### A3 — MPE mode sounds "echoey" on Roland FP-10 (user's home piano)
+
+**Symptom:** User selects MPE output to FP-10's internal speakers. Notes sound doubled / "echoey" — not the clean JI tuning they expected.
+
+**Root cause:** **MIDI Local Control is ON by default** on keyboards like the FP-10. When the user presses a key:
+1. FP-10's keybed triggers its internal voice engine **directly** (local loop) → user hears the equal-tempered note.
+2. FP-10 sends MIDI-out to the browser.
+3. Browser re-tunes and sends MIDI-in back to FP-10 → FP-10 plays the note AGAIN via its MIDI-input path, now detuned.
+4. User hears BOTH notes superimposed → equal-tempered + detuned = beating + chorus/"echoey" effect.
+
+This is NOT an MPE-specific bug; it would affect MTS mode identically. The user noticed it on MPE because MPE's per-channel routing makes the mismatch more audible on a non-MPE-aware synth.
+
+**Fix:** add a "Local Control Off" checkbox to the Setup panel. When checked, the system sends `CC 122, 0` (MIDI standard "Local Control Off") on all 16 channels at Start, and `CC 122, 127` (Local Control On) at Stop — restoring normal keybed behaviour after the demo ends.
+
+Recommended usage:
+- **Check the box** when your MIDI output is the SAME keyboard you're playing on (FP-10, Yamaha P-series, Casio PX-S, ROLI Seaboard, etc.)
+- **Leave unchecked** when your MIDI output is a separate device or a software synth (the CC 122 is harmless but unnecessary).
+
+For demo video: check the box. The user will hear ONLY the JI-tuned notes (no doubling).
+
+---
+
+## 8. New files / edits added in this addendum
+
+- `js/main.js` — (a) `updateMIDIDevices()` preserves selection across rebuilds; (b) `startSystem` / `stopSystem` send CC 122 0/127 when the new checkbox is checked.
+- `index.html` — new `<input type="checkbox" id="localControlOff">` in the MIDI Configuration section with hover-tooltip explaining the Local Control concept.
+- `js/TUNING-ENGINE.md` — §7 added documenting Local Control semantics and the FP-10 doubling root cause.
+- `atepp_filtered_database.pkl` — rebuilt (137 MB, 318k unique fingerprints, 5091 pieces). Old kept as `.old_sha256mismatch` for revert.
+- `atepp_score_mapping.pkl` — rebuilt alongside. Old preserved.
+
+## 9. Acceptance check (passed 2026-04-19 evening)
+
+1. `bash start.sh` → backend + frontend both up, no "Score-following dependencies unavailable" warning.
+2. `/health` returns `{state: idle, status: ok, system_initialized: true}`.
+3. Simulated MIDI stream from WTC C-major Prelude → `piece_identified` event, 100 % confidence, correct title.
+4. UI: click Start after selecting devices; both dropdowns retain their selection (no auto-deselect).
+5. UI: "Local Control Off" checkbox present in MIDI Configuration panel; visible + hover-tooltip shows explanation.
+
+---
+
 ## 8. Remaining audit items deferred for Day 2/3
 
 - **F2** — pitch-bend range UI selector (Day 2, UI redesign).

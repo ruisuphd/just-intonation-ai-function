@@ -160,7 +160,62 @@ Release rules:
   Y-axis (CC 74) and Z-axis (channel pressure) expression. Not used for
   tuning here; passthrough for these is out of scope.
 
-## 6. Verification protocol (for regression testing)
+## 6. Local Control — doubled-sound avoidance
+
+When the MIDI output is the SAME keyboard you're playing on (common setup:
+Roland FP-10, Yamaha P-series, Casio PX-S, ROLI Seaboard, etc. — any self-
+contained digital piano/keyboard), the keyboard's default behaviour is
+**Local Control ON**: each physical key press does two things in parallel:
+
+1. Triggers the keyboard's internal voice engine directly from the keybed
+   (you hear an **equal-tempered** note immediately)
+2. Sends a MIDI-out event
+
+If the browser is configured to output to the same keyboard, step 2's MIDI
+loops back:
+
+3. Browser receives MIDI-in
+4. Browser applies JI detuning + sends MIDI-out to the keyboard
+5. Keyboard plays the detuned note from its MIDI-in path
+
+You hear BOTH the equal-tempered direct voice AND the JI-tuned loop-back
+voice. Small tuning differences (e.g. JI major third at −14 ¢) cause audible
+beating + a chorus/"echoey" effect. **This is not a bug; it's fundamental
+MIDI routing.**
+
+### The fix — send `CC 122, 0` (Local Control Off)
+
+The prototype exposes a **Local Control Off** checkbox in the Setup panel.
+When checked:
+
+- On Start: `[0xB0 | ch, 122, 0]` is sent to the output on all 16 channels,
+  telling the keyboard "stop triggering your internal voice from the keybed
+  directly; only play what comes in via MIDI."
+- On Stop: `[0xB0 | ch, 122, 127]` restores normal keybed behaviour.
+
+Recommended usage:
+
+- **Check the box** when output is the keyboard you're playing on. You'll
+  hear only the JI-tuned loop-back voice, no doubled sound.
+- **Leave unchecked** when output is a separate device or a software synth
+  (no local-loop doubling is possible; the CC 122 would be a harmless no-op
+  but cleaner to not send it).
+
+### Why this happens more audibly in MPE than MTS
+
+Both modes suffer equally from Local Control doubling. User feedback
+singled out MPE as "echoey" likely because:
+
+- MPE sends each note on a unique member channel (2–16), while the keyboard
+  receives them all on omni mode. Pitch bends are channel-specific so each
+  note gets an individual ±N-cent offset — but the LOCAL voice still plays
+  equal-tempered. The mismatch per-note makes the beating more noticeable
+  than MTS's single-SysEx-per-note model, which some synths ignore
+  silently, producing no loop-back voice at all (and thus no doubling).
+
+---
+
+## 7. Verification protocol (for regression testing)
 
 Use a MIDI monitor application (MidiPipe / Snoize SysEx Librarian /
 loopMIDI + MIDI-OX) routed between the prototype output and the synth.

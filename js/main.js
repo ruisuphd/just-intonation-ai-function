@@ -61,25 +61,38 @@ async function initMIDI() {
 function updateMIDIDevices() {
     const inputSelect = document.getElementById('midiInput');
     const outputSelect = document.getElementById('midiOutput');
-    
+
     if (!inputSelect || !outputSelect) return;
-    
+
+    // Preserve current user selection so midiAccess.onstatechange re-population
+    // doesn't reset the dropdown to the placeholder. (2026-04-19 fix for
+    // "selectors auto-deselect when I click Start" — MPE initialisation
+    // writes SysEx/CC messages which trigger onstatechange, re-entering this
+    // function mid-init.)
+    const prevInputId  = inputSelect.value;
+    const prevOutputId = outputSelect.value;
+
     inputSelect.innerHTML = '<option value="">Select MIDI Input...</option>';
     outputSelect.innerHTML = '<option value="">Select MIDI Output...</option>';
-    
+
     for (let input of midiAccess.inputs.values()) {
         const option = document.createElement('option');
         option.value = input.id;
         option.textContent = input.name;
         inputSelect.appendChild(option);
     }
-    
+
     for (let output of midiAccess.outputs.values()) {
         const option = document.createElement('option');
         option.value = output.id;
         option.textContent = output.name;
         outputSelect.appendChild(option);
     }
+
+    // Restore previous selection if the device is still present.
+    // If the device was unplugged, the option won't exist and value stays ''.
+    if (prevInputId  && Array.from(inputSelect.options).some(o  => o.value === prevInputId))  inputSelect.value  = prevInputId;
+    if (prevOutputId && Array.from(outputSelect.options).some(o => o.value === prevOutputId)) outputSelect.value = prevOutputId;
 }
 
 function startSystem() {
@@ -109,18 +122,33 @@ function startSystem() {
     }
     
     if (outputMode === 'external' && selectedOutput) {
+        // If the user opted in to "local control off" (typical when the MIDI
+        // output is the same keyboard they're playing on, e.g. Roland FP-10),
+        // tell the keyboard to stop playing from its own keybed directly so we
+        // avoid the doubled-sound artefact where the keyboard plays the
+        // untuned note AND also receives our tuned MIDI, resulting in a
+        // chorus/"echoey" effect. CC 122 = Local Control; data 0 = OFF.
+        // (2026-04-19 fix for "MPE sounds echoey on FP-10 own speaker" feedback.)
+        const localOffCheckbox = document.getElementById('localControlOff');
+        if (localOffCheckbox && localOffCheckbox.checked) {
+            console.log('Sending Local Control Off (CC 122, 0) on all 16 channels...');
+            for (let ch = 0; ch < 16; ch++) {
+                selectedOutput.send([0xB0 | ch, 122, 0]);
+            }
+        }
+
         mts.detectMTSSupport(
-            selectedOutput, 
+            selectedOutput,
             sysexEnabled,
             () => mpe.initializePitchBendRange(selectedOutput),
             updateTuningModeDisplay
         );
-        
+
         if (!mts.isMTSSupported()) {
             mpe.initializePitchBendRange(selectedOutput);
         }
     }
-    
+
     isRunning = true;
     document.getElementById('startButton').disabled = true;
     document.getElementById('stopButton').disabled = false;
@@ -148,8 +176,16 @@ function stopSystem() {
     
     if (selectedOutput) {
         mts.resetToEqualTemperament(selectedOutput);
+        // Restore Local Control ON so the user's keyboard plays normally
+        // after the demo ends. Symmetric with the CC 122, 0 sent in startSystem.
+        const localOffCheckbox = document.getElementById('localControlOff');
+        if (localOffCheckbox && localOffCheckbox.checked) {
+            for (let ch = 0; ch < 16; ch++) {
+                selectedOutput.send([0xB0 | ch, 122, 127]);
+            }
+        }
     }
-    
+
     mts.resetMTSDetection();
     
     document.getElementById('startButton').disabled = false;
