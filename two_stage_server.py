@@ -303,7 +303,43 @@ class TwoStageSystem:
                 os.remove(temp_midi_path)
                 temp_midi_path = None
             
-            if results and results[0]['confidence'] >= self.confidence_threshold:
+            # Multi-criterion identification gate (2026-04-19 fix, tuned after
+            # discovering that ATEPP contains multiple recordings of the same
+            # piece — the naive margin gate wrongly rejected correct matches
+            # when rank 1 and rank 2 were TWO DIFFERENT PERFORMANCES of the
+            # same composition, e.g.:
+            #   rank 1 (100%): Bach: Das Wohltemperierte Klavier: BWV 846 Prelude
+            #   rank 2 ( 89%): Bach: The Well-Tempered Clavier: Prelude No. 1
+            # ← same piece, just different ATEPP metadata strings.
+            #
+            # Three gates required simultaneously:
+            #   1. confidence  >= 50%   (higher than the old 30% threshold —
+            #                            rejects low-confidence noise aggregations)
+            #   2. coverage    >= 25%   (≥25% of query fps matched SOMETHING)
+            #   3. match_count >= 50    (top piece must be voted by ≥50 fps —
+            #                            real matches have 1000s; noise has <20.
+            #                            Primary guard against the false-positive
+            #                            scenario where a piece NOT in the DB
+            #                            produces ~8 stray-hash matches to Schumann.)
+            #
+            # Validated:
+            #   - Full K.331/III real → conf 100, cov 100, matches 3188 → ACCEPT
+            #   - WTC C-maj Prelude  → conf 100, cov 100, matches 562  → ACCEPT
+            #   - 15-note fragment   → conf  67, cov 100, matches    8 → REJECT ← noise
+            MIN_CONFIDENCE  = 50.0
+            MIN_COVERAGE    = 25.0
+            MIN_MATCH_COUNT = 50
+
+            top = results[0] if results else None
+            runner_up = results[1] if results and len(results) > 1 else None
+            if top is not None:
+                confident   = (top['confidence'] >= MIN_CONFIDENCE)
+                high_coverage = (top.get('coverage', 0.0) >= MIN_COVERAGE)
+                enough_matches = (top.get('matches', 0) >= MIN_MATCH_COUNT)
+            else:
+                confident = high_coverage = enough_matches = False
+
+            if results and confident and high_coverage and enough_matches:
                 # Confident identification!
                 self.identified_piece = results[0]
                 self.state = SystemState.IDENTIFIED
@@ -324,10 +360,22 @@ class TwoStageSystem:
                     'score_available': has_score
                 }
             else:
-                # Not confident enough
+                # Not confident enough — explain WHICH gate failed so the
+                # client-side message is more informative than "Low confidence"
+                # when the real reason is "low coverage" (piece not in DB).
+                if top is None:
+                    reason = 'No fingerprint matches at all'
+                elif not confident:
+                    reason = f'Top-match confidence {top["confidence"]:.0f}% < threshold {MIN_CONFIDENCE:.0f}%'
+                elif not high_coverage:
+                    reason = f'Only {top.get("coverage", 0.0):.0f}% of notes matched the DB (piece likely not in the dataset)'
+                elif not enough_matches:
+                    reason = f'Only {top.get("matches", 0)} fingerprint matches (< {MIN_MATCH_COUNT} threshold) — noise-level, keep playing'
+                else:
+                    reason = 'Low confidence'
                 return {
                     'success': False,
-                    'reason': 'Low confidence',
+                    'reason': reason,
                     'best_guess': results[0] if results else None
                 }
                 
@@ -414,24 +462,38 @@ class TwoStageSystem:
             # Extract key signatures from MusicXML
             self.key_signature_map = self._extract_key_signatures(part)
             print(f"  ✓ Extracted {len(self.key_signature_map)} key signature(s)")
-            
+
+            # Assign current_score BEFORE querying initial key, so _get_key_at_position
+            # can look up the onset of the actual first note (not hypothetical onset=0).
+            self.current_score = score_array
+
             # Log key signature information
             if self.key_signature_map:
-                first_key = self.key_signature_map[0]
-                self.current_key = first_key[1]
-                self.current_key_tonic = first_key[2]
-                self.current_key_is_minor = first_key[3]
-                print(f"  ✓ Initial key: {self.current_key} ({'minor' if self.current_key_is_minor else 'major'})")
-                
+                # Query partitura's interpolation-aware callable at the FIRST NOTE's onset,
+                # not at the arbitrary key_signature_map[0] — some engravers emit a spurious
+                # (onset=0, fifths=0, mode=major) default right before the real key signature,
+                # which made pieces like K.331/III.Alla Turca (A major, 3 sharps) show as
+                # "initial key: C major" here. See engine_review_2026-04-19.md §A7.
+                initial_key_name, initial_tonic, initial_is_minor = self._get_key_at_position(0)
+                self.current_key = initial_key_name
+                self.current_key_tonic = initial_tonic
+                self.current_key_is_minor = initial_is_minor
+                print(f"  ✓ Initial key (at first note): {self.current_key} ({'minor' if self.current_key_is_minor else 'major'})")
+
+                # Warn when list[0] disagrees with the actual first-note lookup — this is the
+                # spurious-default signal we care about.
+                list_head = self.key_signature_map[0]
+                if list_head[1] != self.current_key or list_head[3] != self.current_key_is_minor:
+                    print(f"  ⚠️  key_signature_map[0] = {list_head[1]} ({'minor' if list_head[3] else 'major'}) disagrees with first-note lookup — likely a spurious leading default; using first-note lookup.")
+
                 if len(self.key_signature_map) > 1:
                     print(f"  ✓ Key changes in piece:")
                     for onset, key_name, tonic, is_minor in self.key_signature_map[:5]:
                         print(f"      Beat {onset:.1f}: {key_name}")
-            
+
             # Initialize Parangonar RL matcher
             # This aligns user's live performance → MusicXML score
             self.score_follower = pa.OnlineTransformerMatcher(score_array)
-            self.current_score = score_array
             self.current_position = 0
             self.performance_note_counter = 0
             self.parangonar_prepared = False
@@ -964,8 +1026,39 @@ def handle_midi_note(data):
                     'confidence': result['confidence'],
                     'alternatives': result.get('alternatives', [])
                 })
+
+                # ----- Stage 2: Initialize score following (2026-04-19 fix) -----
+                # Previous versions had this block inside the `elif result:` (FAILED)
+                # branch and gated on `result.get('score_available')`, but
+                # `score_available` is only populated on the SUCCESS path — meaning
+                # the block was unreachable. Client hung on "Loading score..." forever
+                # because it never received `score_following_started` / `score_not_available`
+                # / `score_following_failed`. Moved into the SUCCESS branch where it
+                # actually runs.
+                if result.get('score_available'):
+                    if system.initialize_score_following():
+                        emit('score_following_started', {
+                            'piece': system.identified_piece['piece'],
+                            'score_length': len(system.current_score),
+                            'initial_key': system.current_key,
+                            'is_minor': system.current_key_is_minor,
+                            'key_changes_count': len(system.key_signature_map),
+                            'tuning_source': 'musicxml'
+                        })
+                    else:
+                        emit('score_following_failed', {
+                            'reason': 'Score loading failed (see server log)',
+                            'fallback': 'reactive_tuning'
+                        })
+                else:
+                    emit('score_not_available', {
+                        'piece': result['piece'],
+                        'message': 'MusicXML score not available for this piece',
+                        'fallback': 'Continuing with reactive Just Intonation tuning',
+                        'note': '43.6% of ATEPP has scores - piece may not have one'
+                    })
             elif result:
-                # Identification attempted but failed — inform client
+                # Identification attempted but failed — inform client and keep listening
                 best = result.get('best_guess')
                 emit('identification_attempt', {
                     'success': False,
@@ -975,32 +1068,6 @@ def handle_midi_note(data):
                     'buffer_size': len(system.midi_buffer),
                     'message': 'Keep playing — will retry in 10 seconds',
                 })
-                
-                # Stage 2: Initialize score following (if score available)
-                if result.get('score_available'):
-                    if system.initialize_score_following():
-                        emit('score_following_started', {
-                            'piece': system.identified_piece['piece'],
-                            'score_length': len(system.current_score),
-                            # Key signature information from MusicXML
-                            'initial_key': system.current_key,
-                            'is_minor': system.current_key_is_minor,
-                            'key_changes_count': len(system.key_signature_map),
-                            'tuning_source': 'musicxml'
-                        })
-                    else:
-                        emit('score_following_failed', {
-                            'reason': 'Score loading failed',
-                            'fallback': 'reactive_tuning'
-                        })
-                else:
-                    # No MusicXML score available - inform user
-                    emit('score_not_available', {
-                        'piece': result['piece'],
-                        'message': 'MusicXML score not available for this piece',
-                        'fallback': 'Continuing with reactive Just Intonation tuning',
-                        'note': '43.6% of ATEPP has scores - piece may not have one'
-                    })
         
         # If score following active, update position
         # Only send updates if clients are connected (prevents stale state issues)

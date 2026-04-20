@@ -13,5 +13,14 @@ numpy>=1.24.0
 pandas>=2.0.0
 tqdm>=4.65.0
 
-# Machine learning (for score following)
+# Score-following (DTW-heavy numeric kernel) — CRITICAL pin:
+#   parangonar depends on numba, which refuses numpy>=2.0 on numba<0.60.
+#   If numpy>=2.0 is installed (common on fresh Python 3.12+ envs), you
+#   need numba>=0.60 or parangonar's import fails with:
+#     "Numba needs NumPy 1.26 or less"
+#   Added 2026-04-19 after score-following initialisation failed on the
+#   demo-prep smoke test. See research_data/engine_review_2026-04-19.md.
+numba>=0.60
+
+# Machine learning (for score following + neural fallback key detection)
 torch>=2.0.0

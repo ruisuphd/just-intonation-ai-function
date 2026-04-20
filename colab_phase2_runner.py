@@ -75,7 +75,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_MANIFEST = os.path.join(BASE_DIR, 'research_data', 'unified_training_manifest.json')
 DEFAULT_LABEL_DIRS = ','.join([
-    os.path.join(BASE_DIR, 'research_data', 'all_key_labels'),
+    # Per-corpus label directories. Together they cover the full
+    # unified_training_manifest.json (ATEPP + WiR + DCML), which is what the
+    # Phase A ensemble fix (3d) requires — the audited Phase 2 run loaded only
+    # `score_key_labels` (ATEPP-only, N=41) and missed WiR/DCML test records.
+    # The flat union `all_key_labels/` also exists but the per-corpus split
+    # preserves provenance for stratified reporting (per-corpus MIREX).
+    os.path.join(BASE_DIR, 'research_data', 'wir_key_labels'),
+    os.path.join(BASE_DIR, 'research_data', 'dcml_key_labels'),
     os.path.join(BASE_DIR, 'research_data', 'score_key_labels'),
 ])
 DEFAULT_SPLITS = os.path.join(BASE_DIR, 'research_data', 'composition_splits.json')
@@ -85,25 +92,42 @@ DEFAULT_LABEL_DIR = os.path.join(BASE_DIR, 'research_data', 'score_key_labels')
 BEST_CHECKPOINT = os.path.join(BASE_DIR, 'research_data', 'ablation_A1.pt')
 BEST_PREDICTIONS = os.path.join(BASE_DIR, 'research_data', 'ablation_A1_predictions.json')
 
-# Phase 2 experiment grid
+# Phase 2 experiment grid.
+#
+# HISTORY (2026-04-14, Phase A rigor restoration):
+#   The original Phase 2 grid (A6-A11) set `weight_mode: "none"` for every cell.
+#   Phase 1 had already demonstrated that `sqrt` or `ens` weighting is required
+#   to keep minority-class accuracy non-degenerate (F#m=0% under 'none'), and
+#   the Phase 1 planning brief (PHD_CATCHUP_BRIEFING_2026-04-08.md) explicitly
+#   recommended sqrt/ens weighting plus focal loss for Phase 2. The 'none'
+#   default was a regression against that plan — see PHASE2_POSTDOC_FINDINGS_2026-04-14.md §4.4.
+#
+#   Phase A restores the intent: grid cells default to 'sqrt' weighting. Each
+#   cell still surfaces as a CLI arg (`--weight-mode` at line ~394 below), so
+#   an ablation that explicitly studies weighting can override at the call site.
+#   The `none` configurations are preserved in PHASE2_WEIGHT_REGRESSION_GRID
+#   below ONLY for reproducing the audited (buggy) Phase 2 runs.
+#
+# If you want a fresh ablation that studies weighting as an axis, build a new
+# grid dict; do not quietly flip values in PHASE2_GRID.
 PHASE2_GRID = {
     'A6': {
-        'name': 'BiGRU_aug_noWeight',
+        'name': 'BiGRU_aug_sqrtWeight',
         'model_type': 'gru',
         'no_augment': False,
-        'weight_mode': 'none',
+        'weight_mode': 'sqrt',
         'epochs': 30,
         'batch_size': 8,
         'learning_rate': 1e-3,
-        'bidirectional': True,
+        'bidirectional': True,  # ORACLE: non-causal, not deployable (<20ms constraint)
         'gru_pcp': False,
         'focal_loss': False,
     },
     'A7': {
-        'name': 'GRU_PCP_aug_noWeight',
+        'name': 'GRU_PCP_aug_sqrtWeight',
         'model_type': 'gru',
         'no_augment': False,
-        'weight_mode': 'none',
+        'weight_mode': 'sqrt',
         'epochs': 30,
         'batch_size': 8,
         'learning_rate': 1e-3,
@@ -112,10 +136,10 @@ PHASE2_GRID = {
         'focal_loss': False,
     },
     'A8': {
-        'name': 'GRU_aug_focal',
+        'name': 'GRU_aug_sqrtWeight_focal',
         'model_type': 'gru',
         'no_augment': False,
-        'weight_mode': 'none',
+        'weight_mode': 'sqrt',
         'epochs': 30,
         'batch_size': 8,
         'learning_rate': 1e-3,
@@ -124,22 +148,22 @@ PHASE2_GRID = {
         'focal_loss': True,
     },
     'A9': {
-        'name': 'BiGRU_PCP_aug_focal',
+        'name': 'BiGRU_PCP_aug_sqrtWeight_focal',
         'model_type': 'gru',
         'no_augment': False,
-        'weight_mode': 'none',
+        'weight_mode': 'sqrt',
         'epochs': 30,
         'batch_size': 8,
         'learning_rate': 1e-3,
-        'bidirectional': True,
+        'bidirectional': True,  # ORACLE: non-causal, not deployable (<20ms constraint)
         'gru_pcp': True,
         'focal_loss': True,
     },
     'A10': {
-        'name': 'GRU_aug_clip_smooth',
+        'name': 'GRU_aug_clip_smooth_sqrtWeight',
         'model_type': 'gru',
         'no_augment': False,
-        'weight_mode': 'none',
+        'weight_mode': 'sqrt',
         'epochs': 30,
         'batch_size': 8,
         'learning_rate': 1e-3,
@@ -151,10 +175,10 @@ PHASE2_GRID = {
         'weight_decay': 0.01,
     },
     'A11': {
-        'name': 'GRU_aug_allImprove',
+        'name': 'GRU_aug_allImprove_sqrtWeight',
         'model_type': 'gru',
         'no_augment': False,
-        'weight_mode': 'none',
+        'weight_mode': 'sqrt',
         'epochs': 30,
         'batch_size': 8,
         'learning_rate': 1e-3,
@@ -165,6 +189,13 @@ PHASE2_GRID = {
         'label_smoothing': 0.1,
         'weight_decay': 0.001,
     },
+}
+
+# Audited Phase 2 grid with weight_mode='none' preserved for reproducibility of
+# the archived (buggy) runs. Do not use for new experiments.
+PHASE2_WEIGHT_REGRESSION_GRID = {
+    exp_id: {**cfg, 'weight_mode': 'none', 'name': cfg['name'] + '__regression'}
+    for exp_id, cfg in PHASE2_GRID.items()
 }
 
 
@@ -310,7 +341,7 @@ def run_part_c(drive_backup: str | None) -> None:
         sys.executable, os.path.join(BASE_DIR, 'ensemble_key_detector.py'),
         '--neural-predictions', pred_file,
         '--splits', DEFAULT_SPLITS,
-        '--label-dir', DEFAULT_LABEL_DIR,
+        '--label-dirs', DEFAULT_LABEL_DIRS,  # Phase A: ensemble must see the unified test (N=58), not ATEPP-only (N=41).
         '--output', output,
     ]
 

@@ -241,10 +241,13 @@ def evaluate_with_hmm(
             total += 1
 
         n = len(preds)
+        comp_hmm_correct = sum(
+            1 for (_, t), (hp, _) in zip(preds, hmm_preds) if hp == t
+        )
         per_comp.append({
             'composition_id': comp['composition_id'],
             'mirex': comp_hmm_mirex / n,
-            'accuracy': sum(1 for hp, _ in hmm_preds if hp == preds[hmm_preds.index((hp, _))][1]) / n if n > 0 else 0,
+            'accuracy': comp_hmm_correct / n if n > 0 else 0,
             'n_predictions': n,
             'original_mirex': comp_orig_mirex / n,
         })

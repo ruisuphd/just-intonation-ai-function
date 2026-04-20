@@ -58,29 +58,105 @@ async function initMIDI() {
     }
 }
 
-function updateMIDIDevices() {
-    const inputSelect = document.getElementById('midiInput');
+// Sticky selection — persists across updateMIDIDevices() rebuilds even if the
+// device temporarily disappears from midiAccess.inputs/outputs (USB sleep/wake,
+// re-enumeration, state-change race). Only updated when the user makes a
+// DELIBERATE selection via the dropdown, not by the rebuild itself.
+//
+// We store BOTH id and name. The id is the primary restore key (precise,
+// survives dropdown rebuild as long as the device is still enumerated).
+// The name is the fallback key used when the device has been re-enumerated
+// with a new id (common after USB sleep/wake) — names typically stay stable
+// e.g. "FP-10 MIDI In". The name MUST be captured at user-selection time;
+// deriving it on-the-fly from the current device list at rebuild time is
+// useless because the very case the fallback exists for is when the id
+// is no longer in that list (so the lookup returns null).
+let stickyInputId    = null;
+let stickyInputName  = null;
+let stickyOutputId   = null;
+let stickyOutputName = null;
+
+function captureStickyFromSelect(select) {
+    if (!select || !select.value) return { id: null, name: null };
+    const opt = select.options[select.selectedIndex];
+    return { id: select.value, name: opt ? opt.textContent : null };
+}
+
+function rememberMidiSelection() {
+    const inputSelect  = document.getElementById('midiInput');
     const outputSelect = document.getElementById('midiOutput');
-    
+    const inSel  = captureStickyFromSelect(inputSelect);
+    const outSel = captureStickyFromSelect(outputSelect);
+    if (inSel.id)  { stickyInputId  = inSel.id;  stickyInputName  = inSel.name  || stickyInputName; }
+    if (outSel.id) { stickyOutputId = outSel.id; stickyOutputName = outSel.name || stickyOutputName; }
+}
+
+function updateMIDIDevices() {
+    const inputSelect  = document.getElementById('midiInput');
+    const outputSelect = document.getElementById('midiOutput');
     if (!inputSelect || !outputSelect) return;
-    
-    inputSelect.innerHTML = '<option value="">Select MIDI Input...</option>';
+
+    inputSelect.innerHTML  = '<option value="">Select MIDI Input...</option>';
     outputSelect.innerHTML = '<option value="">Select MIDI Output...</option>';
-    
-    for (let input of midiAccess.inputs.values()) {
+
+    for (const input of midiAccess.inputs.values()) {
         const option = document.createElement('option');
         option.value = input.id;
         option.textContent = input.name;
         inputSelect.appendChild(option);
     }
-    
-    for (let output of midiAccess.outputs.values()) {
+    for (const output of midiAccess.outputs.values()) {
         const option = document.createElement('option');
         option.value = output.id;
         option.textContent = output.name;
         outputSelect.appendChild(option);
     }
+
+    // Restore sticky selection. Try exact id first; if the device was
+    // re-enumerated and has a new id, fall back to a same-name match and
+    // update the sticky id to the new one so subsequent rebuilds hit the
+    // fast path. setStickyId writes back to the correct module-level
+    // variable (input or output) depending on which select is being
+    // restored.
+    const tryRestore = (select, stickyId, stickyName, setStickyId) => {
+        if (!stickyId) return;
+        const opts = Array.from(select.options);
+        if (opts.some(o => o.value === stickyId)) {
+            select.value = stickyId;
+            return;
+        }
+        if (stickyName) {
+            const m = opts.find(o => o.textContent === stickyName);
+            if (m) {
+                select.value = m.value;
+                setStickyId(m.value);
+            }
+        }
+    };
+    tryRestore(inputSelect,  stickyInputId,  stickyInputName,  id => { stickyInputId  = id; });
+    tryRestore(outputSelect, stickyOutputId, stickyOutputName, id => { stickyOutputId = id; });
 }
+
+// Wire change events so the sticky captures user selection at the moment
+// of deliberate change, not only inside updateMIDIDevices. Without this,
+// if the user selects a device and an onstatechange fires before the
+// sticky gets captured, the selection vanishes. Captures BOTH id and name
+// so the name-fallback in updateMIDIDevices has something to fall back TO
+// when the id stops matching after re-enumeration.
+document.addEventListener('DOMContentLoaded', () => {
+    const inSel  = document.getElementById('midiInput');
+    const outSel = document.getElementById('midiOutput');
+    if (inSel)  inSel.addEventListener('change',  () => {
+        const c = captureStickyFromSelect(inSel);
+        if (c.id)   stickyInputId   = c.id;
+        if (c.name) stickyInputName = c.name;
+    });
+    if (outSel) outSel.addEventListener('change', () => {
+        const c = captureStickyFromSelect(outSel);
+        if (c.id)   stickyOutputId   = c.id;
+        if (c.name) stickyOutputName = c.name;
+    });
+});
 
 function startSystem() {
     const inputId = document.getElementById('midiInput').value;
@@ -109,18 +185,33 @@ function startSystem() {
     }
     
     if (outputMode === 'external' && selectedOutput) {
+        // If the user opted in to "local control off" (typical when the MIDI
+        // output is the same keyboard they're playing on, e.g. Roland FP-10),
+        // tell the keyboard to stop playing from its own keybed directly so we
+        // avoid the doubled-sound artefact where the keyboard plays the
+        // untuned note AND also receives our tuned MIDI, resulting in a
+        // chorus/"echoey" effect. CC 122 = Local Control; data 0 = OFF.
+        // (2026-04-19 fix for "MPE sounds echoey on FP-10 own speaker" feedback.)
+        const localOffCheckbox = document.getElementById('localControlOff');
+        if (localOffCheckbox && localOffCheckbox.checked) {
+            console.log('Sending Local Control Off (CC 122, 0) on all 16 channels...');
+            for (let ch = 0; ch < 16; ch++) {
+                selectedOutput.send([0xB0 | ch, 122, 0]);
+            }
+        }
+
         mts.detectMTSSupport(
-            selectedOutput, 
+            selectedOutput,
             sysexEnabled,
             () => mpe.initializePitchBendRange(selectedOutput),
             updateTuningModeDisplay
         );
-        
+
         if (!mts.isMTSSupported()) {
             mpe.initializePitchBendRange(selectedOutput);
         }
     }
-    
+
     isRunning = true;
     document.getElementById('startButton').disabled = true;
     document.getElementById('stopButton').disabled = false;
@@ -148,8 +239,16 @@ function stopSystem() {
     
     if (selectedOutput) {
         mts.resetToEqualTemperament(selectedOutput);
+        // Restore Local Control ON so the user's keyboard plays normally
+        // after the demo ends. Symmetric with the CC 122, 0 sent in startSystem.
+        const localOffCheckbox = document.getElementById('localControlOff');
+        if (localOffCheckbox && localOffCheckbox.checked) {
+            for (let ch = 0; ch < 16; ch++) {
+                selectedOutput.send([0xB0 | ch, 122, 127]);
+            }
+        }
     }
-    
+
     mts.resetMTSDetection();
     
     document.getElementById('startButton').disabled = false;
@@ -427,11 +526,21 @@ function forwardNoteExternal(noteData, channel, isNoteOn) {
         if (!mpe.isPitchBendRangeInitialized() && isNoteOn) {
             mpe.initializePitchBendRange(selectedOutput);
         }
-        
+
         if (isNoteOn) {
-            const allocationResult = mpe.allocateChannel(noteData.noteId);
+            // F1 fix (2026-04-19): pass pitch so voice-stealing can emit a proper
+            // note-off for the stolen note (previously the stolen note hung
+            // silently on the synth, causing the "MPE sounds off" complaint).
+            const allocationResult = mpe.allocateChannel(noteData.noteId, noteData.note);
             if (allocationResult !== null && typeof allocationResult !== 'undefined') {
                 if (typeof allocationResult === 'object' && allocationResult.channel !== undefined) {
+                    // Voice stealing happened. Emit a note-off for the STOLEN pitch on this
+                    // channel BEFORE the new note-on, so the synth doesn't hang the old note.
+                    if (typeof allocationResult.stolenPitch === 'number') {
+                        selectedOutput.send([0x80 | allocationResult.channel, allocationResult.stolenPitch, 0]);
+                        totalBytesSent += 3;
+                    }
+                    // Reset pitch bend on the reused channel
                     totalBytesSent += mpe.sendPitchBend(selectedOutput, allocationResult.channel, 0);
                     outputChannel = allocationResult.channel;
                 } else if (typeof allocationResult === 'number') {
@@ -444,7 +553,14 @@ function forwardNoteExternal(noteData, channel, isNoteOn) {
             }
         } else if (noteData.noteId) {
             const ch = mpe.getChannelForNote(noteData.noteId);
-            if (ch !== null) outputChannel = ch;
+            if (ch === null) {
+                // F1 fix: the note was voice-stolen earlier, so the synth no
+                // longer holds it on any known channel. Silently skip the output
+                // — sending note-off to a wrong channel would kill the wrong note.
+                latency.cancelMeasurement();
+                return;
+            }
+            outputChannel = ch;
         }
     }
     

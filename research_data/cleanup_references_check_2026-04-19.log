@@ -1,0 +1,42 @@
+=== Reference check for Tier-1 cleanup targets — 2026-04-19 ===
+
+--- dist/ directory ---
+dist
+dist/index.html
+
+references to dist/ in .py/.js/.html/.md (excluding itself):
+
+CONCLUSION: dist/ is OUTPUT of build.sh (bundler). Server serves source index.html.
+  → both dist/ AND build.sh safe to delete.
+
+--- moonbeam_309M_key_detection.pt ---
+--- moonbeam_309M_key_detection.pt ---
+./research_data/SESSION_LOG_2026-04-05_DETAILED.md:533:- `research_data/moonbeam_309M_key_detection.pt` — Moonbeam-309M checkpoint (epoch 1)
+
+--- score_key_labels_major_only_backup/ ---
+./PROGRESS_ANALYSIS_AND_NEXT_STEPS.md:25:Result: 803,877 notes re-labeled. Distribution shifted from 100% major / 0% minor to 73.7% major / 26.3% minor. The backup of old all-major labels is preserved in `score_key_labels_major_only_backup/`. Spot-checked: Rachmaninoff Prelude Op.32 No.12 correctly labeled as G# minor.
+./.claude/worktrees/competent-austin/docs/research/IMPLEMENTATION_REPORT.md:306:| `research_data/score_key_labels_major_only_backup/` | Backup of pre-fix labels |
+./.claude/worktrees/musing-saha/docs/research/IMPLEMENTATION_REPORT.md:306:| `research_data/score_key_labels_major_only_backup/` | Backup of pre-fix labels |
+./docs/research/IMPLEMENTATION_REPORT.md:306:| `research_data/score_key_labels_major_only_backup/` | Backup of pre-fix labels |
+
+--- phase2_results + ablation_results zips ---
+
+=== Tier-1 deletion summary (2026-04-19) ===
+
+Deleted:
+  - dist/ (136K, stale bundler output)
+  - build.sh (unused bundler script)
+  - research_data/moonbeam_309M_eval.json (1-epoch orphan eval)
+  - research_data/score_key_labels_major_only_backup/ (260M, stale backup)
+  - research_data/atepp_midi_cache_20.jsonl.bak (2.7M editor backup)
+  - 341 .DS_Store files (macOS noise)
+
+Already absent (no-op):
+  - research_data/moonbeam_309M_key_detection.pt (1.1G) — deleted in earlier session
+  - phase2_results-20260414T044500Z-3-001.zip (46M) — already absent
+  - ablation_results-20260410T013319Z-3-001.zip (2.8M) — already absent
+
+Infrastructure fixes landed in the same commit:
+  - start_all.sh renamed to start.sh
+  - ATEPP_JI_Dataset/ATEPP-1.2 symlink repaired (now points to ../ATEPP-1.2/ATEPP-1.2)
+    → all 5091 score_path entries in atepp_score_mapping.pkl now resolve

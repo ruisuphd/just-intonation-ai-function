@@ -222,6 +222,7 @@ def collate_harmonic_batch(examples: Sequence[Dict[str, object]]) -> Dict[str, t
     max_length = max(lengths)
 
     has_pcp = 'pcp' in examples[0]
+    has_sample_weight = 'sample_weight' in examples[0]
 
     batch: Dict[str, object] = {
         'pitch_class': [],
@@ -235,6 +236,8 @@ def collate_harmonic_batch(examples: Sequence[Dict[str, object]]) -> Dict[str, t
     }
     if has_pcp:
         batch['pcp'] = []
+    if has_sample_weight:
+        batch['sample_weight'] = []
 
     for example in examples:
         batch['pitch_class'].append(pad_sequence(example['pitch_class'], max_length, 0))
@@ -246,6 +249,10 @@ def collate_harmonic_batch(examples: Sequence[Dict[str, object]]) -> Dict[str, t
         batch['labels'].append(pad_sequence(example['labels'], max_length, -100))
         if has_pcp:
             batch['pcp'].append(pad_mask(example['pcp'], max_length))
+        if has_sample_weight:
+            # Pad sample_weight with 0.0 so padding positions contribute nothing
+            # to the weighted loss (their labels are -100 anyway).
+            batch['sample_weight'].append(pad_sequence(example['sample_weight'], max_length, 0.0))
 
     result = {
         'pitch_class': torch.tensor(batch['pitch_class'], dtype=torch.long),
@@ -259,6 +266,8 @@ def collate_harmonic_batch(examples: Sequence[Dict[str, object]]) -> Dict[str, t
     }
     if has_pcp:
         result['pcp'] = torch.tensor(batch['pcp'], dtype=torch.float32)
+    if has_sample_weight:
+        result['sample_weight'] = torch.tensor(batch['sample_weight'], dtype=torch.float32)
     return result
 
 

@@ -73,6 +73,15 @@ def parse_args() -> argparse.Namespace:
         help='Beta for ENS weighting (default: 0.999). Only used with --weight-mode ens.',
     )
     parser.add_argument(
+        '--selection-metric', choices=['val_loss', 'val_mirex', 'val_accuracy'],
+        default='val_mirex',
+        help='Metric used to select the best checkpoint. Default val_mirex, because '
+             'with class-weighted loss the minimum val_loss need not coincide with the '
+             'maximum val-MIREX. Phase A rigor restoration (2026-04-14): previously '
+             'val_loss was hardcoded, contributing to large val-to-test drift (−0.09 '
+             'MIREX on A1). See PHASE2_POSTDOC_FINDINGS_2026-04-14.md §4.5.',
+    )
+    parser.add_argument(
         '--warmup-epochs', type=int, default=5,
         help='Linear warmup epochs before cosine decay (default: 5)',
     )
@@ -86,11 +95,29 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '--bidirectional', action='store_true', default=False,
-        help='Use bidirectional GRU (doubles hidden state, non-causal)',
+        help='Use bidirectional GRU (doubles hidden state, non-causal). '
+             'NOTE: bidirectional training violates the <20ms no-lookahead real-time '
+             'constraint. Use only for offline oracle bounds; pair with --allow-oracle '
+             'when --require-causal is active.',
+    )
+    parser.add_argument(
+        '--require-causal', action='store_true', default=False,
+        help='Abort training if --bidirectional is set (enforces real-time deployability). '
+             'Pair with --allow-oracle to explicitly opt into an offline oracle run.',
+    )
+    parser.add_argument(
+        '--allow-oracle', action='store_true', default=False,
+        help='When --require-causal is active, explicitly permit a bidirectional '
+             'training run as an offline oracle bound. Checkpoint metadata records '
+             'the oracle status so downstream evaluation can filter it out.',
     )
     parser.add_argument(
         '--gru-pcp', action='store_true', default=False,
         help='Add PCP (pitch-class profile) feature to GRU input (like Transformer branch 1)',
+    )
+    parser.add_argument(
+        '--hidden-size', type=int, default=96,
+        help='GRU hidden-state size (default 96 = Phase A config; 192 for Phase B h=192 cells).',
     )
     parser.add_argument(
         '--focal-loss', action='store_true', default=False,
@@ -99,6 +126,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--focal-gamma', type=float, default=2.0,
         help='Gamma parameter for focal loss (default: 2.0)',
+    )
+    # --- Phase C Path B: modulation-specialist loss weighting ---
+    parser.add_argument(
+        '--modulation-upweight', type=float, default=1.0,
+        help='Per-note loss weight multiplier for compositions where n_unique_keys>=2 '
+             '(modulating pieces). Default 1.0 = no upweight. Phase C cell C5 uses 2.0. '
+             'Applied on top of --weight-mode class weights.',
+    )
+    parser.add_argument(
+        '--modulation-transition-upweight', type=float, default=1.0,
+        help='Additional loss weight multiplier for notes within '
+             '--modulation-transition-window notes of any annotated key change. '
+             'Default 1.0 = no upweight. Phase C cells C6/C7 use 3.0. '
+             'Composes multiplicatively with --modulation-upweight.',
+    )
+    parser.add_argument(
+        '--modulation-transition-window', type=int, default=0,
+        help='Window size (in notes) around each key-change boundary to receive '
+             '--modulation-transition-upweight. 0 disables transition-level upweight.',
     )
     # --- Research-grade training improvements ---
     parser.add_argument(
@@ -258,7 +304,55 @@ def maybe_scale_time(notes: Sequence[Dict[str, object]]) -> List[Dict[str, objec
     return scaled
 
 
-def notes_to_training_example(notes: Sequence[Dict[str, object]], augment: bool) -> Dict[str, object]:
+def _compute_sample_weights(
+    notes: Sequence[Dict[str, object]],
+    composition_is_modulating: bool,
+    comp_upweight: float,
+    transition_upweight: float,
+    transition_window: int,
+) -> List[float]:
+    """Compute per-note loss-weight multipliers for Phase C Path B.
+
+    weight[i] = 1.0
+        * (comp_upweight if composition_is_modulating else 1.0)
+        * (transition_upweight if note i is within ±transition_window of a key change else 1.0)
+    """
+    n = len(notes)
+    if n == 0:
+        return []
+    base = comp_upweight if composition_is_modulating else 1.0
+    weights = [base] * n
+
+    if transition_window > 0 and n > 1:
+        keys = [str(note.get('key', '')) for note in notes]
+        # Identify key-change indices: i where keys[i] != keys[i-1] and both non-empty.
+        change_indices = [
+            i for i in range(1, n)
+            if keys[i] and keys[i-1] and keys[i] != keys[i-1]
+        ]
+        if change_indices:
+            # Mark notes within ±transition_window of any change index.
+            near_transition = [False] * n
+            for ci in change_indices:
+                lo = max(0, ci - transition_window)
+                hi = min(n, ci + transition_window + 1)
+                for j in range(lo, hi):
+                    near_transition[j] = True
+            for j in range(n):
+                if near_transition[j]:
+                    weights[j] *= transition_upweight
+
+    return weights
+
+
+def notes_to_training_example(
+    notes: Sequence[Dict[str, object]],
+    augment: bool,
+    composition_is_modulating: bool = False,
+    modulation_upweight: float = 1.0,
+    modulation_transition_upweight: float = 1.0,
+    modulation_transition_window: int = 0,
+) -> Dict[str, object]:
     if augment:
         # Pitch-transposition augmentation: shift by ±5 semitones
         semitones = random.randint(-5, 6)
@@ -305,6 +399,17 @@ def notes_to_training_example(notes: Sequence[Dict[str, object]], augment: bool)
 
     pcp = compute_pcp(pitch_class, window_size=32)
 
+    # Phase C Path B: compute per-note sample weights if modulation upweighting is on.
+    # Weights default to 1.0 (no upweight). Multiplies class weights downstream.
+    if modulation_upweight != 1.0 or modulation_transition_window > 0:
+        sample_weight = _compute_sample_weights(
+            notes, composition_is_modulating,
+            modulation_upweight, modulation_transition_upweight,
+            modulation_transition_window,
+        )
+    else:
+        sample_weight = [1.0] * len(labels)
+
     return {
         'pitch_class': pitch_class,
         'register': register,
@@ -314,6 +419,7 @@ def notes_to_training_example(notes: Sequence[Dict[str, object]], augment: bool)
         'active_mask': active_mask,
         'pcp': pcp,
         'labels': labels,
+        'sample_weight': sample_weight,
     }
 
 
@@ -510,32 +616,50 @@ class HarmonicLabelDataset(Dataset):
         augment: bool = False,
         window_size: int = 256,
         window_hop: int = 128,
+        modulation_upweight: float = 1.0,
+        modulation_transition_upweight: float = 1.0,
+        modulation_transition_window: int = 0,
     ):
+        # self.windows is now a list of (notes_list, composition_is_modulating) tuples
         self.windows = []
         self.augment = augment
         self.window_size = window_size
         self.window_hop = window_hop
+        self.modulation_upweight = modulation_upweight
+        self.modulation_transition_upweight = modulation_transition_upweight
+        self.modulation_transition_window = modulation_transition_window
 
         for record in records:
             notes = list(record['notes'])
             if not notes:
                 continue
 
+            # Composition-level modulation flag (Phase C Path B): compute once per record.
+            unique_keys = {str(n.get('key', '')) for n in notes if str(n.get('key', ''))}
+            is_modulating = len(unique_keys) >= 2
+
             if len(notes) <= window_size:
-                self.windows.append(notes)
+                self.windows.append((notes, is_modulating))
                 continue
 
             for start_idx in range(0, len(notes) - window_size + 1, window_hop):
-                self.windows.append(notes[start_idx:start_idx + window_size])
+                self.windows.append((notes[start_idx:start_idx + window_size], is_modulating))
 
             if (len(notes) - window_size) % window_hop != 0:
-                self.windows.append(notes[-window_size:])
+                self.windows.append((notes[-window_size:], is_modulating))
 
     def __len__(self) -> int:
         return len(self.windows)
 
     def __getitem__(self, index: int) -> Dict[str, object]:
-        return notes_to_training_example(self.windows[index], augment=self.augment)
+        notes, is_modu = self.windows[index]
+        return notes_to_training_example(
+            notes, augment=self.augment,
+            composition_is_modulating=is_modu,
+            modulation_upweight=self.modulation_upweight,
+            modulation_transition_upweight=self.modulation_transition_upweight,
+            modulation_transition_window=self.modulation_transition_window,
+        )
 
 
 def load_records(label_dir: str, composition_ids: set) -> List[Dict[str, object]]:
@@ -731,6 +855,59 @@ def masked_accuracy(logits: torch.Tensor, labels: torch.Tensor) -> float:
     return 0.0 if total == 0 else correct / total
 
 
+# Phase A: MIREX scoring for val-MIREX checkpoint selection. Mirrors the canonical
+# version in evaluate_harmonic_context_model.py:74–104; imports are blocked by a
+# reverse dependency. Key indices: 0–11 = C..B major, 12–23 = Cm..Bm minor.
+def _mirex_score_int(pred_idx: int, true_idx: int) -> float:
+    if pred_idx == true_idx:
+        return 1.0
+    pred_pc = pred_idx % 12
+    true_pc = true_idx % 12
+    pred_minor = pred_idx >= 12
+    true_minor = true_idx >= 12
+    pc_diff = (pred_pc - true_pc) % 12
+    if pred_pc == true_pc and pred_minor != true_minor:
+        return 0.2
+    if pred_minor == true_minor and pc_diff in (5, 7):
+        return 0.5
+    if pred_minor != true_minor and pc_diff in (3, 9):
+        return 0.3
+    return 0.0
+
+
+_MIREX_LUT: torch.Tensor | None = None
+
+
+def _mirex_lookup_table(device: torch.device) -> torch.Tensor:
+    """24x24 lookup table of MIREX scores; computed once and cached per device."""
+    global _MIREX_LUT
+    if _MIREX_LUT is None or _MIREX_LUT.device != device:
+        table = torch.tensor(
+            [[_mirex_score_int(p, t) for t in range(24)] for p in range(24)],
+            dtype=torch.float32, device=device,
+        )
+        _MIREX_LUT = table
+    return _MIREX_LUT
+
+
+def masked_mirex(logits: torch.Tensor, labels: torch.Tensor) -> Tuple[float, int]:
+    """Compute mean MIREX weighted score over non-masked positions.
+
+    Returns (sum_score, count). Sum (not mean) so aggregation across batches
+    is a simple total_sum / total_count — identical to what `run_evaluation`
+    does for accuracy.
+    """
+    predictions = logits.argmax(dim=-1)
+    mask = labels != -100
+    if mask.sum().item() == 0:
+        return 0.0, 0
+    lut = _mirex_lookup_table(logits.device)
+    flat_pred = predictions[mask]
+    flat_true = labels[mask]
+    scores = lut[flat_pred, flat_true]
+    return float(scores.sum().item()), int(flat_true.numel())
+
+
 def _get_key_logits(output: object) -> torch.Tensor:
     """Get key logits from model output (GRU returns tensor, Transformer returns dict)."""
     if isinstance(output, dict):
@@ -745,6 +922,8 @@ def run_evaluation(
     model.eval()
     total_loss = 0.0
     total_accuracy = 0.0
+    mirex_sum = 0.0
+    mirex_count = 0
     batches = 0
 
     with torch.no_grad():
@@ -755,14 +934,19 @@ def run_evaluation(
                 loss = loss_fn(logits.view(-1, logits.shape[-1]), batch['labels'].view(-1))
             total_loss += loss.item()
             total_accuracy += masked_accuracy(logits, batch['labels'])
+            bs_sum, bs_count = masked_mirex(logits, batch['labels'])
+            mirex_sum += bs_sum
+            mirex_count += bs_count
             batches += 1
 
     if batches == 0:
-        return {'loss': math.nan, 'accuracy': math.nan}
+        return {'loss': math.nan, 'accuracy': math.nan, 'mirex_weighted_score': math.nan}
 
     return {
         'loss': total_loss / batches,
         'accuracy': total_accuracy / batches,
+        'mirex_weighted_score': mirex_sum / mirex_count if mirex_count > 0 else math.nan,
+        'mirex_n_frames': mirex_count,
     }
 
 
@@ -771,18 +955,45 @@ def train_epoch(
     clip_grad: float = 0.0,
     use_amp: bool = False,
     scaler: object = None,
+    use_sample_weight: bool = False,
 ) -> Dict[str, float]:
+    """Run one training epoch.
+
+    When `use_sample_weight=True` and `batch['sample_weight']` is present
+    (Phase C Path B), loss is computed as a sample-weighted cross-entropy.
+    Class weights from `loss_fn.weight` are preserved and compose multiplicatively
+    with the per-sample modulation weights. Not currently compatible with
+    --focal-loss or --label-smoothing (those paths use the standard aggregation).
+    """
     model.train()
     total_loss = 0.0
     total_accuracy = 0.0
     batches = 0
+
+    # Extract class weights once (may be None)
+    class_weights = getattr(loss_fn, 'weight', None)
 
     for batch in loader:
         batch = {key: value.to(device) if torch.is_tensor(value) else value for key, value in batch.items()}
         optimizer.zero_grad()
         with torch.amp.autocast('cuda', enabled=use_amp):
             logits = _get_key_logits(model(batch))
-            loss = loss_fn(logits.view(-1, logits.shape[-1]), batch['labels'].view(-1))
+            if use_sample_weight and 'sample_weight' in batch:
+                # Phase C Path B: sample-weighted cross-entropy.
+                flat_logits = logits.view(-1, logits.shape[-1])
+                flat_labels = batch['labels'].view(-1)
+                flat_weights = batch['sample_weight'].view(-1)
+                per_sample = nn.functional.cross_entropy(
+                    flat_logits, flat_labels,
+                    weight=class_weights,
+                    ignore_index=-100,
+                    reduction='none',
+                )
+                valid_mask = (flat_labels != -100).float()
+                weighted = per_sample * flat_weights * valid_mask
+                loss = weighted.sum() / valid_mask.sum().clamp(min=1)
+            else:
+                loss = loss_fn(logits.view(-1, logits.shape[-1]), batch['labels'].view(-1))
         if scaler is not None:
             scaler.scale(loss).backward()
             if clip_grad > 0:
@@ -808,6 +1019,22 @@ def train_epoch(
 
 def main() -> None:
     args = parse_args()
+
+    # --- Causal-only guardrail (Phase A rigor restoration) ---
+    # Bidirectional GRUs see future notes and therefore violate the real-time
+    # <20ms no-lookahead tuning constraint. Permit bidirectional training only
+    # when the user explicitly opts in as an offline oracle run.
+    if args.require_causal and args.bidirectional and not args.allow_oracle:
+        raise SystemExit(
+            '[--require-causal] Refusing to train with --bidirectional.\n'
+            '  Bidirectional GRUs are not deployable in the real-time tuning path.\n'
+            '  To produce an offline oracle bound, pass --allow-oracle; the checkpoint\n'
+            '  will be tagged as an oracle result in its metadata.'
+        )
+    if args.bidirectional and args.require_causal and args.allow_oracle:
+        print('[--require-causal --allow-oracle] Bidirectional training permitted '
+              'as ORACLE run — not a deployable result.')
+
     seed = args.seed if args.seed is not None else SEED
     set_seed(seed, deterministic=args.deterministic)
     print(f'Random seed: {seed}'
@@ -866,18 +1093,29 @@ def main() -> None:
         print(f'Loaded {len(validation_records)} validation records from {args.label_dir}')
 
     use_augment = not args.no_augment
+    # Phase C Path B: pass modulation upweight params. Training set applies them;
+    # validation uses uniform weights (all 1.0) to keep val MIREX comparable to Phase B.
     train_dataset = HarmonicLabelDataset(
         train_records,
         augment=use_augment,
         window_size=args.window_size,
         window_hop=args.window_hop,
+        modulation_upweight=args.modulation_upweight,
+        modulation_transition_upweight=args.modulation_transition_upweight,
+        modulation_transition_window=args.modulation_transition_window,
     )
+    if args.modulation_upweight != 1.0 or args.modulation_transition_window > 0:
+        print(
+            f'Modulation upweight: composition={args.modulation_upweight}×, '
+            f'transition={args.modulation_transition_upweight}× within ±{args.modulation_transition_window} notes'
+        )
     print(f'Augmentation: {"enabled" if use_augment else "DISABLED"}')
     validation_dataset = HarmonicLabelDataset(
         validation_records,
         augment=False,
         window_size=args.window_size,
         window_hop=args.window_hop,
+        # Validation uses default (uniform) weights — see comment above.
     )
 
     train_loader = DataLoader(
@@ -920,13 +1158,15 @@ def main() -> None:
         print(f'Transformer mode: LR={args.learning_rate}, epochs={args.epochs}')
     else:
         model = HarmonicContextGRU(
+            hidden_size=args.hidden_size,
             bidirectional=args.bidirectional,
             use_pcp=args.gru_pcp,
         ).to(device)
+        print(f'GRU mode: hidden_size={args.hidden_size}')
         if args.bidirectional:
-            print(f'GRU mode: bidirectional (output dim = {96 * 2})')
+            print(f'GRU mode: bidirectional (output dim = {args.hidden_size * 2})')
         if args.gru_pcp:
-            print(f'GRU mode: PCP feature enabled (input dim = {96})')
+            print(f'GRU mode: PCP feature enabled (input dim = {args.hidden_size})')
 
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay,
@@ -998,15 +1238,50 @@ def main() -> None:
 
     print(f'Weight decay: {args.weight_decay}')
 
-    best_validation = float('inf')
+    # Phase A selection-metric handling (rigor restoration).
+    # Higher-is-better for val_mirex / val_accuracy; lower-is-better for val_loss.
+    if args.selection_metric == 'val_loss':
+        best_score = float('inf')
+        def _is_better(new_score: float, best: float) -> bool:
+            return new_score < best
+        def _metric_of(m: Dict[str, float]) -> float:
+            return float(m.get('loss', float('inf')))
+    elif args.selection_metric == 'val_accuracy':
+        best_score = float('-inf')
+        def _is_better(new_score: float, best: float) -> bool:
+            return new_score > best
+        def _metric_of(m: Dict[str, float]) -> float:
+            return float(m.get('accuracy', float('-inf')))
+    else:  # val_mirex — default
+        best_score = float('-inf')
+        def _is_better(new_score: float, best: float) -> bool:
+            return new_score > best
+        def _metric_of(m: Dict[str, float]) -> float:
+            return float(m.get('mirex_weighted_score', float('-inf')))
+    best_validation = best_score  # kept name for backwards-compatible checkpoint field
+    print(f'Checkpoint selection metric: {args.selection_metric}')
+
     best_epoch = 0
     epochs_without_improvement = 0
+    per_epoch_log: List[Dict[str, float]] = []
     os.makedirs(os.path.dirname(args.checkpoint), exist_ok=True)
+
+    use_sample_weight = (
+        args.modulation_upweight != 1.0
+        or args.modulation_transition_window > 0
+    )
+    if use_sample_weight and (args.focal_loss or args.label_smoothing > 0):
+        print(
+            'WARNING: --modulation-upweight currently applied with plain cross-entropy '
+            '+ class weights. --focal-loss and --label-smoothing are ignored on the '
+            'modulation path for this run. File a feature request if you need composition.'
+        )
 
     for epoch in range(1, args.epochs + 1):
         train_metrics = train_epoch(
             model, train_loader, optimizer, loss_fn, str(device),
             clip_grad=clip_grad, use_amp=use_amp, scaler=scaler,
+            use_sample_weight=use_sample_weight,
         )
         # Step scheduler once per epoch (epoch-level is standard for warmup+cosine)
         scheduler.step()
@@ -1021,11 +1296,23 @@ def main() -> None:
             f"train_acc={train_metrics['accuracy']:.4f} "
             f"val_loss={validation_metrics['loss']:.4f} "
             f"val_acc={validation_metrics['accuracy']:.4f} "
+            f"val_mirex={validation_metrics.get('mirex_weighted_score', float('nan')):.4f} "
             f"lr={current_lr:.2e}"
         )
 
-        if validation_metrics['loss'] < best_validation:
-            best_validation = validation_metrics['loss']
+        per_epoch_log.append({
+            'epoch': epoch,
+            'train_loss': float(train_metrics['loss']),
+            'train_accuracy': float(train_metrics['accuracy']),
+            'val_loss': float(validation_metrics['loss']),
+            'val_accuracy': float(validation_metrics['accuracy']),
+            'val_mirex_weighted_score': float(validation_metrics.get('mirex_weighted_score', float('nan'))),
+            'learning_rate': float(current_lr),
+        })
+
+        current_score = _metric_of(validation_metrics)
+        if _is_better(current_score, best_validation):
+            best_validation = current_score
             best_epoch = epoch
             epochs_without_improvement = 0
             torch.save(
@@ -1033,7 +1320,10 @@ def main() -> None:
                     'model_state_dict': model.state_dict(),
                     'validation_loss': validation_metrics['loss'],
                     'validation_accuracy': validation_metrics['accuracy'],
-                    'seed': SEED,
+                    'validation_mirex_weighted_score': validation_metrics.get('mirex_weighted_score'),
+                    'selection_metric': args.selection_metric,
+                    'selection_metric_value': float(current_score),
+                    'seed': seed,  # actual runtime seed — bug fix 2026-04-14, was SEED constant
                     'epoch': epoch,
                     'weight_mode': args.weight_mode,
                     'ens_beta': args.ens_beta if args.weight_mode == 'ens' else None,
@@ -1045,9 +1335,16 @@ def main() -> None:
                     'warmup_epochs': args.warmup_epochs,
                     'patience': args.patience,
                     'bidirectional': args.bidirectional,
+                    'is_oracle_result': bool(args.bidirectional),
+                    'require_causal_flag': bool(args.require_causal),
+                    'allow_oracle_flag': bool(args.allow_oracle),
                     'gru_pcp': args.gru_pcp,
+                    'hidden_size': args.hidden_size,
                     'focal_loss': args.focal_loss,
                     'focal_gamma': args.focal_gamma if args.focal_loss else None,
+                    'modulation_upweight': args.modulation_upweight,
+                    'modulation_transition_upweight': args.modulation_transition_upweight,
+                    'modulation_transition_window': args.modulation_transition_window,
                     'clip_grad': args.clip_grad,
                     'weight_decay': args.weight_decay,
                     'label_smoothing': args.label_smoothing,
@@ -1061,7 +1358,25 @@ def main() -> None:
                 print(f'Early stopping: no improvement for {args.patience} epochs')
                 break
 
-    print(f'Saved best checkpoint to {args.checkpoint} (best epoch={best_epoch})')
+    # Persist the per-epoch training log alongside the checkpoint for Phase A provenance.
+    log_path = os.path.splitext(args.checkpoint)[0] + '_training_log.json'
+    try:
+        with open(log_path, 'w', encoding='utf-8') as fh:
+            json.dump({
+                'selection_metric': args.selection_metric,
+                'best_epoch': best_epoch,
+                'best_selection_metric_value': float(best_validation),
+                'seed': seed,  # actual runtime seed — bug fix 2026-04-14, was SEED constant
+                'weight_mode': args.weight_mode,
+                'bidirectional': args.bidirectional,
+                'per_epoch': per_epoch_log,
+            }, fh, indent=2)
+        print(f'Saved training log to {log_path}')
+    except OSError as exc:
+        print(f'WARNING: could not persist training log to {log_path}: {exc}')
+
+    print(f'Saved best checkpoint to {args.checkpoint} (best epoch={best_epoch}, '
+          f'selection={args.selection_metric}={best_validation:.4f})')
 
 
 if __name__ == '__main__':

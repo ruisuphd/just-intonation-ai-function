@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "n_test_compositions": 41,
+  "n_aria_metadata_entries": 371053,
+  "n_piece_level_overlaps": 0,
+  "piece_level_overlaps": [],
+  "composer_level_overlap_counts": {
+    "rachmaninoff": 609,
+    "liszt": 1986,
+    "schumann": 788,
+    "bach": 8029,
+    "debussy": 612,
+    "ravel": 154,
+    "schubert": 1671,
+    "haydn": 306,
+    "mozart": 2215,
+    "beethoven": 3916,
+    "scriabin": 233
+  },
+  "manifest_path": "research_data/unified_training_manifest.json",
+  "aria_metadata_path": "aria-midi-v1-deduped-ext/metadata.json",
+  "notes": [
+    "Piece-level detection relies on filename substring appearing in Aria title/opus/work fields. Aria metadata is coarse (often only composer + form), so piece-level exact-match is not always possible.",
+    "Composer-level overlap is EXPECTED and not a leakage concern by itself \u2014 many compositions share a composer without being the same piece.",
+    "For definitive dedup, hash each Aria MIDI against ATEPP MIDI files. This script relies on metadata alone for speed.",
+    "Aria-MIDI-v1-deduped-ext claims internal dedup across the 371k corpus; overlap with an external ATEPP test set is not guaranteed absent."
+  ]
+}
