@@ -441,7 +441,11 @@ def evaluate_classical_on_records(
         if not notes:
             continue
 
-        comp_id = record.get('composition_id', record.get('piece_id', 'unknown'))
+        # 2026-05-09 patch: fall back to 'id' (used by parse_bps_fh.py + parse_pop909.py)
+        # in addition to composition_id / piece_id (used by ATEPP score_key_labels).
+        comp_id = (record.get('composition_id')
+                   or record.get('piece_id')
+                   or record.get('id', 'unknown'))
         histogram = build_pitch_class_histogram(notes)
 
         if method == 'ensemble':
