@@ -54,9 +54,11 @@ pip install -r requirements.txt
 
 **Full system** - Run the backend too:
 ```bash
-./start_all.sh
+./start.sh
 ```
-This starts both the Python server and a local web server. Open http://localhost:8000.
+This starts both the Python backend (port 5005) and a simple HTTP server for the frontend (port 8000). Open http://localhost:8000.
+
+(Older drafts of this README and Chapter 5 referred to `./start_all.sh`; the correct path is `./start.sh`. The 2026-04-30 project audit, finding M4, flagged the discrepancy and it has been corrected here.)
 
 **Manual startup** (if the script doesn't work):
 ```bash
