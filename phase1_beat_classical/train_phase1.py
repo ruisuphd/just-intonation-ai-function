@@ -131,6 +131,28 @@ def main() -> int:
     p.add_argument('--epochs', type=int, default=30)
     p.add_argument('--batch-size', type=int, default=8)
     p.add_argument('--lr', type=float, default=1e-3)
+    # 2026-05 architecture-sweep + Aria-MIDI fine-tune CLI flags.
+    # Defaults match the B9 hardcoded values used by every Phase I result
+    # produced before 2026-05-09; running with all defaults is bit-identical
+    # to the pre-patch trainer (verified by tests/test_trainer_cli_patches.py).
+    p.add_argument('--hidden-size', type=int, default=96,
+                   help=("GRU hidden size for the architecture sweep "
+                         "(Tier 2.4; default 96 reproduces the B9 baseline)."))
+    p.add_argument('--dropout', type=float, default=0.1,
+                   help=("GRU dropout for the regularisation sweep "
+                         "(Tier 2.4; default 0.1 reproduces the B9 baseline)."))
+    p.add_argument('--ens-beta', type=float, default=0.999,
+                   help=("ENS class-weight β (Cui et al., 2019) for the "
+                         "class-imbalance sweep (Tier 2.4; default 0.999 "
+                         "reproduces the B9 baseline)."))
+    p.add_argument('--pretrained-checkpoint', default=None,
+                   help=("Path to a .pt checkpoint to use as initial "
+                         "weights for the GRU (Phase D Aria-MIDI fine-tune, "
+                         "Tier 3.2). The state_dict is loaded with "
+                         "strict=False so any module not present in the "
+                         "pre-trained checkpoint (e.g. the chord head in "
+                         "T2 / T6_T1_T2 variants) remains randomly "
+                         "initialised and trainable. Default: no init."))
     p.add_argument('--patience', type=int, default=10)
     p.add_argument('--warmup-epochs', type=int, default=3)
     p.add_argument('--chord-loss-weight', type=float, default=0.3,
@@ -277,16 +299,36 @@ def main() -> int:
 
     # Model
     model = HarmonicContextGRUPhase1(
-        hidden_size=96, num_layers=1, dropout=0.1,
+        hidden_size=args.hidden_size, num_layers=1, dropout=args.dropout,
         use_global_pcp=variant_cfg['use_global_pcp'],
         use_chord_heads=variant_cfg['use_chord_heads'],
     ).to(device)
     n_params = sum(p.numel() for p in model.parameters())
     print(f'Model: HarmonicContextGRUPhase1 variant {args.variant} '
-          f'({n_params:,} parameters)')
+          f'(h={args.hidden_size}, dropout={args.dropout}, '
+          f'{n_params:,} parameters)')
 
-    # Loss + optimiser (B9 config)
-    class_weights = build_ens_class_weights(train_records, beta=0.999).to(device)
+    # Phase D Aria-MIDI fine-tune init (Tier 3.2). When --pretrained-checkpoint
+    # is supplied, load its state_dict with strict=False so that any module
+    # not present in the pre-trained body (e.g. the chord head in T2 /
+    # T6_T1_T2 variants, or any module added since the checkpoint was saved)
+    # remains randomly initialised and trainable. With --pretrained-checkpoint
+    # left at its default of None this block is a no-op and the trainer
+    # behaves identically to the pre-2026-05-09 version.
+    if args.pretrained_checkpoint:
+        ckpt = torch.load(
+            args.pretrained_checkpoint, map_location=device, weights_only=False,
+        )
+        sd = ckpt.get('model_state_dict', ckpt)
+        missing, unexpected = model.load_state_dict(sd, strict=False)
+        print(f'  ✓ Loaded pretrained checkpoint: {args.pretrained_checkpoint}')
+        print(f'    missing keys: {len(missing)}, unexpected: {len(unexpected)}')
+
+    # Loss + optimiser (B9 config; ENS β is now CLI-controlled via --ens-beta,
+    # default 0.999 reproduces the original B9 hardcoded value).
+    class_weights = build_ens_class_weights(
+        train_records, beta=args.ens_beta,
+    ).to(device)
     key_loss_fn = nn.CrossEntropyLoss(weight=class_weights, ignore_index=-100)
     chord_loss_fn = nn.CrossEntropyLoss(ignore_index=-100, reduction='none')
     optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
