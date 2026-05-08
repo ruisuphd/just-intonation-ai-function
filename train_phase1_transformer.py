@@ -274,9 +274,17 @@ def main() -> int:
             optimizer.zero_grad()
             out = model(batch)
             logits = out['key_logits']
+            # Align labels to the model's sliding-window output length
+            # (SymbolicKeyTransformer.forward truncates to the most recent
+            # max_seq_len notes when T_in > max_seq_len; the trainer must
+            # apply the same truncation to labels before the CE loss).
+            T_out = logits.shape[1]
+            labels = batch['labels']
+            if labels.shape[1] != T_out:
+                labels = labels[:, -T_out:]
             loss = key_loss_fn(
-                logits.view(-1, logits.shape[-1]),
-                batch['labels'].view(-1),
+                logits.reshape(-1, logits.shape[-1]),
+                labels.reshape(-1),
             )
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -294,7 +302,13 @@ def main() -> int:
                 batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v
                          for k, v in batch.items()}
                 out = model(batch)
-                ss, n = masked_mirex(out['key_logits'], batch['labels'])
+                # Same sliding-window alignment as in the train loop
+                logits = out['key_logits']
+                T_out = logits.shape[1]
+                labels = batch['labels']
+                if labels.shape[1] != T_out:
+                    labels = labels[:, -T_out:]
+                ss, n = masked_mirex(logits, labels)
                 total_score += ss
                 total_n += n
         val_mirex = total_score / max(1, total_n)
@@ -355,6 +369,10 @@ def main() -> int:
                          for k, v in batch.items()}
                 logits = model(batch)['key_logits']
                 labels = batch['labels']
+                # Same sliding-window alignment as train/val loops
+                T_out = logits.shape[1]
+                if labels.shape[1] != T_out:
+                    labels = labels[:, -T_out:]
                 mask = labels != -100
                 ss, n = masked_mirex(logits, labels)
                 piece_score += ss
