@@ -349,6 +349,81 @@ class HarmonicContextGRU(nn.Module):
         return logits[batch_indices, last_indices]
 
 
+class HarmonicContextGRUPretrain(HarmonicContextGRU):
+    """Option B (2026-05-08 Tier-3 audit follow-up): HarmonicContextGRU with
+    self-supervised pretraining heads (mode + KSP) attached on top of the
+    encoder's hidden states.
+
+    Architecturally identical to the deployed `HarmonicContextGRU` (same input
+    embeddings, same input projection, same GRU encoder); the only addition is
+    two extra `nn.Linear(hidden_size, ·)` heads that ride on the same encoded
+    representation. After pretraining, the **shared body weights** (input
+    embeddings, input projection, GRU encoder) load directly into a downstream
+    `HarmonicContextGRUPhase1` via `train_phase1.py --pretrained-checkpoint`
+    with NEAR-COMPLETE state-dict overlap — closing the §6.9.2 architectural-
+    mismatch caveat that limited the original Phase B null to a 1.52 %
+    partial-transfer test.
+
+    Forward returns a dict with the SAME keys as `SymbolicKeyTransformer`
+    (`key_logits`, `mode_logits`, `ksp_logits`), so `pretrain_symbolic_key.py`
+    can swap `SymbolicKeyTransformer` for `HarmonicContextGRUPretrain` via the
+    `--pretrain-body gru` flag without any other code changes.
+
+    Heads are deliberately small (Linear(96, 12) + Linear(96, 2) ≈ 1,358
+    params total) so they don't dominate the body's ~67K parameters.
+
+    Pre-registered decision gate (`OPTION_A_B_IMPLEMENTATION_PLAN_2026-05-08.md`
+    §2.4): paired Δ_FW ≥ +0.020 with paired-*t* p < 0.0125 (Bonferroni α/2
+    over the joint Option A + B family) constitutes the 🟢 STRONG verdict.
+    """
+
+    def __init__(
+        self,
+        hidden_size: int = 96,
+        num_layers: int = 1,
+        dropout: float = 0.1,
+    ):
+        super().__init__(
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+            bidirectional=False,
+            use_pcp=False,
+        )
+        # Pretraining heads — same shapes as SymbolicKeyTransformer's
+        # mode_head + ksp_head, but attached to the GRU's hidden_size (96)
+        # rather than the Transformer's d_model (128).
+        self.mode_head = nn.Linear(hidden_size, 2)   # major / minor pseudo-label
+        self.ksp_head = nn.Linear(hidden_size, 12)   # KSP for equivariance loss
+
+    def forward(self, batch: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """Forward pass that returns the same dict shape as
+        `SymbolicKeyTransformer.forward()` — `pretrain_symbolic_key.py`'s
+        existing equivariance / mode / batch-balance loss is then a drop-in.
+
+        Returns:
+            dict with keys 'key_logits' (B, T, 24), 'mode_logits' (B, T, 2),
+            'ksp_logits' (B, T, 12).
+        """
+        feature_parts = [
+            self.pitch_embedding(batch['pitch_class']),
+            self.register_embedding(batch['register']),
+            self.delta_embedding(batch['delta_bucket']),
+            self.duration_embedding(batch['duration_bucket']),
+            self.velocity_embedding(batch['velocity_bucket']),
+            self.active_projection(batch['active_mask']),
+        ]
+        features = torch.cat(feature_parts, dim=-1)
+        projected = self.input_projection(features)
+        encoded, _ = self.encoder(projected)
+        encoded_d = self.dropout(encoded)
+        return {
+            'key_logits':  self.classifier(encoded_d),
+            'mode_logits': self.mode_head(encoded_d),
+            'ksp_logits':  self.ksp_head(encoded_d),
+        }
+
+
 class SymbolicKeyTransformer(nn.Module):
     """Two-branch causal Transformer for local key estimation.
 
