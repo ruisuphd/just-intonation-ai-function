@@ -13,7 +13,7 @@ improves over random initialisation at matched seeds.
 
 Pre-registered decision gate (`OPTION_A_B_IMPLEMENTATION_PLAN_2026-05-08.md`
 §1.4):
-  🟢 STRONG     Δ_FW ≥ +0.020 AND paired-t p < 0.0125 (Bonferroni α/2 over A+B)
+  🟢 STRONG     Δ_FW ≥ +0.020 AND paired-t p < 0.0125 (Bonferroni α/4 over the 4-hypothesis A+B family)
   🟡 DIRECTIONAL Δ_FW ≥ +0.005 AND paired-t p < 0.05 (uncorrected)
   🔴 NULL        otherwise
 
