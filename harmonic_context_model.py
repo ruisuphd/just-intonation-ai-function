@@ -373,8 +373,9 @@ class HarmonicContextGRUPretrain(HarmonicContextGRU):
     params total) so they don't dominate the body's ~67K parameters.
 
     Pre-registered decision gate (`OPTION_A_B_IMPLEMENTATION_PLAN_2026-05-08.md`
-    §2.4): paired Δ_FW ≥ +0.020 with paired-*t* p < 0.0125 (Bonferroni α/2
-    over the joint Option A + B family) constitutes the 🟢 STRONG verdict.
+    §2.4): paired Δ_FW ≥ +0.020 with paired-*t* p < 0.0125 (Bonferroni α/4
+    = 0.05 / 4 hypotheses, joint Option A + B family) constitutes the
+    🟢 STRONG verdict.
     """
 
     def __init__(

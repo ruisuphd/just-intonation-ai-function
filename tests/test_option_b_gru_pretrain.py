@@ -208,13 +208,41 @@ def test_pretrain_gru_state_dict_keys_match_phase1_t6t1_body():
     print(f'Pretrain-only keys: {sorted(pretrain_body_keys - downstream_keys)}')
     print(f'Downstream-only keys: {sorted(downstream_keys - pretrain_body_keys)}')
 
-    # Critical check: at least 7 keys must overlap (parity with the §6.9.2 1.52%
-    # baseline). The Option B target is much higher — at least 80% — but we set
-    # the regression-test floor at the §6.9.2 level for safety.
-    assert overlap_count >= 7, (
-        f'Option B pretraining checkpoint must load AT LEAST as many keys as the '
-        f'§6.9.2 partial-transfer baseline (7 keys). Got {overlap_count}. '
-        f'This is a regression — Option B claims architectural alignment.'
+    # Critical check (tightened 2026-05-13 per reviewer): the regression floor
+    # must reflect Option B's documented design promise. With shape-filtering
+    # in train_phase1.py, the pretrain body should contribute 14/15 keys to
+    # the downstream HarmonicContextGRUPhase1 model — only `classifier.weight`
+    # is shape-mismatched (24, 96) → (24, 120) and re-initialised in fine-tune.
+    # We assert ≥14 overlapping keys (= 93.3% of pretrain body keys) AND
+    # ≥80% loaded-parameter fraction by name+shape, which is the 96.45% we
+    # measure in production minus a safety margin.
+    assert overlap_count >= 14, (
+        f'Option B pretraining checkpoint must contribute ≥14/15 body keys to '
+        f'HarmonicContextGRUPhase1 (parity with the documented architectural-'
+        f'alignment design promise). Got {overlap_count}. Old §6.9.2 1.52% '
+        f'baseline (7 keys) is no longer the regression floor.'
+    )
+
+    # Shape-compatible parameter-fraction check (the actual measure of how
+    # much Option B's pretraining transfers, accounting for the classifier
+    # shape mismatch that gets re-initialised in fine-tune).
+    downstream_sd = downstream.state_dict()
+    shape_compatible_params = sum(
+        v.numel() for k, v in pretrain.state_dict().items()
+        if k in downstream_sd
+        and not k.startswith(('mode_head', 'ksp_head'))
+        and v.shape == downstream_sd[k].shape
+    )
+    total_downstream = sum(p.numel() for p in downstream.parameters())
+    loaded_fraction = shape_compatible_params / total_downstream
+    print(f'Loaded fraction (shape-compatible body): '
+          f'{shape_compatible_params:,}/{total_downstream:,} = {100*loaded_fraction:.2f}%')
+    assert loaded_fraction >= 0.80, (
+        f'Option B loaded-parameter fraction {100*loaded_fraction:.2f}% is below '
+        f'the 80% regression floor. Documented production value is 96.45% '
+        f'(2026-05-08 PR #11 + train_phase1.py shape-filter patch). A drop '
+        f'below 80% would indicate a regression in HarmonicContextGRUPretrain '
+        f'or in the downstream HarmonicContextGRUPhase1 architecture.'
     )
 
 
