@@ -320,9 +320,29 @@ def main() -> int:
             args.pretrained_checkpoint, map_location=device, weights_only=False,
         )
         sd = ckpt.get('model_state_dict', ckpt)
-        missing, unexpected = model.load_state_dict(sd, strict=False)
+        # Filter shape-incompatible keys before strict=False load. Required for
+        # Option B (HarmonicContextGRUPretrain): the pretrained body has
+        # `classifier.weight` of shape (24, hidden) because it was trained with
+        # use_global_pcp=False; the downstream T6_T1 model has shape
+        # (24, hidden + 12 + 12) = (24, 120) at hidden=96. PyTorch's strict=False
+        # ignores missing/unexpected keys but still RuntimeErrors on shape
+        # mismatch for keys present in both. We drop those keys here; they get
+        # re-initialised and trained from scratch (which is the right behaviour
+        # — they feed off augmented input dims that didn't exist in pretraining).
+        model_sd = model.state_dict()
+        sd_filtered, skipped = {}, []
+        for k, v in sd.items():
+            if k in model_sd and model_sd[k].shape != v.shape:
+                skipped.append((k, tuple(v.shape), tuple(model_sd[k].shape)))
+            else:
+                sd_filtered[k] = v
+        missing, unexpected = model.load_state_dict(sd_filtered, strict=False)
         print(f'  ✓ Loaded pretrained checkpoint: {args.pretrained_checkpoint}')
-        print(f'    missing keys: {len(missing)}, unexpected: {len(unexpected)}')
+        print(f'    missing keys: {len(missing)}, unexpected: {len(unexpected)}, '
+              f'skipped (shape mismatch): {len(skipped)}')
+        for k, src_shape, dst_shape in skipped:
+            print(f'      {k}: pretrained {src_shape} != downstream {dst_shape} '
+                  f'— re-init in fine-tune')
 
     # Loss + optimiser (B9 config; ENS β is now CLI-controlled via --ens-beta,
     # default 0.999 reproduces the original B9 hardcoded value).

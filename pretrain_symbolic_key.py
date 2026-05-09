@@ -769,14 +769,32 @@ def pretrain(args: argparse.Namespace) -> None:
         drop_last=True,
     )
 
-    # Model
-    model = SymbolicKeyTransformer(
-        d_model=args.d_model,
-        n_heads=args.n_heads,
-        n_layers=args.n_layers,
-        ff_dim=args.ff_dim,
-        dropout=args.dropout,
-    ).to(device)
+    # Model — pretraining body selectable via --pretrain-body (Option B
+    # 2026-05-08 audit follow-up). Default 'transformer' preserves the legacy
+    # / canonical S-KEY pretraining body that produced the §6.9.2 partial-
+    # transfer null. The 'gru' option uses HarmonicContextGRUPretrain — a GRU
+    # body architecturally aligned with the deployed `HarmonicContextGRUPhase1`
+    # downstream model, so subsequent fine-tune via train_phase1.py
+    # --pretrained-checkpoint loads ~95% of weights instead of 1.52%.
+    if getattr(args, 'pretrain_body', 'transformer') == 'gru':
+        from harmonic_context_model import HarmonicContextGRUPretrain
+        model = HarmonicContextGRUPretrain(
+            hidden_size=96,
+            num_layers=1,
+            dropout=args.dropout,
+        ).to(device)
+        print(f'  Body: HarmonicContextGRUPretrain (h=96, ~67K params; '
+              f'architecturally aligned with downstream HarmonicContextGRUPhase1)')
+    else:
+        model = SymbolicKeyTransformer(
+            d_model=args.d_model,
+            n_heads=args.n_heads,
+            n_layers=args.n_layers,
+            ff_dim=args.ff_dim,
+            dropout=args.dropout,
+        ).to(device)
+        print(f'  Body: SymbolicKeyTransformer (d_model={args.d_model}, '
+              f'~381K params; legacy/canonical S-KEY pretraining body)')
 
     total_params = sum(p.numel() for p in model.parameters())
     print(f'Model: SymbolicKeyTransformer ({total_params:,} params)')
@@ -990,6 +1008,19 @@ def main() -> None:
                         help='Minimum fraction of window_size notes that must '
                              'survive both transpositions in canonical mode '
                              '(default 0.9 = at least 90%% of notes retained)')
+    # 2026-05-08 Option B audit follow-up: pretraining body architecture
+    # selector. 'transformer' is the legacy / canonical S-KEY pretraining
+    # body (SymbolicKeyTransformer, ~381K params); 'gru' is the new
+    # architecturally-aligned body (HarmonicContextGRUPretrain, ~67K params)
+    # that produces a checkpoint loadable into the downstream GRU model with
+    # ~95% parameter overlap (vs 1.52% for the Transformer body).
+    parser.add_argument('--pretrain-body', default='transformer',
+                        choices=['transformer', 'gru'],
+                        help=("Pretraining body architecture (Option B 2026-05-08 "
+                              "audit follow-up). Default 'transformer' preserves the "
+                              "legacy/canonical S-KEY body. 'gru' is the new "
+                              "architecturally-aligned variant for Tier-3 closure of "
+                              "the §6.9.2 architectural-mismatch caveat."))
     # 2026-05-12 P3 audit fix: lazy-load JSONL cache (closes Phase C T4 RAM ceiling).
     parser.add_argument('--lazy-load', action='store_true',
                         help='Use streaming JSONL-backed lazy cache instead of '
