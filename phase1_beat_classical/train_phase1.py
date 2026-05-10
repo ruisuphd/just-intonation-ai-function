@@ -315,6 +315,14 @@ def main() -> int:
     # remains randomly initialised and trainable. With --pretrained-checkpoint
     # left at its default of None this block is a no-op and the trainer
     # behaves identically to the pre-2026-05-09 version.
+    # Provenance defaults — populated inside the if-block; persisted to eval JSON
+    # so a downstream meta-analysis or audit reviewer can recover the exact
+    # transfer signature without re-loading the .pt.
+    loaded_param_count = 0
+    loaded_param_fraction = 0.0
+    missing_keys: list = []
+    unexpected_keys: list = []
+    skipped_shape_mismatch: list = []
     if args.pretrained_checkpoint:
         ckpt = torch.load(
             args.pretrained_checkpoint, map_location=device, weights_only=False,
@@ -337,7 +345,25 @@ def main() -> int:
             else:
                 sd_filtered[k] = v
         missing, unexpected = model.load_state_dict(sd_filtered, strict=False)
+        # Provenance — record loaded params + key sets for the eval JSON.
+        loaded_param_count = sum(
+            v.numel() for v in sd_filtered.values()
+            if hasattr(v, 'numel') and v.shape == model_sd.get(_k := next(iter([k for k in sd_filtered if sd_filtered[k] is v]), ''), v).shape
+        ) if False else sum(
+            sd_filtered[k].numel() for k in sd_filtered
+            if k in model_sd and hasattr(sd_filtered[k], 'numel')
+            and sd_filtered[k].shape == model_sd[k].shape
+        )
+        loaded_param_fraction = loaded_param_count / max(1, n_params)
+        missing_keys = [str(k) for k in missing]
+        unexpected_keys = [str(k) for k in unexpected]
+        skipped_shape_mismatch = [
+            {'key': k, 'pretrained_shape': list(s_p), 'downstream_shape': list(s_d)}
+            for k, s_p, s_d in skipped
+        ]
         print(f'  ✓ Loaded pretrained checkpoint: {args.pretrained_checkpoint}')
+        print(f'    Loaded params: {loaded_param_count:,} / {n_params:,} '
+              f'({100 * loaded_param_fraction:.2f}% of model)')
         print(f'    missing keys: {len(missing)}, unexpected: {len(unexpected)}, '
               f'skipped (shape mismatch): {len(skipped)}')
         for k, src_shape, dst_shape in skipped:
@@ -518,6 +544,15 @@ def main() -> int:
         'test_filter': args.test_filter,
         'test_filter_label': test_filter_label,
         'test_records_before_filter': len(test_records_all),
+        # Pretrained-checkpoint provenance: loaded fraction + missing/unexpected/
+        # skipped-shape-mismatch key lists. Empty lists when --pretrained-checkpoint
+        # is not used. Closes COMPREHENSIVE_REVIEW_2026-05-10.md W10.2.
+        'pretrained_checkpoint': args.pretrained_checkpoint,
+        'loaded_param_count': loaded_param_count,
+        'loaded_param_fraction': loaded_param_fraction,
+        'missing_keys': missing_keys,
+        'unexpected_keys': unexpected_keys,
+        'skipped_shape_mismatch': skipped_shape_mismatch,
         'wall_clock_seconds': time.time() - t0,
     }
     with open(out_dir / f'{run_id}_eval.json', 'w') as f:

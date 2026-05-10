@@ -806,6 +806,7 @@ def pretrain(args: argparse.Namespace) -> None:
     )
 
     best_loss = float('inf')
+    per_epoch_log: list = []   # for COMPREHENSIVE_REVIEW_2026-05-10.md W10.1
 
     for epoch in range(1, args.epochs + 1):
         model.train()
@@ -853,6 +854,38 @@ def pretrain(args: argparse.Namespace) -> None:
         # Average losses
         avg = {k: v / max(num_batches, 1) for k, v in epoch_losses.items()}
         lr = scheduler.get_last_lr()[0]
+
+        # Per-epoch persistence (closes COMPREHENSIVE_REVIEW_2026-05-10.md W10.1).
+        # We append each epoch's record to a sidecar JSON file at
+        # `{args.output}.epoch_log.json` so the loss trajectory survives even
+        # if the .pt checkpoint is overwritten by a later "best" save.
+        epoch_record = {
+            'epoch': int(epoch),
+            'total_loss': float(avg['total']),
+            'L_equiv': float(avg.get('L_equiv', 0.0)),
+            'L_mode': float(avg.get('L_mode', 0.0)),
+            'L_batch': float(avg.get('L_batch', 0.0)),
+            'major_frac': float(avg.get('major_frac', 0.0)),
+            'lr': float(lr),
+            'wall_clock_seconds': float(elapsed),
+            'num_batches': int(num_batches),
+        }
+        per_epoch_log.append(epoch_record)
+        try:
+            log_path = str(args.output) + '.epoch_log.json'
+            with open(log_path, 'w') as logf:
+                json.dump({
+                    'output_pt': str(args.output),
+                    'pretrain_body': getattr(args, 'pretrain_body', 'transformer'),
+                    'pair_mode': getattr(args, 'pair_mode', None),
+                    'limit': getattr(args, 'limit', None),
+                    'batch_size': getattr(args, 'batch_size', None),
+                    'lr_initial': getattr(args, 'lr', None),
+                    'epochs_total': getattr(args, 'epochs', None),
+                    'per_epoch': per_epoch_log,
+                }, logf, indent=2)
+        except Exception as e:
+            print(f'  ⚠ failed to write epoch_log: {e}')
 
         print(
             f'Epoch {epoch:3d}/{args.epochs} | '
