@@ -214,6 +214,13 @@ def main() -> int:
     # Pretrained-checkpoint loader (Option A's main feature). Drops pretraining
     # mode/ksp heads (not used in fine-tune); keeps key_head as a warm
     # initialisation point.
+    # Provenance defaults — populated inside the if-block; persisted to eval JSON
+    # so a downstream meta-analysis or audit reviewer can recover the exact
+    # transfer signature without re-loading the .pt.
+    loaded_param_count = 0
+    loaded_param_fraction = 0.0
+    missing_keys: list = []
+    unexpected_keys: list = []
     if args.pretrained_checkpoint:
         ckpt = torch.load(
             args.pretrained_checkpoint, map_location=device, weights_only=False,
@@ -232,10 +239,13 @@ def main() -> int:
             sd_filtered[k].numel() for k in loaded_keys
             if hasattr(sd_filtered[k], 'numel')
         )
+        loaded_param_fraction = loaded_param_count / max(1, n_params)
+        missing_keys = [str(k) for k in missing]
+        unexpected_keys = [str(k) for k in unexpected]
         print(f'  ✓ Loaded pretrained checkpoint: {args.pretrained_checkpoint}')
         print(f'    Loaded params: {loaded_param_count:,} / {n_params:,} '
-              f'({100 * loaded_param_count / n_params:.2f}% of model)')
-        print(f'    missing keys: {len(missing)}, unexpected keys: {len(unexpected)}')
+              f'({100 * loaded_param_fraction:.2f}% of model)')
+        print(f'    missing keys: {len(missing_keys)}, unexpected keys: {len(unexpected_keys)}')
     else:
         print('  (no --pretrained-checkpoint; this is the from-scratch control arm)')
 
@@ -403,6 +413,13 @@ def main() -> int:
         'n_params': n_params,
         'pretrained_checkpoint': args.pretrained_checkpoint,
         'arm_label': arm_label,
+        # Provenance: loaded-parameter fraction + missing/unexpected key lists.
+        # These let a reviewer reproduce the exact transfer signature without
+        # re-loading the .pt; closes COMPREHENSIVE_REVIEW_2026-05-10.md W10.2.
+        'loaded_param_count': loaded_param_count,
+        'loaded_param_fraction': loaded_param_fraction,
+        'missing_keys': missing_keys,
+        'unexpected_keys': unexpected_keys,
         'wall_clock_seconds': time.time() - t0,
         'd_model': args.d_model, 'n_heads': args.n_heads,
         'n_layers': args.n_layers, 'ff_dim': args.ff_dim,
